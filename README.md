@@ -59,3 +59,33 @@ Outputs are written under `reports/ml/`:
 - `ml_feature_columns.json`
 
 The `weak_risk_label` is a heuristic analytical weak label for exploratory ML preparation, not a ground-truth event label. The `performance_score` is a procurement-based performance proxy, not full financial performance.
+
+## Machine Learning analysis
+
+Build the modelling dataset, then run the exploratory ML analysis:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py build_ml_dataset
+.\.venv\Scripts\python.exe manage.py run_ml_analysis
+```
+
+The analysis writes additional outputs under `reports/ml/`:
+
+- `ml_classification_metrics.json`
+- `ml_classification_ranking.csv`
+- `ml_feature_importance.csv`
+- `ml_anomaly_ranking.csv`
+- `ml_cluster_assignments.csv`
+- `ml_cluster_summary.csv`
+- `ml_analysis_summary.json`
+- `ml_leakage_audit.json`
+- `ml_strict_label_summary.json`
+- `ml_reduced_feature_metrics.json`
+- `ml_reduced_feature_ranking.csv`
+- `ml_shuffled_label_sanity_check.json`
+- `ml_model_card.json`
+- `ml_limitations.md`
+
+The broad `weak_risk_label` is a heuristic analytical label derived from procurement anomaly indicators. The stricter `strict_weak_risk_label` uses stronger anomaly conditions and is used with a reduced feature set to lower leakage and circularity risk.
+
+The full-feature classification metrics are heuristic consistency results: they measure how well models replicate constructed weak labels, not official risk events. Anomaly rankings are exploratory and require human review before interpretation.
