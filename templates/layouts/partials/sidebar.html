@@ -53,6 +53,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link menu-link {% if request.resolver_match.url_name == 'methodology' %}active{% endif %}" href="{% url 'analytics:methodology' %}">
+                        <i class="ri-file-list-3-line"></i>
+                        <span>Methodology</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu-link disabled" href="javascript:void(0);" aria-disabled="true">
                         <i class="ri-database-2-line"></i>
                         <span>Collector Tables</span>

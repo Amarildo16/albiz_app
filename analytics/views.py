@@ -112,6 +112,10 @@ def visual_analytics(request):
     return render(request, 'analytics/visual_analytics.html', context)
 
 
+def methodology(request):
+    return render(request, 'analytics/methodology.html')
+
+
 def company_detail(request, company_nipt):
     try:
         company = get_company_by_nipt(company_nipt)
