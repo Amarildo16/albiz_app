@@ -28,22 +28,22 @@
             <ul class="navbar-nav" id="navbar-nav">
                 <li class="menu-title"><span>Analytics</span></li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link active" href="{% url 'analytics:dashboard' %}">
+                    <a class="nav-link menu-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'analytics:dashboard' %}">
                         <i class="ri-dashboard-2-line"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li class="menu-title"><span>Data Views</span></li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link disabled" href="javascript:void(0);" aria-disabled="true">
-                        <i class="ri-database-2-line"></i>
-                        <span>Collector Tables</span>
+                    <a class="nav-link menu-link {% if request.resolver_match.url_name == 'companies' %}active{% endif %}" href="{% url 'analytics:companies' %}">
+                        <i class="ri-building-2-line"></i>
+                        <span>Companies</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link disabled" href="javascript:void(0);" aria-disabled="true">
-                        <i class="ri-building-2-line"></i>
-                        <span>Companies</span>
+                        <i class="ri-database-2-line"></i>
+                        <span>Collector Tables</span>
                     </a>
                 </li>
             </ul>

@@ -1,0 +1,155 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Companies | Albiz Analytics{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Companies</h4>
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Companies</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if collector_error %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning" role="alert">
+            {{ collector_error }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header border-0">
+                <form method="get" class="row g-2 align-items-end">
+                    <div class="col-xl-4 col-md-6">
+                        <label class="form-label" for="company-search">Search</label>
+                        <input type="search" class="form-control" id="company-search" name="q" value="{{ search }}" placeholder="NIPT or business name">
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <label class="form-label" for="legal-form-filter">Legal form</label>
+                        <select class="form-select" id="legal-form-filter" name="legal_form">
+                            <option value="">All legal forms</option>
+                            {% for option in legal_forms %}
+                                <option value="{{ option }}" {% if option == selected_legal_form %}selected{% endif %}>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <label class="form-label" for="status-filter">Status</label>
+                        <select class="form-select" id="status-filter" name="subject_status">
+                            <option value="">All statuses</option>
+                            {% for option in statuses %}
+                                <option value="{{ option }}" {% if option == selected_status %}selected{% endif %}>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xl-2 col-md-6">
+                        <label class="form-label" for="ordering-filter">Order by</label>
+                        <select class="form-select" id="ordering-filter" name="ordering">
+                            <option value="business_name" {% if ordering == "business_name" %}selected{% endif %}>Business name</option>
+                            <option value="company_nipt" {% if ordering == "company_nipt" %}selected{% endif %}>NIPT</option>
+                            <option value="-registration_year" {% if ordering == "-registration_year" %}selected{% endif %}>Newest registration</option>
+                            <option value="-active_procurement_count" {% if ordering == "-active_procurement_count" %}selected{% endif %}>Procurement count</option>
+                            <option value="-total_winner_value_amount" {% if ordering == "-total_winner_value_amount" %}selected{% endif %}>Winner value</option>
+                        </select>
+                    </div>
+                    <div class="col-12 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ri-search-line align-bottom me-1"></i> Filter
+                        </button>
+                        <a href="{% url 'analytics:companies' %}" class="btn btn-light">Reset</a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive table-card">
+                    <table class="table table-hover table-nowrap align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>NIPT</th>
+                                <th>Business name</th>
+                                <th>Legal form</th>
+                                <th>Status</th>
+                                <th>City</th>
+                                <th>Registration</th>
+                                <th class="text-end">Procurements</th>
+                                <th class="text-end">Winner value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for company in companies %}
+                            <tr>
+                                <td class="fw-medium">{{ company.company_nipt }}</td>
+                                <td>{{ company.business_name|default:"-" }}</td>
+                                <td>{{ company.legal_form|default:"-" }}</td>
+                                <td>{{ company.subject_status|default:"-" }}</td>
+                                <td>{{ company.city|default:"-" }}</td>
+                                <td>
+                                    {% if company.registration_date %}
+                                        {{ company.registration_date }}
+                                    {% elif company.registration_year %}
+                                        {{ company.registration_year }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">{{ company.active_procurement_count|default:"0" }}</td>
+                                <td class="text-end">{{ company.total_winner_value_amount|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    No companies found.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if page_obj %}
+                <div class="d-flex align-items-center justify-content-between mt-3">
+                    <div class="text-muted">
+                        Page {{ page_obj.number }} of {{ paginator.num_pages }} | {{ paginator.count }} rows
+                    </div>
+                    <nav aria-label="Company pagination">
+                        <ul class="pagination mb-0">
+                            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                                {% if page_obj.has_previous %}
+                                    <a class="page-link" href="?q={{ search|urlencode }}&legal_form={{ selected_legal_form|urlencode }}&subject_status={{ selected_status|urlencode }}&ordering={{ ordering|urlencode }}&page={{ page_obj.previous_page_number }}">Previous</a>
+                                {% else %}
+                                    <span class="page-link">Previous</span>
+                                {% endif %}
+                            </li>
+                            <li class="page-item active">
+                                <span class="page-link">{{ page_obj.number }}</span>
+                            </li>
+                            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                                {% if page_obj.has_next %}
+                                    <a class="page-link" href="?q={{ search|urlencode }}&legal_form={{ selected_legal_form|urlencode }}&subject_status={{ selected_status|urlencode }}&ordering={{ ordering|urlencode }}&page={{ page_obj.next_page_number }}">Next</a>
+                                {% else %}
+                                    <span class="page-link">Next</span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
