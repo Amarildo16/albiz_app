@@ -35,9 +35,15 @@
                 </li>
                 <li class="menu-title"><span>Data Views</span></li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link {% if request.resolver_match.url_name == 'companies' %}active{% endif %}" href="{% url 'analytics:companies' %}">
+                    <a class="nav-link menu-link {% if request.resolver_match.url_name == 'companies' or request.resolver_match.url_name == 'company_detail' %}active{% endif %}" href="{% url 'analytics:companies' %}">
                         <i class="ri-building-2-line"></i>
                         <span>Companies</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link {% if request.resolver_match.url_name == 'risk_overview' %}active{% endif %}" href="{% url 'analytics:risk_overview' %}">
+                        <i class="ri-alert-line"></i>
+                        <span>Risk Overview</span>
                     </a>
                 </li>
                 <li class="nav-item">

@@ -5,13 +5,16 @@ from django.shortcuts import render
 from analytics.models import JoinedCompanyFeature
 from analytics.services.collector import get_collector_health, get_dashboard_metrics
 from analytics.services.companies import (
-    RISK_INDICATOR_OPTIONS,
-    compute_risk_indicators,
     get_companies_datatables_payload,
     get_company_by_nipt,
-    get_winner_value,
     legal_form_options,
     status_options,
+)
+from analytics.services.risk import (
+    RISK_INDICATOR_OPTIONS,
+    compute_risk_indicators,
+    get_risk_overview,
+    get_winner_value,
 )
 
 
@@ -78,6 +81,20 @@ def companies_data(request):
         }
 
     return JsonResponse(payload)
+
+
+def risk_overview(request):
+    context = {
+        'collector_error': '',
+        'overview': None,
+    }
+
+    try:
+        context['overview'] = get_risk_overview()
+    except DatabaseError as exc:
+        context['collector_error'] = str(exc)
+
+    return render(request, 'analytics/risk_overview.html', context)
 
 
 def company_detail(request, company_nipt):
