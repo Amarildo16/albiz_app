@@ -10,6 +10,7 @@ from analytics.services.companies import (
     legal_form_options,
     status_options,
 )
+from analytics.services.data_quality import get_data_quality_report
 from analytics.services.risk import (
     RISK_INDICATOR_OPTIONS,
     compute_risk_indicators,
@@ -114,6 +115,20 @@ def visual_analytics(request):
 
 def methodology(request):
     return render(request, 'analytics/methodology.html')
+
+
+def data_quality(request):
+    context = {
+        'collector_error': '',
+        'report': None,
+    }
+
+    try:
+        context['report'] = get_data_quality_report()
+    except DatabaseError as exc:
+        context['collector_error'] = str(exc)
+
+    return render(request, 'analytics/data_quality.html', context)
 
 
 def company_detail(request, company_nipt):

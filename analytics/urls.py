@@ -12,4 +12,5 @@ urlpatterns = [
     path('risk/', views.risk_overview, name='risk_overview'),
     path('analytics/', views.visual_analytics, name='visual_analytics'),
     path('methodology/', views.methodology, name='methodology'),
+    path('data-quality/', views.data_quality, name='data_quality'),
 ]

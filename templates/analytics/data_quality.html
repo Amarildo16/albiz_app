@@ -1,0 +1,308 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Data Quality & Coverage | Albiz Analytics{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div>
+                <h4 class="mb-sm-0">Data Quality &amp; Coverage</h4>
+                <p class="text-muted mb-0 mt-1">Completeness and join coverage for the APP-QKB analytical dataset.</p>
+            </div>
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Data Quality</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if collector_error %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning" role="alert">
+            Collector database is not reachable: {{ collector_error }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if report %}
+<div class="row">
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Normalized APP rows</p>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ report.counts.normalized_app_rows.display }}</h4>
+                        <span class="text-muted">normalized_app_export_rows</span>
+                    </div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-primary-subtle rounded fs-3">
+                            <i class="ri-file-list-3-line text-primary"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Normalized QKB rows</p>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ report.counts.normalized_qkb_rows.display }}</h4>
+                        <span class="text-muted">normalized_qkb_search_rows</span>
+                    </div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-success-subtle rounded fs-3">
+                            <i class="ri-search-line text-success"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">APP winner companies</p>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ report.counts.app_winner_companies.display }}</h4>
+                        <span class="text-muted">app_company_features</span>
+                    </div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-warning-subtle rounded fs-3">
+                            <i class="ri-building-2-line text-warning"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Joined APP-QKB companies</p>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ report.counts.joined_companies.display }}</h4>
+                        <span class="text-muted">joined_company_features</span>
+                    </div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-info-subtle rounded fs-3">
+                            <i class="ri-link-m text-info"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    {% for item in report.coverage %}
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-start justify-content-between gap-3">
+                        <div>
+                            <h5 class="card-title mb-1">{{ item.label }}</h5>
+                            <p class="text-muted mb-0">{{ item.description }}</p>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary fs-12">{{ item.display }}</span>
+                    </div>
+                    <div class="progress progress-sm mt-3">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ item.percent_for_bar }}%;" aria-valuenow="{{ item.percent_for_bar }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">APP Completeness</h5>
+            </div>
+            <div class="card-body">
+                {% for metric in report.app_completeness %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="text-muted">{{ metric.label }}</span>
+                            <span class="fw-semibold">{{ metric.display }}</span>
+                        </div>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar {% if metric.available %}bg-success{% else %}bg-secondary{% endif %}" role="progressbar" style="width: {{ metric.percent_for_bar }}%;" aria-valuenow="{{ metric.percent_for_bar }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-muted">{{ metric.present_count_display }} of {{ metric.total_count_display }} rows</small>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">QKB Completeness</h5>
+            </div>
+            <div class="card-body">
+                {% for metric in report.qkb_completeness %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="text-muted">{{ metric.label }}</span>
+                            <span class="fw-semibold">{{ metric.display }}</span>
+                        </div>
+                        <div class="progress progress-sm">
+                            <div class="progress-bar {% if metric.available %}bg-info{% else %}bg-secondary{% endif %}" role="progressbar" style="width: {{ metric.percent_for_bar }}%;" aria-valuenow="{{ metric.percent_for_bar }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-muted">{{ metric.present_count_display }} of {{ metric.total_count_display }} rows</small>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-2">
+                <h5 class="card-title mb-0">Legal Form Distribution</h5>
+                <span class="badge bg-light text-muted">{{ report.legal_form_distribution.source_table }}</span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Legal form</th>
+                                <th class="text-end">Companies</th>
+                                <th class="text-end">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in report.legal_form_distribution.items %}
+                                <tr>
+                                    <td>{{ item.label }}</td>
+                                    <td class="text-end">{{ item.count_display }}</td>
+                                    <td class="text-end">{{ item.display }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">N/A</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between gap-2">
+                <h5 class="card-title mb-0">Subject Status Distribution</h5>
+                <span class="badge bg-light text-muted">{{ report.status_distribution.source_table }}</span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Status</th>
+                                <th class="text-end">Companies</th>
+                                <th class="text-end">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in report.status_distribution.items %}
+                                <tr>
+                                    <td>{{ item.label }}</td>
+                                    <td class="text-end">{{ item.count_display }}</td>
+                                    <td class="text-end">{{ item.display }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">N/A</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-7">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Dataset Interpretation</h5>
+            </div>
+            <div class="card-body">
+                <ul class="text-muted mb-0">
+                    <li>APP winner companies are distinct procurement winner identifiers derived from APP data.</li>
+                    <li>Joined companies are APP winner companies that matched QKB subjects by exact normalized NIPT.</li>
+                    <li>Coverage values are based on the current local database state and may change after pipeline reruns.</li>
+                    <li>Missing values should be interpreted in relation to source availability and normalization rules.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-5">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Known Limitations</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-column gap-2">
+                    {% for note in report.limitations %}
+                        <div class="alert alert-light border mb-0 py-2" role="alert">
+                            <span class="badge bg-warning-subtle text-warning me-2">Limitation</span>{{ note }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Collector Table Availability</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    {% for table in report.table_availability %}
+                        {% if table.exists %}
+                            <span class="badge bg-success-subtle text-success">{{ table.label }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary">{{ table.label }}: N/A</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
