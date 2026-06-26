@@ -1,0 +1,45 @@
+{% load static %}
+<header id="page-topbar">
+    <div class="layout-width">
+        <div class="navbar-header">
+            <div class="d-flex align-items-center">
+                <div class="navbar-brand-box horizontal-logo">
+                    <a href="{% url 'analytics:dashboard' %}" class="logo logo-dark">
+                        <span class="logo-sm">
+                            <span class="avatar-xxs rounded bg-primary text-white d-inline-flex align-items-center justify-content-center fw-semibold">A</span>
+                        </span>
+                        <span class="logo-lg">
+                            <span class="fw-semibold fs-18 text-dark">Albiz</span>
+                        </span>
+                    </a>
+                    <a href="{% url 'analytics:dashboard' %}" class="logo logo-light">
+                        <span class="logo-sm">
+                            <span class="avatar-xxs rounded bg-light text-primary d-inline-flex align-items-center justify-content-center fw-semibold">A</span>
+                        </span>
+                        <span class="logo-lg">
+                            <span class="fw-semibold fs-18 text-white">Albiz</span>
+                        </span>
+                    </a>
+                </div>
+
+                <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger" id="topnav-hamburger-icon" aria-label="Toggle navigation">
+                    <span class="hamburger-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+
+                <div class="d-none d-md-block ms-2">
+                    <h5 class="mb-0 fs-16 fw-semibold">Albiz Analytics</h5>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode" aria-label="Toggle color mode">
+                    <i class="bx bx-moon fs-22"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>

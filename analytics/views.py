@@ -1,5 +1,5 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 
-def health_check(request):
-    return HttpResponse('Albiz analytics app is running')
+def dashboard(request):
+    return render(request, 'analytics/dashboard.html')

@@ -1,0 +1,48 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-bs-theme="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Albiz{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Albiz analytics dashboard">
+
+    <script src="{% static 'velzon/js/layout.js' %}"></script>
+    <link href="{% static 'velzon/libs/simplebar/dist/simplebar.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/libs/node-waves/dist/waves.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/css/bootstrap.min.css' %}" id="bootstrap-style" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/css/icons.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/css/custom.min.css' %}" rel="stylesheet" type="text/css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div id="layout-wrapper">
+        {% include 'layouts/partials/topbar.html' %}
+        {% include 'layouts/partials/sidebar.html' %}
+
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+            {% include 'layouts/partials/footer.html' %}
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-danger btn-icon" id="back-to-top" onclick="topFunction()" aria-label="Back to top">
+        <i class="ri-arrow-up-line"></i>
+    </button>
+
+    {% include 'layouts/partials/modals.html' %}
+
+    <script src="{% static 'velzon/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'velzon/libs/simplebar/dist/simplebar.min.js' %}"></script>
+    <script src="{% static 'velzon/libs/node-waves/dist/waves.min.js' %}"></script>
+    <script src="{% static 'velzon/libs/feather-icons/dist/feather.min.js' %}"></script>
+    <script src="{% static 'velzon/js/app.js' %}"></script>
+    <script src="{% static 'albiz/js/albiz-custom.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
