@@ -1,0 +1,144 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Reports & Export Center | Albiz Analytics{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div>
+                <h4 class="mb-sm-0">Reports &amp; Export Center</h4>
+                <p class="text-muted mb-0 mt-1">Download thesis-friendly CSV summaries from the joined APP-QKB analytical dataset.</p>
+            </div>
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Reports</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            Exports are read-only and based on the current local collector database. Files contain analytical indicators and procurement anomaly signals, not legal determinations.
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <span class="badge bg-warning-subtle text-warning">Risk reports</span>
+                <h5 class="card-title mb-0">Risk Reports</h5>
+            </div>
+            <div class="card-body d-grid gap-3">
+                <div class="border rounded p-3">
+                    <h6 class="mb-1">Risk summary CSV</h6>
+                    <p class="text-muted mb-3">High-level joined dataset counts and indicator coverage.</p>
+                    <a href="{% url 'analytics:export_risk_summary_csv' %}" class="btn btn-sm btn-soft-primary">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                    </a>
+                </div>
+                <div class="border rounded p-3">
+                    <h6 class="mb-1">Indicator distribution CSV</h6>
+                    <p class="text-muted mb-3">Counts and percentages for each analytical indicator.</p>
+                    <a href="{% url 'analytics:export_indicator_distribution_csv' %}" class="btn btn-sm btn-soft-primary">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                    </a>
+                </div>
+                <div class="border rounded p-3">
+                    <h6 class="mb-1">Top risk companies CSV</h6>
+                    <p class="text-muted mb-3">Top companies ranked by risk indicator count, limited to 100 rows.</p>
+                    <a href="{% url 'analytics:export_top_risk_companies_csv' %}" class="btn btn-sm btn-soft-primary">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <span class="badge bg-info-subtle text-info">Rankings</span>
+                <h5 class="card-title mb-0">Company Ranking Exports</h5>
+            </div>
+            <div class="card-body d-grid gap-3">
+                <div class="border rounded p-3">
+                    <h6 class="mb-1">Top winner value companies CSV</h6>
+                    <p class="text-muted mb-3">Top companies ranked by active winner value, limited to 100 rows.</p>
+                    <a href="{% url 'analytics:export_top_winner_value_companies_csv' %}" class="btn btn-sm btn-soft-info">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                    </a>
+                </div>
+                <div class="border rounded p-3">
+                    <h6 class="mb-1">Top procurement count companies CSV</h6>
+                    <p class="text-muted mb-3">Top companies ranked by active procurement count, limited to 100 rows.</p>
+                    <a href="{% url 'analytics:export_top_procurement_count_companies_csv' %}" class="btn btn-sm btn-soft-info">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card h-100">
+            <div class="card-header d-flex align-items-center gap-2">
+                <span class="badge bg-success-subtle text-success">Coverage</span>
+                <h5 class="card-title mb-0">Data Quality Exports</h5>
+            </div>
+            <div class="card-body d-grid gap-3">
+                <div class="border rounded p-3">
+                    <h6 class="mb-1">Data quality summary CSV</h6>
+                    <p class="text-muted mb-3">Source counts, exact NIPT match coverage, and completeness metrics.</p>
+                    <a href="{% url 'analytics:export_data_quality_summary_csv' %}" class="btn btn-sm btn-soft-success">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-xl-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Export Notes</h5>
+            </div>
+            <div class="card-body">
+                <ul class="text-muted mb-0">
+                    <li>Exports are designed for thesis writing, appendix tables, and review workflows.</li>
+                    <li>Ranking exports are intentionally limited to the top 100 rows and do not expose raw source tables.</li>
+                    <li>Company detail URLs are relative dashboard links for follow-up review inside Albiz.</li>
+                    <li>CSV files reflect the current local collector database and may change after pipeline reruns.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Related Pages</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'analytics:risk_overview' %}" class="btn btn-soft-warning text-start">
+                    <i class="ri-alert-line align-bottom me-1"></i> Risk Overview
+                </a>
+                <a href="{% url 'analytics:data_quality' %}" class="btn btn-soft-success text-start">
+                    <i class="ri-shield-check-line align-bottom me-1"></i> Data Quality
+                </a>
+                <a href="{% url 'analytics:methodology' %}" class="btn btn-soft-secondary text-start">
+                    <i class="ri-file-list-3-line align-bottom me-1"></i> Methodology
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

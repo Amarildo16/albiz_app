@@ -13,4 +13,11 @@ urlpatterns = [
     path('analytics/', views.visual_analytics, name='visual_analytics'),
     path('methodology/', views.methodology, name='methodology'),
     path('data-quality/', views.data_quality, name='data_quality'),
+    path('reports/', views.reports, name='reports'),
+    path('reports/export/risk-summary.csv', views.export_risk_summary_csv, name='export_risk_summary_csv'),
+    path('reports/export/top-risk-companies.csv', views.export_top_risk_companies_csv, name='export_top_risk_companies_csv'),
+    path('reports/export/top-winner-value-companies.csv', views.export_top_winner_value_companies_csv, name='export_top_winner_value_companies_csv'),
+    path('reports/export/top-procurement-count-companies.csv', views.export_top_procurement_count_companies_csv, name='export_top_procurement_count_companies_csv'),
+    path('reports/export/data-quality-summary.csv', views.export_data_quality_summary_csv, name='export_data_quality_summary_csv'),
+    path('reports/export/indicator-distribution.csv', views.export_indicator_distribution_csv, name='export_indicator_distribution_csv'),
 ]

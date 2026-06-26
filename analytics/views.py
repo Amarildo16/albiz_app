@@ -1,5 +1,7 @@
+import csv
+
 from django.db import DatabaseError
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from analytics.models import JoinedCompanyFeature
@@ -16,6 +18,15 @@ from analytics.services.risk import (
     compute_risk_indicators,
     get_risk_overview,
     get_winner_value,
+)
+from analytics.services.reports import (
+    data_quality_summary_export,
+    indicator_distribution_export,
+    reports_catalog,
+    risk_summary_export,
+    top_procurement_count_companies_export,
+    top_risk_companies_export,
+    top_winner_value_companies_export,
 )
 from analytics.services.visuals import get_visual_analytics
 
@@ -129,6 +140,62 @@ def data_quality(request):
         context['collector_error'] = str(exc)
 
     return render(request, 'analytics/data_quality.html', context)
+
+
+def reports(request):
+    return render(
+        request,
+        'analytics/reports.html',
+        {
+            'reports': reports_catalog(),
+        },
+    )
+
+
+def export_risk_summary_csv(request):
+    return export_csv('risk-summary.csv', risk_summary_export)
+
+
+def export_top_risk_companies_csv(request):
+    return export_csv('top-risk-companies.csv', top_risk_companies_export)
+
+
+def export_top_winner_value_companies_csv(request):
+    return export_csv('top-winner-value-companies.csv', top_winner_value_companies_export)
+
+
+def export_top_procurement_count_companies_csv(request):
+    return export_csv('top-procurement-count-companies.csv', top_procurement_count_companies_export)
+
+
+def export_data_quality_summary_csv(request):
+    return export_csv('data-quality-summary.csv', data_quality_summary_export)
+
+
+def export_indicator_distribution_csv(request):
+    return export_csv('indicator-distribution.csv', indicator_distribution_export)
+
+
+def export_csv(filename, export_builder):
+    try:
+        headers, rows = export_builder()
+        return csv_response(filename, headers, rows)
+    except DatabaseError as exc:
+        return csv_response(
+            filename,
+            ['error'],
+            [[f'Collector database is not reachable or the export is unavailable: {exc}']],
+            status=503,
+        )
+
+
+def csv_response(filename, headers, rows, status=200):
+    response = HttpResponse(content_type='text/csv; charset=utf-8', status=status)
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    writer = csv.writer(response)
+    writer.writerow(headers)
+    writer.writerows(rows)
+    return response
 
 
 def company_detail(request, company_nipt):
