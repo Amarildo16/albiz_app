@@ -10,27 +10,49 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+import pymysql
+from dotenv import load_dotenv
+
+pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
+
+
+def env_bool(name, default=False):
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {'1', 'true', 'yes', 'on'}
+
+
+def env_list(name, default=''):
+    value = os.getenv(name, default)
+    return [item.strip() for item in value.split(',') if item.strip()]
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mcyaho-++%%%7f*n7*4089-_wgq@7v5znlz6zq8$bu6v%avz$r'
+SECRET_KEY = os.getenv('SECRET_KEY', 'change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env_bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', '127.0.0.1,localhost')
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'analytics',
+    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -76,6 +98,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'collector': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('COLLECTOR_DB_NAME', 'albiz_collector'),
+        'USER': os.getenv('COLLECTOR_DB_USER', 'root'),
+        'PASSWORD': os.getenv('COLLECTOR_DB_PASSWORD', ''),
+        'HOST': os.getenv('COLLECTOR_DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('COLLECTOR_DB_PORT', '3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
 
