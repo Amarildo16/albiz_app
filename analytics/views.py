@@ -16,6 +16,7 @@ from analytics.services.risk import (
     get_risk_overview,
     get_winner_value,
 )
+from analytics.services.visuals import get_visual_analytics
 
 
 def dashboard(request):
@@ -95,6 +96,20 @@ def risk_overview(request):
         context['collector_error'] = str(exc)
 
     return render(request, 'analytics/risk_overview.html', context)
+
+
+def visual_analytics(request):
+    context = {
+        'collector_error': '',
+        'analytics': None,
+    }
+
+    try:
+        context['analytics'] = get_visual_analytics()
+    except DatabaseError as exc:
+        context['collector_error'] = str(exc)
+
+    return render(request, 'analytics/visual_analytics.html', context)
 
 
 def company_detail(request, company_nipt):

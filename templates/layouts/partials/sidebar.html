@@ -47,6 +47,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link menu-link {% if request.resolver_match.url_name == 'visual_analytics' %}active{% endif %}" href="{% url 'analytics:visual_analytics' %}">
+                        <i class="ri-bar-chart-2-line"></i>
+                        <span>Visual Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu-link disabled" href="javascript:void(0);" aria-disabled="true">
                         <i class="ri-database-2-line"></i>
                         <span>Collector Tables</span>

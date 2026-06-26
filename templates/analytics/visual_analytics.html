@@ -1,0 +1,387 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Visual Analytics | Albiz Analytics{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'velzon/libs/apexcharts/apexcharts.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div>
+                <h4 class="mb-sm-0">Visual Analytics</h4>
+                <p class="text-muted mb-0 mt-1">Exploratory distributions and patterns from joined APP and QKB company features.</p>
+            </div>
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Visual Analytics</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if collector_error %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning" role="alert">
+            Collector database is not reachable: {{ collector_error }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if analytics %}
+<div class="row">
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Total joined companies</p>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ analytics.summary.total_joined_companies_display }}</h4>
+                        <span class="text-muted">joined_company_features</span>
+                    </div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-primary-subtle rounded fs-3">
+                            <i class="ri-link-m text-primary"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Distinct legal forms</p>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ analytics.summary.distinct_legal_forms_display }}</h4>
+                        <span class="text-muted">Non-empty legal form values</span>
+                    </div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-success-subtle rounded fs-3">
+                            <i class="ri-profile-line text-success"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Distinct cities</p>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ analytics.summary.distinct_cities_display }}</h4>
+                        <span class="text-muted">Non-empty city values</span>
+                    </div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-info-subtle rounded fs-3">
+                            <i class="ri-map-pin-line text-info"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Companies with indicators</p>
+                <div class="d-flex align-items-end justify-content-between mt-4">
+                    <div>
+                        <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ analytics.summary.companies_with_indicators_display }}</h4>
+                        <span class="text-muted">{{ analytics.summary.indicator_coverage_display }} of joined companies</span>
+                    </div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-warning-subtle rounded fs-3">
+                            <i class="ri-alert-line text-warning"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Legal Form Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div id="legal-form-chart" class="apex-charts" style="min-height: 280px;"></div>
+                <div class="table-responsive mt-3">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Legal form</th>
+                                <th class="text-end">Companies</th>
+                                <th class="text-end">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in analytics.legal_form_distribution %}
+                                <tr>
+                                    <td>{{ item.label }}</td>
+                                    <td class="text-end">{{ item.count_display }}</td>
+                                    <td class="text-end">{{ item.percentage_display }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Subject Status Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div id="subject-status-chart" class="apex-charts" style="min-height: 280px;"></div>
+                <div class="table-responsive mt-3">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Status</th>
+                                <th class="text-end">Companies</th>
+                                <th class="text-end">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in analytics.subject_status_distribution %}
+                                <tr>
+                                    <td>{{ item.label }}</td>
+                                    <td class="text-end">{{ item.count_display }}</td>
+                                    <td class="text-end">{{ item.percentage_display }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-7">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Registration Year Trend</h5>
+            </div>
+            <div class="card-body">
+                <div id="registration-year-chart" class="apex-charts" style="min-height: 320px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-5">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Top Cities By Joined Companies</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>City</th>
+                                <th class="text-end">Companies</th>
+                                <th class="text-end">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in analytics.top_cities %}
+                                <tr>
+                                    <td>{{ item.label }}</td>
+                                    <td class="text-end">{{ item.count_display }}</td>
+                                    <td class="text-end">{{ item.percentage_display }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">No city values found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Winner/Budget Ratio Bands</h5>
+            </div>
+            <div class="card-body">
+                <div id="ratio-band-chart" class="apex-charts" style="min-height: 320px;"></div>
+                <div class="table-responsive mt-3">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Band</th>
+                                <th class="text-end">Companies</th>
+                                <th class="text-end">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in analytics.ratio_band_distribution %}
+                                <tr>
+                                    <td>{{ item.label }}</td>
+                                    <td class="text-end">{{ item.count_display }}</td>
+                                    <td class="text-end">{{ item.percentage_display }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Risk Indicator Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div id="risk-indicator-chart" class="apex-charts" style="min-height: 320px;"></div>
+                <div class="table-responsive mt-3">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Indicator</th>
+                                <th>Level</th>
+                                <th class="text-end">Companies</th>
+                                <th class="text-end">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for indicator in analytics.risk_indicator_distribution %}
+                                <tr>
+                                    <td>{{ indicator.label }}</td>
+                                    <td>
+                                        {% if indicator.level == 'danger' %}
+                                            <span class="badge bg-danger-subtle text-danger">High</span>
+                                        {% elif indicator.level == 'warning' %}
+                                            <span class="badge bg-warning-subtle text-warning">Medium</span>
+                                        {% else %}
+                                            <span class="badge bg-info-subtle text-info">Informational</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">{{ indicator.count_display }}</td>
+                                    <td class="text-end">{{ indicator.percentage_display }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Top Companies By Active Procurement Count</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>NIPT</th>
+                                <th>Business name</th>
+                                <th class="text-end">Count</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for company in analytics.top_companies_by_active_procurement_count %}
+                                <tr>
+                                    <td class="fw-medium">{{ company.company_nipt }}</td>
+                                    <td>{% if company.business_name %}{{ company.business_name }}{% else %}<span class="text-muted">&#8212;</span>{% endif %}</td>
+                                    <td class="text-end">{{ company.active_procurement_count_display }}</td>
+                                    <td class="text-end">
+                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">View</a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No active procurement counts found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Top Companies By Active Winner Value</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>NIPT</th>
+                                <th>Business name</th>
+                                <th class="text-end">Active winner value</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for company in analytics.top_companies_by_active_winner_value %}
+                                <tr>
+                                    <td class="fw-medium">{{ company.company_nipt }}</td>
+                                    <td>{% if company.business_name %}{{ company.business_name }}{% else %}<span class="text-muted">&#8212;</span>{% endif %}</td>
+                                    <td class="text-end">{{ company.active_winner_value_display }}</td>
+                                    <td class="text-end">
+                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">View</a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No active winner values found.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ analytics.chart_data|json_script:'visual-analytics-data' }}
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'velzon/libs/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'albiz/js/visual-analytics.js' %}"></script>
+{% endblock %}
