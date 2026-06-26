@@ -1,0 +1,193 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}{% if company %}{{ company.company_nipt }}{% else %}Company{% endif %} | Albiz Analytics{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <h4 class="mb-sm-0">Company Detail</h4>
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:companies' %}">Companies</a></li>
+                    <li class="breadcrumb-item active">{% if company %}{{ company.company_nipt }}{% else %}Unavailable{% endif %}</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if collector_error %}
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning" role="alert">
+            Collector database is not reachable: {{ collector_error }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if company %}
+<div class="row">
+    <div class="col-xl-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex align-items-start">
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-1">{{ company.business_name|default:"-" }}</h5>
+                        <p class="text-muted mb-3">{{ company.company_nipt }}</p>
+                    </div>
+                    {% if company.has_red_flags %}
+                        <span class="badge bg-danger-subtle text-danger">QKB flag</span>
+                    {% elif company.has_red_flags == False %}
+                        <span class="badge bg-success-subtle text-success">No QKB flag</span>
+                    {% else %}
+                        <span class="badge bg-secondary-subtle text-secondary">Unknown QKB flag</span>
+                    {% endif %}
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless mb-0">
+                        <tbody>
+                            <tr><th>NIPT</th><td>{{ company.company_nipt }}</td></tr>
+                            <tr><th>Legal form</th><td>{{ company.legal_form|default:"-" }}</td></tr>
+                            <tr><th>Status</th><td>{{ company.subject_status|default:"-" }}</td></tr>
+                            <tr><th>City</th><td>{{ company.city|default:"-" }}</td></tr>
+                            <tr><th>Registration date</th><td>{{ company.registration_date|default:"-" }}</td></tr>
+                            <tr><th>Registration year</th><td>{{ company.registration_year|default:"-" }}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Risk Indicators</h5>
+            </div>
+            <div class="card-body">
+                {% if risk_indicators %}
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for indicator in risk_indicators %}
+                            {% if indicator.level == 'danger' %}
+                                <span class="badge bg-danger-subtle text-danger">{{ indicator.label }}</span>
+                            {% elif indicator.level == 'warning' %}
+                                <span class="badge bg-warning-subtle text-warning">{{ indicator.label }}</span>
+                            {% else %}
+                                <span class="badge bg-info-subtle text-info">{{ indicator.label }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <span class="badge bg-secondary-subtle text-secondary">No indicators</span>
+                {% endif %}
+                <p class="text-muted mt-3 mb-0">Indicators are analytical procurement signals, not allegations or legal conclusions.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-8">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Procurement Timeline</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                                <tr><th>First procurement date</th><td>{{ company.first_procurement_date|default:"-" }}</td></tr>
+                                <tr><th>First procurement year</th><td>{{ company.first_procurement_year|default:"-" }}</td></tr>
+                                <tr><th>Last procurement date</th><td>{{ company.last_procurement_date|default:"-" }}</td></tr>
+                                <tr><th>Last procurement year</th><td>{{ company.last_procurement_year|default:"-" }}</td></tr>
+                                <tr><th>Company age at first procurement</th><td>{{ company.company_age_days_at_first_procurement|default:"-" }}{% if company.company_age_days_at_first_procurement %} days{% endif %}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Procurement Counts</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                                <tr><th>Active procurement count</th><td>{{ company.active_procurement_count }}</td></tr>
+                                <tr><th>Cancelled count</th><td>{{ company.cancelled_procurement_count }}</td></tr>
+                                <tr><th>Cancelled rate</th><td>{{ company.cancelled_procurement_rate|floatformat:2 }}</td></tr>
+                                <tr><th>Suspended count</th><td>{{ company.suspended_procurement_count }}</td></tr>
+                                <tr><th>Suspended rate</th><td>{{ company.suspended_procurement_rate|floatformat:2 }}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Value Metrics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                                <tr><th>Total winner value</th><td>{{ company.total_winner_value_amount|default:"-" }}</td></tr>
+                                <tr><th>Active winner value</th><td>{{ company.active_total_winner_value_amount|default:"-" }}</td></tr>
+                                <tr><th>Displayed winner value</th><td>{{ winner_value|default:"-" }}</td></tr>
+                                <tr><th>Total budget value</th><td>{{ company.total_budget_limit_amount|default:"-" }}</td></tr>
+                                <tr><th>Active budget value</th><td>{{ company.active_total_budget_limit_amount|default:"-" }}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                                <tr><th>Winner/Budget avg</th><td>{{ company.safe_winner_to_budget_ratio_avg|default:"-" }}</td></tr>
+                                <tr><th>Winner/Budget min</th><td>{{ company.safe_winner_to_budget_ratio_min|default:"-" }}</td></tr>
+                                <tr><th>Winner/Budget max</th><td>{{ company.safe_winner_to_budget_ratio_max|default:"-" }}</td></tr>
+                                <tr><th>Zero budget with winner value count</th><td>{{ company.zero_budget_with_winner_value_count }}</td></tr>
+                                <tr><th>Zero budget with winner value rate</th><td>{{ company.zero_budget_with_winner_value_rate|floatformat:2 }}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Diversity Metrics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <p class="text-muted mb-1">Contracting authorities</p>
+                            <h4 class="mb-0">{{ company.distinct_contracting_authority_count }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <p class="text-muted mb-1">Procedure types</p>
+                            <h4 class="mb-0">{{ company.distinct_procedure_type_count }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded">
+                            <p class="text-muted mb-1">Contract types</p>
+                            <h4 class="mb-0">{{ company.distinct_contract_type_count }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

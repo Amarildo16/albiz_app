@@ -31,125 +31,123 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header border-0">
-                <form method="get" class="row g-2 align-items-end">
-                    <div class="col-xl-4 col-md-6">
-                        <label class="form-label" for="company-search">Search</label>
-                        <input type="search" class="form-control" id="company-search" name="q" value="{{ search }}" placeholder="NIPT or business name">
+            <div class="card-header border-0 pb-0">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+                    <div>
+                        <h5 class="card-title mb-1">Joined Company Features</h5>
+                        <p class="text-muted mb-0">Server-side search, filters, sorting, and pagination from the collector database.</p>
                     </div>
+                    <button type="button" class="btn btn-light btn-sm" id="companies-reset-filters">
+                        <i class="ri-refresh-line align-bottom me-1"></i> Reset
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row g-2 mb-3">
                     <div class="col-xl-3 col-md-6">
+                        <label class="form-label" for="company-search">Search</label>
+                        <input type="search" class="form-control form-control-sm" id="company-search" data-company-filter="search" placeholder="NIPT or business name">
+                    </div>
+                    <div class="col-xl-2 col-md-6">
                         <label class="form-label" for="legal-form-filter">Legal form</label>
-                        <select class="form-select" id="legal-form-filter" name="legal_form">
+                        <select class="form-select form-select-sm" id="legal-form-filter" data-company-filter="legal_form">
                             <option value="">All legal forms</option>
                             {% for option in legal_forms %}
-                                <option value="{{ option }}" {% if option == selected_legal_form %}selected{% endif %}>{{ option }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <label class="form-label" for="status-filter">Status</label>
-                        <select class="form-select" id="status-filter" name="subject_status">
-                            <option value="">All statuses</option>
-                            {% for option in statuses %}
-                                <option value="{{ option }}" {% if option == selected_status %}selected{% endif %}>{{ option }}</option>
+                                <option value="{{ option }}">{{ option }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-xl-2 col-md-6">
-                        <label class="form-label" for="ordering-filter">Order by</label>
-                        <select class="form-select" id="ordering-filter" name="ordering">
-                            <option value="business_name" {% if ordering == "business_name" %}selected{% endif %}>Business name</option>
-                            <option value="company_nipt" {% if ordering == "company_nipt" %}selected{% endif %}>NIPT</option>
-                            <option value="-registration_year" {% if ordering == "-registration_year" %}selected{% endif %}>Newest registration</option>
-                            <option value="-active_procurement_count" {% if ordering == "-active_procurement_count" %}selected{% endif %}>Procurement count</option>
-                            <option value="-total_winner_value_amount" {% if ordering == "-total_winner_value_amount" %}selected{% endif %}>Winner value</option>
+                        <label class="form-label" for="status-filter">Status</label>
+                        <select class="form-select form-select-sm" id="status-filter" data-company-filter="subject_status">
+                            <option value="">All statuses</option>
+                            {% for option in statuses %}
+                                <option value="{{ option }}">{{ option }}</option>
+                            {% endfor %}
                         </select>
                     </div>
-                    <div class="col-12 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="ri-search-line align-bottom me-1"></i> Filter
-                        </button>
-                        <a href="{% url 'analytics:companies' %}" class="btn btn-light">Reset</a>
+                    <div class="col-xl-2 col-md-6">
+                        <label class="form-label" for="city-filter">City</label>
+                        <input type="text" class="form-control form-control-sm" id="city-filter" data-company-filter="city" placeholder="City">
                     </div>
-                </form>
-            </div>
+                    <div class="col-xl-1 col-md-4">
+                        <label class="form-label" for="red-flags-filter">QKB flags</label>
+                        <select class="form-select form-select-sm" id="red-flags-filter" data-company-filter="has_red_flags">
+                            <option value="">All</option>
+                            <option value="true">QKB flags</option>
+                            <option value="false">No flags</option>
+                        </select>
+                    </div>
+                    <div class="col-xl-2 col-md-4">
+                        <label class="form-label" for="risk-indicator-filter">Risk indicator</label>
+                        <select class="form-select form-select-sm" id="risk-indicator-filter" data-company-filter="risk_indicator">
+                            <option value="">All indicators</option>
+                            {% for value, label in risk_indicator_options %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xl-1 col-md-4">
+                        <label class="form-label" for="min-procurements-filter">Min proc.</label>
+                        <input type="number" min="0" class="form-control form-control-sm" id="min-procurements-filter" data-company-filter="min_active_procurement_count">
+                    </div>
+                    <div class="col-xl-1 col-md-4">
+                        <label class="form-label" for="max-procurements-filter">Max proc.</label>
+                        <input type="number" min="0" class="form-control form-control-sm" id="max-procurements-filter" data-company-filter="max_active_procurement_count">
+                    </div>
+                </div>
 
-            <div class="card-body">
+                <div class="alert alert-warning d-none" id="companies-table-error" role="alert"></div>
+
                 <div class="table-responsive table-card">
-                    <table class="table table-hover table-nowrap align-middle mb-0">
+                    <table id="companies-table" class="table table-striped table-hover table-nowrap align-middle mb-0" data-ajax-url="{% url 'analytics:companies_data' %}">
                         <thead class="table-light">
                             <tr>
-                                <th>NIPT</th>
-                                <th>Business name</th>
-                                <th>Legal form</th>
-                                <th>Status</th>
-                                <th>City</th>
-                                <th>Registration</th>
-                                <th class="text-end">Procurements</th>
-                                <th class="text-end">Winner value</th>
+                                <th data-column-index="0">NIPT</th>
+                                <th data-column-index="1">Business name</th>
+                                <th data-column-index="2">Legal form</th>
+                                <th data-column-index="3">Status</th>
+                                <th data-column-index="4">City</th>
+                                <th data-column-index="5" class="text-end">Reg. year</th>
+                                <th data-column-index="6" class="text-end">Procurements</th>
+                                <th data-column-index="7" class="text-end">Winner value</th>
+                                <th data-column-index="8" class="text-end">Winner/Budget</th>
+                                <th data-column-index="9">QKB flags</th>
+                                <th data-column-index="10" data-orderable="false">Risk indicators</th>
+                                <th data-column-index="11" data-orderable="false">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for company in companies %}
                             <tr>
-                                <td class="fw-medium">{{ company.company_nipt }}</td>
-                                <td>{{ company.business_name|default:"-" }}</td>
-                                <td>{{ company.legal_form|default:"-" }}</td>
-                                <td>{{ company.subject_status|default:"-" }}</td>
-                                <td>{{ company.city|default:"-" }}</td>
-                                <td>
-                                    {% if company.registration_date %}
-                                        {{ company.registration_date }}
-                                    {% elif company.registration_year %}
-                                        {{ company.registration_year }}
-                                    {% else %}
-                                        -
-                                    {% endif %}
-                                </td>
-                                <td class="text-end">{{ company.active_procurement_count|default:"0" }}</td>
-                                <td class="text-end">{{ company.total_winner_value_amount|default:"-" }}</td>
+                                <td colspan="12" class="text-center text-muted py-4">Loading companies...</td>
                             </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="8" class="text-center text-muted py-4">
-                                    No companies found.
-                                </td>
-                            </tr>
-                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
 
-                {% if page_obj %}
-                <div class="d-flex align-items-center justify-content-between mt-3">
-                    <div class="text-muted">
-                        Page {{ page_obj.number }} of {{ paginator.num_pages }} | {{ paginator.count }} rows
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mt-3" id="companies-fallback-controls">
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="text-muted mb-0" for="companies-page-length">Rows</label>
+                        <select class="form-select form-select-sm w-auto" id="companies-page-length">
+                            <option value="10">10</option>
+                            <option value="25" selected>25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
                     </div>
-                    <nav aria-label="Company pagination">
-                        <ul class="pagination mb-0">
-                            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
-                                {% if page_obj.has_previous %}
-                                    <a class="page-link" href="?q={{ search|urlencode }}&legal_form={{ selected_legal_form|urlencode }}&subject_status={{ selected_status|urlencode }}&ordering={{ ordering|urlencode }}&page={{ page_obj.previous_page_number }}">Previous</a>
-                                {% else %}
-                                    <span class="page-link">Previous</span>
-                                {% endif %}
-                            </li>
-                            <li class="page-item active">
-                                <span class="page-link">{{ page_obj.number }}</span>
-                            </li>
-                            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
-                                {% if page_obj.has_next %}
-                                    <a class="page-link" href="?q={{ search|urlencode }}&legal_form={{ selected_legal_form|urlencode }}&subject_status={{ selected_status|urlencode }}&ordering={{ ordering|urlencode }}&page={{ page_obj.next_page_number }}">Next</a>
-                                {% else %}
-                                    <span class="page-link">Next</span>
-                                {% endif %}
-                            </li>
-                        </ul>
-                    </nav>
+                    <div class="text-muted" id="companies-table-info">Showing 0 rows</div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Companies pagination">
+                        <button type="button" class="btn btn-light" id="companies-prev-page">Previous</button>
+                        <button type="button" class="btn btn-light" id="companies-next-page">Next</button>
+                    </div>
                 </div>
-                {% endif %}
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'albiz/js/companies-table.js' %}"></script>
 {% endblock %}
