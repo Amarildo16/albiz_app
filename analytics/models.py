@@ -15,9 +15,11 @@ class JoinedCompanyFeature(models.Model):
     last_procurement_date = models.DateField(null=True, blank=True)
     last_procurement_year = models.IntegerField(null=True, blank=True)
     company_age_days_at_first_procurement = models.IntegerField(null=True, blank=True)
+    company_age_days_at_last_procurement = models.IntegerField(null=True, blank=True)
     source_row_count = models.IntegerField(default=0)
     app_source_row_count = models.IntegerField(default=0)
     qkb_source_row_count = models.IntegerField(default=0)
+    active_year_span = models.IntegerField(null=True, blank=True)
     active_procurement_count = models.IntegerField(default=0)
     cancelled_procurement_count = models.IntegerField(default=0)
     suspended_procurement_count = models.IntegerField(default=0)
@@ -35,6 +37,11 @@ class JoinedCompanyFeature(models.Model):
     distinct_contracting_authority_count = models.IntegerField(default=0)
     distinct_procedure_type_count = models.IntegerField(default=0)
     distinct_contract_type_count = models.IntegerField(default=0)
+    rows_with_winner_value_count = models.IntegerField(default=0)
+    rows_with_budget_count = models.IntegerField(default=0)
+    rows_with_valid_ratio_count = models.IntegerField(default=0)
+    has_small_value_procedures = models.BooleanField(null=True, blank=True)
+    has_open_local_procedures = models.BooleanField(null=True, blank=True)
     has_red_flags = models.BooleanField(null=True, blank=True)
 
     class Meta:

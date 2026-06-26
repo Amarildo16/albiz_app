@@ -42,3 +42,20 @@ Start the development server:
 ```powershell
 .\.venv\Scripts\python.exe manage.py runserver
 ```
+
+## Machine Learning preparation
+
+Build the exploratory modelling dataset from the read-only collector database:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py build_ml_dataset
+```
+
+Outputs are written under `reports/ml/`:
+
+- `ml_dataset.csv`
+- `ml_dataset_summary.json`
+- `ml_feature_missingness.csv`
+- `ml_feature_columns.json`
+
+The `weak_risk_label` is a heuristic analytical weak label for exploratory ML preparation, not a ground-truth event label. The `performance_score` is a procurement-based performance proxy, not full financial performance.
