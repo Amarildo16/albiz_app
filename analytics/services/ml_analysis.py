@@ -37,6 +37,8 @@ ANOMALY_CONTAMINATION = 0.05
 LOF_NEIGHBORS = 20
 CLUSTER_COUNT = 5
 PCA_COMPONENTS = 3
+FINANCIAL_DATASET_FILENAME = 'ml_dataset_with_financial_enrichment.csv'
+FINANCIAL_FEATURE_COLUMNS_FILENAME = 'ml_financial_feature_columns.json'
 
 LABEL_DEFINING_OR_CIRCULAR_FEATURES = [
     'safe_winner_to_budget_ratio_avg',
@@ -74,6 +76,41 @@ REDUCED_EXCLUDED_FEATURES = {
     'total_winner_value_amount',
     'has_red_flags',
 }
+
+FINANCIAL_MODEL_FEATURES = [
+    'financial_year_count',
+    'financial_year_span',
+    'latest_financial_year',
+    'revenue_growth_latest_pct',
+    'profit_growth_latest_pct',
+    'revenue_mean',
+    'revenue_median',
+    'revenue_min',
+    'revenue_max',
+    'profit_before_tax_mean',
+    'profit_before_tax_median',
+    'profit_before_tax_min',
+    'profit_before_tax_max',
+    'latest_profit_margin_before_tax',
+    'log_latest_revenue_amount',
+    'signed_log_latest_profit_before_tax',
+]
+
+FINANCIAL_RANKING_FIELDS = [
+    'latest_financial_year',
+    'latest_revenue_amount',
+    'latest_profit_before_tax_amount',
+    'revenue_growth_latest_pct',
+    'profit_growth_latest_pct',
+    'has_financial_enrichment',
+]
+
+FINANCIAL_SUBSET_MODEL_NAMES = [
+    'logistic_regression',
+    'random_forest',
+    'hist_gradient_boosting',
+    'extra_trees',
+]
 
 
 def run_ml_analysis(output_dir):
@@ -146,6 +183,11 @@ def run_ml_analysis(output_dir):
         anomaly_scores=anomaly['scores'],
         lof_scores=lof_anomaly['scores'],
     )
+    financial_subset = run_financial_subset_experiment(
+        output_dir=output_dir,
+        reduced_numeric_features=reduced_numeric_features,
+        reduced_categorical_features=reduced_categorical_features,
+    )
 
     outputs = {
         'classification_metrics': output_dir / 'ml_classification_metrics.json',
@@ -166,6 +208,9 @@ def run_ml_analysis(output_dir):
         'shuffled_label_sanity_check': output_dir / 'ml_shuffled_label_sanity_check.json',
         'model_card': output_dir / 'ml_model_card.json',
         'limitations': output_dir / 'ml_limitations.md',
+        'financial_subset_metrics': output_dir / 'ml_financial_subset_metrics.json',
+        'financial_subset_feature_importance': output_dir / 'ml_financial_subset_feature_importance.csv',
+        'financial_subset_ranking': output_dir / 'ml_financial_subset_ranking.csv',
     }
 
     write_json(outputs['classification_metrics'], classification_metrics_payload(weak_label_replication))
@@ -186,6 +231,9 @@ def run_ml_analysis(output_dir):
     write_json(outputs['reduced_feature_metrics'], reduced_metrics_payload(reduced_strict))
     write_csv(outputs['reduced_feature_ranking'], reduced_strict['ranking'])
     write_json(outputs['shuffled_label_sanity_check'], shuffled_sanity_check)
+    write_json(outputs['financial_subset_metrics'], financial_subset['metrics_payload'])
+    write_csv(outputs['financial_subset_feature_importance'], financial_subset['feature_importance'])
+    write_csv(outputs['financial_subset_ranking'], financial_subset['ranking'])
 
     analysis_summary = build_analysis_summary(
         rows=rows,
@@ -200,6 +248,7 @@ def run_ml_analysis(output_dir):
         pca_outputs=pca_outputs,
         strict_label_summary=strict_label_summary,
         leakage_audit=leakage_audit,
+        financial_subset=financial_subset,
         outputs=outputs,
     )
     model_card = build_model_card(
@@ -218,6 +267,7 @@ def run_ml_analysis(output_dir):
         'summary': analysis_summary,
         'classification_metrics': weak_label_replication['metrics'],
         'reduced_feature_metrics': reduced_strict['metrics'],
+        'financial_subset_metrics': financial_subset['metrics_payload'],
         'cluster_summary': clustering['summary_rows'],
         'outputs': outputs,
     }
@@ -230,6 +280,8 @@ def run_classification_experiment(
     target_column,
     experiment_name,
     interpretation,
+    models=None,
+    ranking_extra_fields=None,
 ):
     X = build_feature_matrix(rows, numeric_features, categorical_features)
     y = np.array([int(row[target_column]) for row in rows])
@@ -243,7 +295,7 @@ def run_classification_experiment(
         stratify=y,
     )
 
-    models = classifier_definitions()
+    models = models or classifier_definitions()
     metrics = {}
     fitted_models = {}
     feature_importance_rows = []
@@ -276,7 +328,13 @@ def run_classification_experiment(
     best_pipeline = fitted_models[best_model_by_f1]
     full_probabilities = predict_probability(best_pipeline, X)
     full_predictions = best_pipeline.predict(X)
-    ranking_rows = classification_ranking(rows, target_column, full_probabilities, full_predictions)
+    ranking_rows = classification_ranking(
+        rows,
+        target_column,
+        full_probabilities,
+        full_predictions,
+        extra_fields=ranking_extra_fields,
+    )
     feature_names = fitted_feature_names(best_pipeline, numeric_features, categorical_features)
 
     return {
@@ -297,6 +355,212 @@ def run_classification_experiment(
         'feature_importance_notes': feature_importance_notes,
         'feature_names': feature_names,
     }
+
+
+def run_financial_subset_experiment(output_dir, reduced_numeric_features, reduced_categorical_features):
+    dataset_path = output_dir / FINANCIAL_DATASET_FILENAME
+    metadata_path = output_dir / FINANCIAL_FEATURE_COLUMNS_FILENAME
+    if not dataset_path.exists() or not metadata_path.exists():
+        reason = (
+            'Financial enrichment dataset was not found. Run build_ml_dataset before run_ml_analysis '
+            'to generate the secondary financial enrichment outputs.'
+        )
+        return skipped_financial_subset_result(reason)
+
+    rows = read_csv_rows(dataset_path)
+    metadata = read_json(metadata_path)
+    add_strict_weak_labels(rows)
+    subset_rows = [
+        row for row in rows
+        if parse_float(row.get('has_financial_enrichment')) == 1
+    ]
+    class_distribution = dict(Counter(row.get('strict_weak_risk_label') for row in subset_rows))
+    if len(subset_rows) < 20 or len(class_distribution) < 2:
+        return skipped_financial_subset_result(
+            'Not enough financial-enriched rows or target classes to run a stratified experiment.',
+            subset_row_count=len(subset_rows),
+            target_distribution=class_distribution,
+        )
+
+    available_numeric = set(metadata.get('numeric_features', []))
+    available_categorical = set(metadata.get('categorical_features', []))
+    procurement_numeric = [
+        feature for feature in reduced_numeric_features
+        if feature in available_numeric and feature not in FINANCIAL_MODEL_FEATURES
+    ]
+    procurement_categorical = [
+        feature for feature in reduced_categorical_features
+        if feature in available_categorical
+    ]
+    financial_numeric = [
+        feature for feature in FINANCIAL_MODEL_FEATURES
+        if feature in available_numeric
+    ]
+    selected_models = {
+        model_name: classifier_definitions()[model_name]
+        for model_name in FINANCIAL_SUBSET_MODEL_NAMES
+    }
+
+    procurement_only = run_classification_experiment(
+        rows=subset_rows,
+        numeric_features=procurement_numeric,
+        categorical_features=procurement_categorical,
+        target_column='strict_weak_risk_label',
+        experiment_name='procurement_only_on_financial_subset',
+        interpretation=(
+            'Procurement-only reduced-feature baseline evaluated only on companies with '
+            'secondary financial enrichment coverage.'
+        ),
+        models=selected_models,
+    )
+    procurement_plus_financial = run_classification_experiment(
+        rows=subset_rows,
+        numeric_features=[*procurement_numeric, *financial_numeric],
+        categorical_features=procurement_categorical,
+        target_column='strict_weak_risk_label',
+        experiment_name='procurement_plus_financial_enrichment',
+        interpretation=(
+            'Reduced procurement/registry features plus secondary OpenCorporates financial '
+            'enrichment features on the covered subset. This remains a heuristic-label experiment.'
+        ),
+        models=selected_models,
+        ranking_extra_fields=FINANCIAL_RANKING_FIELDS,
+    )
+
+    metrics_payload = financial_subset_metrics_payload(
+        procurement_only,
+        procurement_plus_financial,
+        subset_row_count=len(subset_rows),
+        financial_features=financial_numeric,
+    )
+    feature_importance = [
+        row
+        for row in [*procurement_only['feature_importance'], *procurement_plus_financial['feature_importance']]
+        if row.get('model') in {'random_forest', 'extra_trees'}
+    ]
+    ranking = financial_subset_ranking_rows(procurement_plus_financial['ranking'])
+
+    return {
+        'ran': True,
+        'subset_row_count': len(subset_rows),
+        'target_distribution': procurement_plus_financial['target_distribution'],
+        'procurement_only': procurement_only,
+        'procurement_plus_financial': procurement_plus_financial,
+        'metrics_payload': metrics_payload,
+        'feature_importance': feature_importance,
+        'ranking': ranking,
+    }
+
+
+def skipped_financial_subset_result(reason, subset_row_count=0, target_distribution=None):
+    payload = {
+        'experiment_name': 'financial_enrichment_subset_experiment',
+        'ran': False,
+        'reason': reason,
+        'subset_row_count': subset_row_count,
+        'target_distribution': target_distribution or {},
+        'warnings': [
+            'Secondary financial enrichment coverage is optional and limited to the local OpenCorporates subset.',
+            'No financial subset metrics should be interpreted as real-world validation.',
+        ],
+    }
+    return {
+        'ran': False,
+        'subset_row_count': subset_row_count,
+        'target_distribution': target_distribution or {},
+        'procurement_only': None,
+        'procurement_plus_financial': None,
+        'metrics_payload': payload,
+        'feature_importance': [],
+        'ranking': [],
+    }
+
+
+def financial_subset_metrics_payload(procurement_only, procurement_plus_financial, subset_row_count, financial_features):
+    return {
+        'experiment_name': 'financial_enrichment_subset_experiment',
+        'ran': True,
+        'target': 'strict_weak_risk_label',
+        'target_type': 'conservative heuristic weak label',
+        'subset_row_count': subset_row_count,
+        'target_distribution': procurement_plus_financial['target_distribution'],
+        'financial_features_used': financial_features,
+        'procurement_only_on_financial_subset': classification_metrics_payload(procurement_only),
+        'procurement_plus_financial_enrichment': classification_metrics_payload(procurement_plus_financial),
+        'best_model_by_f1': best_financial_subset_model(procurement_only, procurement_plus_financial, 'f1'),
+        'best_model_by_roc_auc': best_financial_subset_model(procurement_only, procurement_plus_financial, 'roc_auc'),
+        'metric_deltas_procurement_plus_minus_procurement_only': financial_metric_deltas(
+            procurement_only['metrics'],
+            procurement_plus_financial['metrics'],
+        ),
+        'interpretation': (
+            'This compares a procurement-only baseline with procurement plus secondary financial '
+            'enrichment on the same covered subset. Any improvement means the enrichment appears '
+            'to add signal in this heuristic-label experiment only.'
+        ),
+        'warnings': [
+            'OpenCorporates financial values are secondary exploratory enrichment, not complete national financial coverage.',
+            'The target is a heuristic weak label and is not real-world validation.',
+            'Financial values should be validated against official filings where required.',
+        ],
+    }
+
+
+def financial_metric_deltas(procurement_only_metrics, procurement_plus_metrics):
+    deltas = {}
+    for model_name in procurement_plus_metrics:
+        if model_name not in procurement_only_metrics:
+            continue
+        deltas[model_name] = {}
+        for metric_name in ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']:
+            baseline_value = procurement_only_metrics[model_name].get(metric_name)
+            enriched_value = procurement_plus_metrics[model_name].get(metric_name)
+            if baseline_value is None or enriched_value is None:
+                deltas[model_name][metric_name] = None
+            else:
+                deltas[model_name][metric_name] = rounded(enriched_value - baseline_value, 6)
+    return deltas
+
+
+def best_financial_subset_model(procurement_only, procurement_plus_financial, metric_name):
+    candidates = []
+    for experiment_key, experiment in [
+        ('procurement_only_on_financial_subset', procurement_only),
+        ('procurement_plus_financial_enrichment', procurement_plus_financial),
+    ]:
+        model_name = best_model_name(experiment['metrics'], metric_name)
+        metric_value = experiment['metrics'][model_name].get(metric_name)
+        candidates.append(
+            {
+                'experiment': experiment_key,
+                'model': model_name,
+                metric_name: metric_value,
+            }
+        )
+    return max(candidates, key=lambda item: item[metric_name] if item[metric_name] is not None else -1)
+
+
+def financial_subset_ranking_rows(ranking_rows):
+    rows = []
+    for row in ranking_rows:
+        nipt = row.get('company_nipt', '')
+        rows.append(
+            {
+                'company_nipt': nipt,
+                'business_name': row.get('business_name', ''),
+                'strict_weak_risk_label': row.get('strict_weak_risk_label', ''),
+                'predicted_probability': row.get('strict_weak_risk_label_predicted_probability', ''),
+                'predicted_label': row.get('strict_weak_risk_label_predicted_label', ''),
+                'latest_financial_year': row.get('latest_financial_year', ''),
+                'latest_revenue_amount': row.get('latest_revenue_amount', ''),
+                'latest_profit_before_tax_amount': row.get('latest_profit_before_tax_amount', ''),
+                'revenue_growth_latest_pct': row.get('revenue_growth_latest_pct', ''),
+                'profit_growth_latest_pct': row.get('profit_growth_latest_pct', ''),
+                'has_financial_enrichment': row.get('has_financial_enrichment', ''),
+                'detail_url': f'/companies/{nipt}/' if nipt else '',
+            }
+        )
+    return rows
 
 
 def run_shuffled_label_sanity_check(rows, numeric_features, categorical_features, target_column):
@@ -608,6 +872,7 @@ def build_analysis_summary(
     pca_outputs,
     strict_label_summary,
     leakage_audit,
+    financial_subset,
     outputs,
 ):
     return {
@@ -670,6 +935,7 @@ def build_analysis_summary(
             'summary': clustering['summary_rows'],
         },
         'pca_dimensionality_reduction': pca_outputs['summary'],
+        'financial_enrichment_subset_experiment': financial_subset['metrics_payload'],
         'output_files': {key: str(path) for key, path in outputs.items()},
         'warnings_limitations': [
             'The target is heuristic and constructed from analytical procurement anomaly indicators.',
@@ -679,6 +945,8 @@ def build_analysis_summary(
             'Isolation Forest and Local Outlier Factor anomaly rankings are unsupervised and require human review.',
             'PCA is dimensionality reduction for procurement profile visualization, not a prediction model.',
             'Performance score is a procurement-based performance proxy, not full financial performance.',
+            'OpenCorporates financial-year values are secondary exploratory enrichment and are available only for a subset of joined companies.',
+            'Financial subset experiments are heuristic-label comparisons, not real-world validation.',
         ],
     }
 
@@ -695,6 +963,7 @@ def build_model_card(rows, metadata, analysis_summary, strict_label_summary, lea
             'Gradient Boosting',
             'Extra Trees',
             'HistGradientBoosting',
+            'Financial subset Logistic Regression/Random Forest/Extra Trees/HistGradientBoosting',
             'Isolation Forest',
             'Local Outlier Factor',
             'KMeans',
@@ -705,6 +974,7 @@ def build_model_card(rows, metadata, analysis_summary, strict_label_summary, lea
             'Weak-label consistency checks.',
             'Procurement anomaly ranking and segmentation for review prioritization.',
             'PCA dimensionality reduction for procurement profile visualization.',
+            'Financial subset comparison between procurement-only and procurement plus secondary enrichment features.',
         ],
         'not_intended_use': [
             'Not a production risk scoring system.',
@@ -724,6 +994,8 @@ def build_model_card(rows, metadata, analysis_summary, strict_label_summary, lea
             'Local Outlier Factor highlights local-neighborhood outliers, not ground-truth events.',
             'PCA coordinates support visualization and do not define risk by themselves.',
             'Cluster labels are descriptive summaries and should not be overinterpreted.',
+            'Financial enrichment results apply only to companies covered by the secondary financial subset.',
+            'OpenCorporates financial values should be validated against official filings where required.',
         ],
         'strict_label_summary': strict_label_summary,
         'leakage_audit': leakage_audit,
@@ -851,24 +1123,26 @@ def predict_probability(pipeline, X):
     return None
 
 
-def classification_ranking(rows, target_column, probabilities, predictions):
+def classification_ranking(rows, target_column, probabilities, predictions, extra_fields=None):
     probability_column = f'{target_column}_predicted_probability'
     prediction_column = f'{target_column}_predicted_label'
+    extra_fields = extra_fields or []
     ranking = []
     for index, row in enumerate(rows):
-        ranking.append(
-            {
-                'company_nipt': row['company_nipt'],
-                'business_name': row['business_name'],
-                target_column: row[target_column],
-                probability_column: rounded(probabilities[index], 8) if probabilities is not None else '',
-                prediction_column: int(predictions[index]),
-                'performance_score': row.get('performance_score', ''),
-                'risk_indicator_count': row.get('risk_indicator_count', ''),
-                'weak_risk_reason': row.get('weak_risk_reason', ''),
-                'strict_weak_risk_reason': row.get('strict_weak_risk_reason', ''),
-            }
-        )
+        ranking_row = {
+            'company_nipt': row['company_nipt'],
+            'business_name': row['business_name'],
+            target_column: row[target_column],
+            probability_column: rounded(probabilities[index], 8) if probabilities is not None else '',
+            prediction_column: int(predictions[index]),
+            'performance_score': row.get('performance_score', ''),
+            'risk_indicator_count': row.get('risk_indicator_count', ''),
+            'weak_risk_reason': row.get('weak_risk_reason', ''),
+            'strict_weak_risk_reason': row.get('strict_weak_risk_reason', ''),
+        }
+        for field in extra_fields:
+            ranking_row[field] = row.get(field, '')
+        ranking.append(ranking_row)
     ranking.sort(key=lambda item: item[probability_column], reverse=True)
     return ranking
 
@@ -947,6 +1221,12 @@ def cluster_profile_label(performance, procurement_count, winner_value, weak_lab
 
 
 def limitations_markdown(summary):
+    financial = summary.get('financial_enrichment_subset_experiment', {})
+    financial_status = (
+        f"ran on {financial.get('subset_row_count')} companies"
+        if financial.get('ran')
+        else f"not run: {financial.get('reason', 'financial subset unavailable')}"
+    )
     return f"""# ML Analysis Limitations
 
 This analysis is exploratory and uses heuristic weak labels.
@@ -959,6 +1239,9 @@ This analysis is exploratory and uses heuristic weak labels.
 - Isolation Forest and Local Outlier Factor anomaly rankings are unsupervised and require human review.
 - PCA 2D/3D outputs are dimensionality-reduction coordinates for procurement profile visualization, not prediction results.
 - The procurement-based performance score is a proxy, not full financial performance.
+- OpenCorporates financial-year values are secondary exploratory enrichment and cover only a subset of joined companies.
+- The financial subset experiment is not real-world validation and should not be generalized beyond the covered subset.
+- Financial values should be validated against official filings where required.
 - Future work should add QKB notice/status event labels and stronger validation data.
 
 ## Current experiment framing
@@ -969,6 +1252,7 @@ This analysis is exploratory and uses heuristic weak labels.
 - Isolation Forest output: `{summary['unsupervised_anomaly_detection']['method']}`.
 - Local Outlier Factor output: `{summary['local_outlier_factor_anomaly_detection']['method']}`.
 - PCA output: `{summary['pca_dimensionality_reduction']['method']}` for profile visualization.
+- Financial subset experiment: {financial_status}.
 
 Use these outputs for methodological discussion and exploratory review, not automated decisions.
 """

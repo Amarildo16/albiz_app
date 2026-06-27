@@ -69,6 +69,32 @@ class Command(BaseCommand):
             f'2D cumulative={pca["cumulative_explained_variance_2d"]}, '
             f'3D cumulative={pca["cumulative_explained_variance_3d"]}'
         )
+        financial_subset = summary.get('financial_enrichment_subset_experiment', {})
+        if financial_subset.get('ran'):
+            self.stdout.write('Financial subset experiment: ran')
+            self.stdout.write(f'Financial subset row count: {financial_subset["subset_row_count"]}')
+            self.stdout.write(
+                'Best financial subset model by F1: '
+                f'{financial_subset["best_model_by_f1"]}'
+            )
+            self.stdout.write(
+                'Best financial subset model by ROC AUC: '
+                f'{financial_subset["best_model_by_roc_auc"]}'
+            )
+            self.stdout.write('Procurement-only vs procurement+financial metric deltas:')
+            for model_name, deltas in financial_subset[
+                'metric_deltas_procurement_plus_minus_procurement_only'
+            ].items():
+                self.stdout.write(
+                    f'- {model_name}: '
+                    f'f1_delta={deltas.get("f1")}, '
+                    f'roc_auc_delta={deltas.get("roc_auc")}'
+                )
+        else:
+            self.stdout.write(
+                'Financial subset experiment: not run '
+                f'({financial_subset.get("reason", "financial subset unavailable")})'
+            )
         self.stdout.write('Output files:')
         for path in summary['output_files'].values():
             self.stdout.write(f'- {path}')

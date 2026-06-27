@@ -1,11 +1,24 @@
 import math
-from collections import Counter
-from decimal import Decimal
+from collections import Counter, defaultdict
+from decimal import Decimal, InvalidOperation
+from statistics import median
+
+from django.db import connections
 
 from analytics.models import JoinedCompanyFeature
 from analytics.services.risk import compute_risk_indicators
 
 COLLECTOR_ALIAS = 'collector'
+FINANCIAL_TABLE = 'opencorporates_financial_years'
+FINANCIAL_NIPT_CANDIDATES = ['nipt', 'company_nipt', 'business_nipt', 'nuis']
+FINANCIAL_YEAR_CANDIDATES = ['year', 'financial_year', 'fiscal_year', 'statement_year']
+FINANCIAL_REVENUE_CANDIDATES = ['revenue_amount', 'revenue', 'turnover_amount']
+FINANCIAL_PROFIT_CANDIDATES = [
+    'profit_before_tax_amount',
+    'profit_before_tax',
+    'pretax_profit_amount',
+    'pre_tax_profit_amount',
+]
 
 IDENTIFIER_COLUMNS = [
     'company_nipt',
@@ -46,6 +59,30 @@ CATEGORICAL_FEATURES = [
     'has_red_flags',
     'has_small_value_procedures',
     'has_open_local_procedures',
+]
+
+FINANCIAL_NUMERIC_FEATURES = [
+    'has_financial_enrichment',
+    'financial_year_count',
+    'financial_year_min',
+    'financial_year_max',
+    'financial_year_span',
+    'latest_financial_year',
+    'latest_revenue_amount',
+    'latest_profit_before_tax_amount',
+    'revenue_growth_latest_pct',
+    'profit_growth_latest_pct',
+    'revenue_mean',
+    'revenue_median',
+    'revenue_min',
+    'revenue_max',
+    'profit_before_tax_mean',
+    'profit_before_tax_median',
+    'profit_before_tax_min',
+    'profit_before_tax_max',
+    'latest_profit_margin_before_tax',
+    'log_latest_revenue_amount',
+    'signed_log_latest_profit_before_tax',
 ]
 
 DERIVED_COLUMNS = [
@@ -99,6 +136,23 @@ def build_ml_dataset():
         weak_label_counter=weak_label_counter,
         performance_scores=performance_scores,
     )
+    financial_lookup, financial_summary_base = financial_enrichment_lookup()
+    financial_enriched_rows = [
+        {
+            **row,
+            **financial_lookup.get(normalize_nipt(row.get('company_nipt')), empty_financial_features()),
+        }
+        for row in dataset_rows
+    ]
+    financial_missingness_rows = feature_missingness(
+        financial_enriched_rows,
+        [*NUMERIC_FEATURES, *CATEGORICAL_FEATURES, *FINANCIAL_NUMERIC_FEATURES],
+    )
+    financial_summary = financial_enrichment_summary(
+        dataset_rows=dataset_rows,
+        financial_lookup=financial_lookup,
+        financial_summary_base=financial_summary_base,
+    )
 
     return {
         'rows': dataset_rows,
@@ -112,6 +166,26 @@ def build_ml_dataset():
             'derived_columns': DERIVED_COLUMNS,
             'target_columns': ['performance_score', 'weak_risk_label'],
             'notes': {
+                'performance_score': 'Procurement-based performance proxy, not full financial performance.',
+                'weak_risk_label': 'Heuristic weak label for exploratory ML preparation, not ground truth.',
+            },
+        },
+        'financial_enriched_rows': financial_enriched_rows,
+        'financial_summary': financial_summary,
+        'financial_missingness': financial_missingness_rows,
+        'financial_feature_columns': {
+            'identifier_columns': IDENTIFIER_COLUMNS,
+            'numeric_features': [*NUMERIC_FEATURES, *FINANCIAL_NUMERIC_FEATURES],
+            'categorical_features': CATEGORICAL_FEATURES,
+            'financial_features': FINANCIAL_NUMERIC_FEATURES,
+            'feature_columns': [*NUMERIC_FEATURES, *CATEGORICAL_FEATURES, *FINANCIAL_NUMERIC_FEATURES],
+            'derived_columns': DERIVED_COLUMNS,
+            'target_columns': ['performance_score', 'weak_risk_label'],
+            'notes': {
+                'financial_enrichment': (
+                    'OpenCorporates financial-year values are secondary exploratory enrichment '
+                    'and should be validated against official filings where required.'
+                ),
                 'performance_score': 'Procurement-based performance proxy, not full financial performance.',
                 'weak_risk_label': 'Heuristic weak label for exploratory ML preparation, not ground truth.',
             },
@@ -254,6 +328,261 @@ def missingness_summary(missingness_rows):
         'unusable_features': [row['feature'] for row in unusable],
         'highest_missing_features': highest_missing,
     }
+
+
+def financial_enrichment_lookup():
+    connection = connections[COLLECTOR_ALIAS]
+    table_names = set(connection.introspection.table_names())
+    summary = {
+        'table_available': FINANCIAL_TABLE in table_names,
+        'columns_detected': {},
+        'financial_table_rows': 0,
+        'distinct_financial_nipts': 0,
+        'financial_year_min': None,
+        'financial_year_max': None,
+        'warnings': [
+            'OpenCorporates financial-year values are secondary exploratory enrichment, not a complete or authoritative financial panel.'
+        ],
+    }
+    if FINANCIAL_TABLE not in table_names:
+        summary['warnings'].append('OpenCorporates financial-year table is not available in the collector database.')
+        return {}, summary
+
+    columns = table_columns(connection, FINANCIAL_TABLE)
+    nipt_column = first_available_column(columns, FINANCIAL_NIPT_CANDIDATES)
+    year_column = first_available_column(columns, FINANCIAL_YEAR_CANDIDATES)
+    revenue_column = first_available_column(columns, FINANCIAL_REVENUE_CANDIDATES)
+    profit_column = first_available_column(columns, FINANCIAL_PROFIT_CANDIDATES)
+    summary['columns_detected'] = {
+        'nipt': nipt_column,
+        'year': year_column,
+        'revenue_amount': revenue_column,
+        'profit_before_tax_amount': profit_column,
+    }
+    summary['financial_table_rows'] = table_row_count(connection, FINANCIAL_TABLE)
+
+    if not nipt_column:
+        summary['warnings'].append('No NIPT column was detected in opencorporates_financial_years.')
+        return {}, summary
+
+    raw_rows = fetch_financial_rows(
+        connection=connection,
+        nipt_column=nipt_column,
+        year_column=year_column,
+        revenue_column=revenue_column,
+        profit_column=profit_column,
+    )
+    grouped = defaultdict(list)
+    for row in raw_rows:
+        normalized_nipt = normalize_nipt(row['nipt'])
+        if normalized_nipt:
+            grouped[normalized_nipt].append(row)
+
+    summary['distinct_financial_nipts'] = len(grouped)
+    years = [row['year'] for row in raw_rows if row.get('year') is not None]
+    if years:
+        summary['financial_year_min'] = min(years)
+        summary['financial_year_max'] = max(years)
+
+    return {
+        normalized_nipt: company_financial_features(rows)
+        for normalized_nipt, rows in grouped.items()
+    }, summary
+
+
+def fetch_financial_rows(connection, nipt_column, year_column, revenue_column, profit_column):
+    select_parts = [
+        f'{quote(connection, nipt_column)} AS nipt',
+        f'{quote(connection, year_column)} AS year_value' if year_column else 'NULL AS year_value',
+        f'{quote(connection, revenue_column)} AS revenue_amount' if revenue_column else 'NULL AS revenue_amount',
+        f'{quote(connection, profit_column)} AS profit_before_tax_amount' if profit_column else 'NULL AS profit_before_tax_amount',
+    ]
+    query = f'SELECT {", ".join(select_parts)} FROM {quote(connection, FINANCIAL_TABLE)}'
+    with connection.cursor() as cursor:
+        cursor.execute(query)
+        rows = cursor.fetchall()
+    return [
+        {
+            'nipt': row[0],
+            'year': parse_int(row[1]),
+            'revenue_amount': parse_decimal(row[2]),
+            'profit_before_tax_amount': parse_decimal(row[3]),
+        }
+        for row in rows
+    ]
+
+
+def company_financial_features(rows):
+    ordered_rows = sorted(
+        rows,
+        key=lambda row: (row.get('year') is None, row.get('year') or 0),
+    )
+    years = [row['year'] for row in ordered_rows if row.get('year') is not None]
+    latest = latest_financial_row(ordered_rows)
+    latest_revenue = latest.get('revenue_amount') if latest else None
+    latest_profit = latest.get('profit_before_tax_amount') if latest else None
+    previous_revenue = previous_financial_value(ordered_rows, latest, 'revenue_amount')
+    previous_profit = previous_financial_value(ordered_rows, latest, 'profit_before_tax_amount')
+    revenue_values = [row['revenue_amount'] for row in ordered_rows if row.get('revenue_amount') is not None]
+    profit_values = [row['profit_before_tax_amount'] for row in ordered_rows if row.get('profit_before_tax_amount') is not None]
+
+    return {
+        'has_financial_enrichment': 1,
+        'financial_year_count': len(years),
+        'financial_year_min': min(years) if years else '',
+        'financial_year_max': max(years) if years else '',
+        'financial_year_span': (max(years) - min(years) + 1) if years else '',
+        'latest_financial_year': latest.get('year') if latest else '',
+        'latest_revenue_amount': csv_value(latest_revenue),
+        'latest_profit_before_tax_amount': csv_value(latest_profit),
+        'revenue_growth_latest_pct': csv_value(growth_rate(latest_revenue, previous_revenue)),
+        'profit_growth_latest_pct': csv_value(growth_rate(latest_profit, previous_profit)),
+        'revenue_mean': csv_value(mean_decimal(revenue_values)),
+        'revenue_median': csv_value(median_decimal(revenue_values)),
+        'revenue_min': csv_value(min(revenue_values) if revenue_values else None),
+        'revenue_max': csv_value(max(revenue_values) if revenue_values else None),
+        'profit_before_tax_mean': csv_value(mean_decimal(profit_values)),
+        'profit_before_tax_median': csv_value(median_decimal(profit_values)),
+        'profit_before_tax_min': csv_value(min(profit_values) if profit_values else None),
+        'profit_before_tax_max': csv_value(max(profit_values) if profit_values else None),
+        'latest_profit_margin_before_tax': csv_value(profit_margin(latest_profit, latest_revenue)),
+        'log_latest_revenue_amount': csv_value(log_non_negative(latest_revenue)),
+        'signed_log_latest_profit_before_tax': csv_value(signed_log(latest_profit)),
+    }
+
+
+def empty_financial_features():
+    return {
+        'has_financial_enrichment': 0,
+        **{feature: '' for feature in FINANCIAL_NUMERIC_FEATURES if feature != 'has_financial_enrichment'},
+    }
+
+
+def financial_enrichment_summary(dataset_rows, financial_lookup, financial_summary_base):
+    joined_nipts = {normalize_nipt(row.get('company_nipt')) for row in dataset_rows if row.get('company_nipt')}
+    overlap_nipts = joined_nipts & set(financial_lookup)
+    total_joined = len(dataset_rows)
+    companies_with_financial = len(overlap_nipts)
+    coverage_rate = (
+        Decimal(companies_with_financial) / Decimal(total_joined)
+        if total_joined else None
+    )
+    return {
+        'total_joined_companies': total_joined,
+        'companies_with_financial_enrichment': companies_with_financial,
+        'coverage_percentage': percent_display(coverage_rate),
+        'min_financial_year': financial_summary_base.get('financial_year_min'),
+        'max_financial_year': financial_summary_base.get('financial_year_max'),
+        'financial_table_rows': financial_summary_base.get('financial_table_rows', 0),
+        'distinct_financial_nipts': financial_summary_base.get('distinct_financial_nipts', 0),
+        'overlap_with_joined_dataset': companies_with_financial,
+        'financial_features_created': FINANCIAL_NUMERIC_FEATURES,
+        'columns_detected': financial_summary_base.get('columns_detected', {}),
+        'warnings': [
+            *financial_summary_base.get('warnings', []),
+            'Financial subset experiments are heuristic-label experiments and are not real-world validation.',
+            'Financial values should be validated against official filings where required.',
+        ],
+    }
+
+
+def latest_financial_row(rows):
+    rows_with_year = [row for row in rows if row.get('year') is not None]
+    if rows_with_year:
+        return max(rows_with_year, key=lambda row: row['year'])
+    return rows[-1] if rows else None
+
+
+def previous_financial_value(rows, latest, key):
+    if not latest:
+        return None
+    candidates = [row[key] for row in rows if row is not latest and row.get(key) is not None]
+    return candidates[-1] if candidates else None
+
+
+def growth_rate(latest_value, previous_value):
+    if latest_value is None or previous_value is None or previous_value <= 0:
+        return None
+    return (latest_value - previous_value) / previous_value
+
+
+def profit_margin(profit_value, revenue_value):
+    if profit_value is None or revenue_value in {None, Decimal('0')}:
+        return None
+    return profit_value / revenue_value
+
+
+def log_non_negative(value):
+    if value is None or value < 0:
+        return None
+    return Decimal(str(math.log1p(float(value))))
+
+
+def signed_log(value):
+    if value is None:
+        return None
+    sign = Decimal('-1') if value < 0 else Decimal('1')
+    return sign * Decimal(str(math.log1p(abs(float(value)))))
+
+
+def mean_decimal(values):
+    if not values:
+        return None
+    return sum(values) / Decimal(len(values))
+
+
+def median_decimal(values):
+    if not values:
+        return None
+    return Decimal(str(median(values)))
+
+
+def table_columns(connection, table_name):
+    with connection.cursor() as cursor:
+        cursor.execute(f'SHOW COLUMNS FROM {quote(connection, table_name)}')
+        return {row[0] for row in cursor.fetchall()}
+
+
+def table_row_count(connection, table_name):
+    with connection.cursor() as cursor:
+        cursor.execute(f'SELECT COUNT(*) FROM {quote(connection, table_name)}')
+        return cursor.fetchone()[0]
+
+
+def first_available_column(columns, candidates):
+    lowered = {column.lower(): column for column in columns}
+    for candidate in candidates:
+        if candidate.lower() in lowered:
+            return lowered[candidate.lower()]
+    return None
+
+
+def quote(connection, name):
+    return connection.ops.quote_name(name)
+
+
+def normalize_nipt(value):
+    return str(value or '').strip().upper()
+
+
+def parse_int(value):
+    if value in (None, ''):
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def parse_decimal(value):
+    if value in (None, ''):
+        return None
+    if isinstance(value, Decimal):
+        return value
+    try:
+        return Decimal(str(value))
+    except (InvalidOperation, TypeError, ValueError):
+        return None
 
 
 def csv_value(value):
