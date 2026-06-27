@@ -203,6 +203,18 @@ def export_ml_reduced_feature_ranking_csv(request):
     return export_generated_ml_csv('ml-reduced-feature-ranking.csv')
 
 
+def export_ml_pca_2d_csv(request):
+    return export_generated_ml_csv('ml-pca-2d.csv')
+
+
+def export_ml_pca_3d_csv(request):
+    return export_generated_ml_csv('ml-pca-3d.csv')
+
+
+def export_ml_lof_anomaly_ranking_csv(request):
+    return export_generated_ml_csv('ml-lof-anomaly-ranking.csv')
+
+
 def export_csv(filename, export_builder):
     try:
         headers, rows = export_builder()
@@ -223,7 +235,7 @@ def export_generated_ml_csv(download_filename):
             download_filename,
             ['error'],
             [[
-                'Generated ML output is unavailable. Run build_ml_dataset and run_ml_analysis, then retry this export.'
+                'Generated ML output is unavailable. Run run_ml_analysis, then retry this export.'
             ]],
             status=404,
         )

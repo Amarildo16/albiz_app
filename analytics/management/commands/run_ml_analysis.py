@@ -26,6 +26,7 @@ class Command(BaseCommand):
         full_results = summary['full_feature_weak_label_replication_results']
         reduced_results = summary['reduced_feature_strict_label_results']
         self.stdout.write(f'Weak-label replication target distribution: {full_results["target_distribution"]}')
+        self.stdout.write(f'Weak-label replication models trained: {", ".join(full_results["metrics"].keys())}')
         self.stdout.write(f'Weak-label replication best model by F1: {full_results["best_model_by_f1"]}')
         self.stdout.write(f'Weak-label replication best model by ROC AUC: {full_results["best_model_by_roc_auc"]}')
         self.stdout.write('Weak-label replication metrics:')
@@ -39,6 +40,7 @@ class Command(BaseCommand):
                 f'roc_auc={metrics["roc_auc"]}'
             )
         self.stdout.write(f'Reduced-feature strict-label target distribution: {reduced_results["target_distribution"]}')
+        self.stdout.write(f'Reduced-feature strict-label models trained: {", ".join(reduced_results["metrics"].keys())}')
         self.stdout.write(f'Reduced-feature strict-label best model by F1: {reduced_results["best_model_by_f1"]}')
         self.stdout.write('Reduced-feature strict-label metrics:')
         for model_name, metrics in result['reduced_feature_metrics'].items():
@@ -52,6 +54,21 @@ class Command(BaseCommand):
             )
         shuffled = summary['shuffled_label_sanity_check']
         self.stdout.write(f'Shuffled-label sanity check: {shuffled["metrics"]}')
+        isolation = summary['unsupervised_anomaly_detection']
+        lof = summary['local_outlier_factor_anomaly_detection']
+        pca = summary['pca_dimensionality_reduction']
+        self.stdout.write(f'Isolation Forest output rows: {isolation["row_count"]}')
+        self.stdout.write(f'LOF output rows: {lof["row_count"]}')
+        self.stdout.write(f'PCA 2D output: {summary["output_files"]["pca_2d"]}')
+        self.stdout.write(f'PCA 3D output: {summary["output_files"]["pca_3d"]}')
+        self.stdout.write(
+            'PCA explained variance: '
+            f'PC1={pca["explained_variance_ratio"]["pc1"]}, '
+            f'PC2={pca["explained_variance_ratio"]["pc2"]}, '
+            f'PC3={pca["explained_variance_ratio"]["pc3"]}, '
+            f'2D cumulative={pca["cumulative_explained_variance_2d"]}, '
+            f'3D cumulative={pca["cumulative_explained_variance_3d"]}'
+        )
         self.stdout.write('Output files:')
         for path in summary['output_files'].values():
             self.stdout.write(f'- {path}')

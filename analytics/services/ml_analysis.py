@@ -8,7 +8,14 @@ import numpy as np
 from scipy import sparse
 from sklearn.cluster import KMeans
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import GradientBoostingClassifier, IsolationForest, RandomForestClassifier
+from sklearn.decomposition import PCA
+from sklearn.ensemble import (
+    ExtraTreesClassifier,
+    GradientBoostingClassifier,
+    HistGradientBoostingClassifier,
+    IsolationForest,
+    RandomForestClassifier,
+)
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -20,13 +27,16 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 from sklearn.model_selection import train_test_split
+from sklearn.neighbors import LocalOutlierFactor
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
 RANDOM_STATE = 42
 TEST_SIZE = 0.25
 ANOMALY_CONTAMINATION = 0.05
+LOF_NEIGHBORS = 20
 CLUSTER_COUNT = 5
+PCA_COMPONENTS = 3
 
 LABEL_DEFINING_OR_CIRCULAR_FEATURES = [
     'safe_winner_to_budget_ratio_avg',
@@ -122,14 +132,32 @@ def run_ml_analysis(output_dir):
     )
     anomaly = run_anomaly_detection(rows, numeric_features, categorical_features)
     clustering = run_clustering(rows, numeric_features, categorical_features)
+    lof_anomaly = run_lof_anomaly_detection(
+        rows,
+        numeric_features,
+        categorical_features,
+        cluster_ids=clustering['cluster_ids'],
+    )
+    pca_outputs = run_pca_exports(
+        rows=rows,
+        numeric_features=numeric_features,
+        categorical_features=categorical_features,
+        cluster_ids=clustering['cluster_ids'],
+        anomaly_scores=anomaly['scores'],
+        lof_scores=lof_anomaly['scores'],
+    )
 
     outputs = {
         'classification_metrics': output_dir / 'ml_classification_metrics.json',
         'classification_ranking': output_dir / 'ml_classification_ranking.csv',
         'feature_importance': output_dir / 'ml_feature_importance.csv',
         'anomaly_ranking': output_dir / 'ml_anomaly_ranking.csv',
+        'lof_anomaly_ranking': output_dir / 'ml_lof_anomaly_ranking.csv',
         'cluster_assignments': output_dir / 'ml_cluster_assignments.csv',
         'cluster_summary': output_dir / 'ml_cluster_summary.csv',
+        'pca_2d': output_dir / 'ml_pca_2d.csv',
+        'pca_3d': output_dir / 'ml_pca_3d.csv',
+        'pca_summary': output_dir / 'ml_pca_summary.json',
         'analysis_summary': output_dir / 'ml_analysis_summary.json',
         'leakage_audit': output_dir / 'ml_leakage_audit.json',
         'strict_label_summary': output_dir / 'ml_strict_label_summary.json',
@@ -142,10 +170,17 @@ def run_ml_analysis(output_dir):
 
     write_json(outputs['classification_metrics'], classification_metrics_payload(weak_label_replication))
     write_csv(outputs['classification_ranking'], weak_label_replication['ranking'])
-    write_csv(outputs['feature_importance'], weak_label_replication['feature_importance'])
+    write_csv(
+        outputs['feature_importance'],
+        [*weak_label_replication['feature_importance'], *reduced_strict['feature_importance']],
+    )
     write_csv(outputs['anomaly_ranking'], anomaly['ranking'])
+    write_csv(outputs['lof_anomaly_ranking'], lof_anomaly['ranking'])
     write_csv(outputs['cluster_assignments'], clustering['assignments'])
     write_csv(outputs['cluster_summary'], clustering['summary_rows'])
+    write_csv(outputs['pca_2d'], pca_outputs['rows_2d'])
+    write_csv(outputs['pca_3d'], pca_outputs['rows_3d'])
+    write_json(outputs['pca_summary'], pca_outputs['summary'])
     write_json(outputs['leakage_audit'], leakage_audit)
     write_json(outputs['strict_label_summary'], strict_label_summary)
     write_json(outputs['reduced_feature_metrics'], reduced_metrics_payload(reduced_strict))
@@ -160,7 +195,9 @@ def run_ml_analysis(output_dir):
         reduced_strict=reduced_strict,
         shuffled_sanity_check=shuffled_sanity_check,
         anomaly=anomaly,
+        lof_anomaly=lof_anomaly,
         clustering=clustering,
+        pca_outputs=pca_outputs,
         strict_label_summary=strict_label_summary,
         leakage_audit=leakage_audit,
         outputs=outputs,
@@ -210,6 +247,7 @@ def run_classification_experiment(
     metrics = {}
     fitted_models = {}
     feature_importance_rows = []
+    feature_importance_notes = {}
 
     for model_name, estimator in models.items():
         pipeline = fit_pipeline(estimator, X_train, y_train, numeric_features, categorical_features)
@@ -218,15 +256,20 @@ def run_classification_experiment(
         predictions = pipeline.predict(X_test)
         probabilities = predict_probability(pipeline, X_test)
         metrics[model_name] = classification_metrics(y_test, predictions, probabilities)
-        feature_importance_rows.extend(
-            model_feature_importance(
-                experiment_name,
-                model_name,
-                pipeline,
-                numeric_features,
-                categorical_features,
-            )
+        model_importance_rows = model_feature_importance(
+            experiment_name,
+            model_name,
+            pipeline,
+            numeric_features,
+            categorical_features,
         )
+        if model_importance_rows:
+            feature_importance_rows.extend(model_importance_rows)
+        else:
+            feature_importance_notes[model_name] = (
+                'Direct feature importance is not available from this fitted scikit-learn model; '
+                'no importance rows were exported.'
+            )
 
     best_model_by_f1 = best_model_name(metrics, 'f1')
     best_model_by_roc_auc = best_model_name(metrics, 'roc_auc')
@@ -251,6 +294,7 @@ def run_classification_experiment(
         'best_model_by_roc_auc': best_model_by_roc_auc,
         'ranking': ranking_rows,
         'feature_importance': feature_importance_rows,
+        'feature_importance_notes': feature_importance_notes,
         'feature_names': feature_names,
     }
 
@@ -290,10 +334,7 @@ def run_shuffled_label_sanity_check(rows, numeric_features, categorical_features
 
 
 def run_anomaly_detection(rows, numeric_features, categorical_features):
-    analysis_numeric = [*numeric_features, 'performance_score']
-    X = build_feature_matrix(rows, analysis_numeric, categorical_features)
-    preprocessor = make_preprocessor(analysis_numeric, categorical_features)
-    prepared = preprocessor.fit_transform(X)
+    prepared = prepare_profile_matrix(rows, numeric_features, categorical_features)
     model = IsolationForest(
         n_estimators=200,
         contamination=ANOMALY_CONTAMINATION,
@@ -327,18 +368,13 @@ def run_anomaly_detection(rows, numeric_features, categorical_features):
             'It does not use weak_risk_label as an input feature.'
         ),
         'ranking': ranking,
+        'scores': anomaly_scores.tolist(),
     }
 
 
 def run_clustering(rows, numeric_features, categorical_features):
-    analysis_numeric = [*numeric_features, 'performance_score']
-    X = build_feature_matrix(rows, analysis_numeric, categorical_features)
-    preprocessor = make_preprocessor(analysis_numeric, categorical_features)
-    prepared = preprocessor.fit_transform(X)
-    if sparse.issparse(prepared):
-        prepared_for_kmeans = prepared.toarray()
-    else:
-        prepared_for_kmeans = prepared
+    prepared = prepare_profile_matrix(rows, numeric_features, categorical_features)
+    prepared_for_kmeans = to_dense_array(prepared)
 
     model = KMeans(n_clusters=CLUSTER_COUNT, random_state=RANDOM_STATE, n_init='auto')
     clusters = model.fit_predict(prepared_for_kmeans)
@@ -370,7 +406,116 @@ def run_clustering(rows, numeric_features, categorical_features):
         'method': 'KMeans',
         'assignments': assignments,
         'summary_rows': summary_rows,
+        'cluster_ids': [int(cluster_id) for cluster_id in clusters],
     }
+
+
+def run_lof_anomaly_detection(rows, numeric_features, categorical_features, cluster_ids):
+    prepared = prepare_profile_matrix(rows, numeric_features, categorical_features)
+    prepared_for_lof = to_dense_array(prepared)
+    model = LocalOutlierFactor(n_neighbors=LOF_NEIGHBORS, novelty=False)
+    model.fit_predict(prepared_for_lof)
+    lof_scores = -model.negative_outlier_factor_
+    order = np.argsort(-lof_scores)
+    ranks = np.empty_like(order)
+    ranks[order] = np.arange(1, len(order) + 1)
+
+    ranking = []
+    for index, row in enumerate(rows):
+        ranking.append(
+            {
+                'company_nipt': row['company_nipt'],
+                'business_name': row['business_name'],
+                'lof_score': rounded(lof_scores[index], 8),
+                'lof_rank': int(ranks[index]),
+                'performance_score': row.get('performance_score', ''),
+                'weak_risk_label': row.get('weak_risk_label', ''),
+                'strict_weak_risk_label': row.get('strict_weak_risk_label', ''),
+                'risk_indicator_count': row.get('risk_indicator_count', ''),
+                'cluster_id': cluster_ids[index] if cluster_ids else '',
+            }
+        )
+    ranking.sort(key=lambda item: item['lof_rank'])
+    return {
+        'method': 'LocalOutlierFactor',
+        'n_neighbors': LOF_NEIGHBORS,
+        'interpretation': (
+            'Unsupervised local-neighborhood anomaly ranking for statistically unusual '
+            'procurement profiles. It is not a misconduct detection model.'
+        ),
+        'ranking': ranking,
+        'scores': lof_scores.tolist(),
+    }
+
+
+def run_pca_exports(rows, numeric_features, categorical_features, cluster_ids, anomaly_scores, lof_scores):
+    prepared = prepare_profile_matrix(rows, numeric_features, categorical_features)
+    prepared_dense = to_dense_array(prepared)
+    model = PCA(n_components=PCA_COMPONENTS, random_state=RANDOM_STATE)
+    components = model.fit_transform(prepared_dense)
+
+    rows_2d = []
+    rows_3d = []
+    for index, row in enumerate(rows):
+        base = {
+            'company_nipt': row['company_nipt'],
+            'business_name': row['business_name'],
+            'pc1': rounded(components[index, 0], 8),
+            'pc2': rounded(components[index, 1], 8),
+            'cluster_id': cluster_ids[index] if cluster_ids else '',
+            'anomaly_score': rounded(anomaly_scores[index], 8) if anomaly_scores else '',
+            'lof_score': rounded(lof_scores[index], 8) if lof_scores else '',
+            'performance_score': row.get('performance_score', ''),
+            'weak_risk_label': row.get('weak_risk_label', ''),
+            'strict_weak_risk_label': row.get('strict_weak_risk_label', ''),
+        }
+        rows_2d.append(base)
+        rows_3d.append(
+            {
+                'company_nipt': row['company_nipt'],
+                'business_name': row['business_name'],
+                'pc1': rounded(components[index, 0], 8),
+                'pc2': rounded(components[index, 1], 8),
+                'pc3': rounded(components[index, 2], 8),
+                'cluster_id': cluster_ids[index] if cluster_ids else '',
+                'anomaly_score': rounded(anomaly_scores[index], 8) if anomaly_scores else '',
+                'lof_score': rounded(lof_scores[index], 8) if lof_scores else '',
+                'performance_score': row.get('performance_score', ''),
+                'weak_risk_label': row.get('weak_risk_label', ''),
+                'strict_weak_risk_label': row.get('strict_weak_risk_label', ''),
+            }
+        )
+
+    explained_variance = model.explained_variance_ratio_.tolist()
+    summary = {
+        'method': 'PCA',
+        'n_components': PCA_COMPONENTS,
+        'explained_variance_ratio': {
+            'pc1': rounded(explained_variance[0], 8),
+            'pc2': rounded(explained_variance[1], 8),
+            'pc3': rounded(explained_variance[2], 8),
+        },
+        'cumulative_explained_variance_2d': rounded(sum(explained_variance[:2]), 8),
+        'cumulative_explained_variance_3d': rounded(sum(explained_variance[:3]), 8),
+        'row_count': len(rows),
+        'feature_count_used': int(prepared_dense.shape[1]),
+        'interpretation_note': (
+            'PCA is used for dimensionality reduction and visualization of procurement profiles. '
+            'It does not define risk by itself.'
+        ),
+    }
+    return {
+        'rows_2d': rows_2d,
+        'rows_3d': rows_3d,
+        'summary': summary,
+    }
+
+
+def prepare_profile_matrix(rows, numeric_features, categorical_features):
+    analysis_numeric = [*numeric_features, 'performance_score']
+    X = build_feature_matrix(rows, analysis_numeric, categorical_features)
+    preprocessor = make_preprocessor(analysis_numeric, categorical_features)
+    return preprocessor.fit_transform(X)
 
 
 def add_strict_weak_labels(rows):
@@ -458,7 +603,9 @@ def build_analysis_summary(
     reduced_strict,
     shuffled_sanity_check,
     anomaly,
+    lof_anomaly,
     clustering,
+    pca_outputs,
     strict_label_summary,
     leakage_audit,
     outputs,
@@ -480,6 +627,7 @@ def build_analysis_summary(
             'best_model_by_f1': weak_label_replication['best_model_by_f1'],
             'best_model_by_roc_auc': weak_label_replication['best_model_by_roc_auc'],
             'interpretation': weak_label_replication['interpretation'],
+            'feature_importance_notes': weak_label_replication['feature_importance_notes'],
         },
         'reduced_feature_strict_label_results': {
             'experiment_name': reduced_strict['experiment_name'],
@@ -492,6 +640,7 @@ def build_analysis_summary(
             'best_model_by_f1': reduced_strict['best_model_by_f1'],
             'best_model_by_roc_auc': reduced_strict['best_model_by_roc_auc'],
             'interpretation': reduced_strict['interpretation'],
+            'feature_importance_notes': reduced_strict['feature_importance_notes'],
         },
         'strict_label_summary': strict_label_summary,
         'leakage_circularity_audit': leakage_audit,
@@ -505,19 +654,30 @@ def build_analysis_summary(
                 'prove misconduct and is useful only for prioritization and exploratory review.'
             ),
         },
+        'local_outlier_factor_anomaly_detection': {
+            'method': lof_anomaly['method'],
+            'n_neighbors': LOF_NEIGHBORS,
+            'row_count': len(lof_anomaly['ranking']),
+            'interpretation': (
+                'LOF provides a local-neighborhood statistical anomaly ranking. It does not '
+                'prove misconduct and requires human review.'
+            ),
+        },
         'clustering': {
             'method': clustering['method'],
             'k': CLUSTER_COUNT,
             'cluster_count': len(clustering['summary_rows']),
             'summary': clustering['summary_rows'],
         },
+        'pca_dimensionality_reduction': pca_outputs['summary'],
         'output_files': {key: str(path) for key, path in outputs.items()},
         'warnings_limitations': [
             'The target is heuristic and constructed from analytical procurement anomaly indicators.',
-            'Metrics measure agreement with constructed weak labels and do not validate real-world misconduct or confirmed risk events.',
+            'Metrics measure agreement with constructed weak labels and do not validate external event labels or official determinations.',
             'High full-feature metrics are expected when target-defining signals are included as model inputs.',
             'The reduced-feature experiment still may contain indirect correlation with the heuristic target.',
-            'Anomaly ranking is unsupervised and requires human review.',
+            'Isolation Forest and Local Outlier Factor anomaly rankings are unsupervised and require human review.',
+            'PCA is dimensionality reduction for procurement profile visualization, not a prediction model.',
             'Performance score is a procurement-based performance proxy, not full financial performance.',
         ],
     }
@@ -533,13 +693,18 @@ def build_model_card(rows, metadata, analysis_summary, strict_label_summary, lea
             'Logistic Regression',
             'Random Forest',
             'Gradient Boosting',
+            'Extra Trees',
+            'HistGradientBoosting',
             'Isolation Forest',
+            'Local Outlier Factor',
             'KMeans',
+            'PCA 2D/3D',
         ],
         'intended_use': [
             'Exploratory ML preparation for thesis analysis.',
             'Weak-label consistency checks.',
             'Procurement anomaly ranking and segmentation for review prioritization.',
+            'PCA dimensionality reduction for procurement profile visualization.',
         ],
         'not_intended_use': [
             'Not a production risk scoring system.',
@@ -556,6 +721,8 @@ def build_model_card(rows, metadata, analysis_summary, strict_label_summary, lea
             'Full-feature metrics should be called weak-label replication metrics.',
             'Reduced-feature results are more defensible but remain exploratory.',
             'Isolation Forest highlights unusual profiles, not ground-truth events.',
+            'Local Outlier Factor highlights local-neighborhood outliers, not ground-truth events.',
+            'PCA coordinates support visualization and do not define risk by themselves.',
             'Cluster labels are descriptive summaries and should not be overinterpreted.',
         ],
         'strict_label_summary': strict_label_summary,
@@ -573,6 +740,7 @@ def classification_metrics_payload(experiment):
         'metrics': experiment['metrics'],
         'best_model_by_f1': experiment['best_model_by_f1'],
         'best_model_by_roc_auc': experiment['best_model_by_roc_auc'],
+        'feature_importance_notes': experiment['feature_importance_notes'],
     }
 
 
@@ -596,15 +764,26 @@ def classifier_definitions():
             n_jobs=-1,
         ),
         'gradient_boosting': GradientBoostingClassifier(random_state=RANDOM_STATE),
+        'extra_trees': ExtraTreesClassifier(
+            n_estimators=300,
+            class_weight='balanced',
+            random_state=RANDOM_STATE,
+            n_jobs=-1,
+        ),
+        'hist_gradient_boosting': HistGradientBoostingClassifier(random_state=RANDOM_STATE),
     }
 
 
 def fit_pipeline(estimator, X_train, y_train, numeric_features, categorical_features):
+    steps = [
+        ('preprocessor', make_preprocessor(numeric_features, categorical_features)),
+    ]
+    if isinstance(estimator, HistGradientBoostingClassifier):
+        steps.append(('to_dense', FunctionTransformer(to_dense_array, accept_sparse=True)))
+    steps.append(('model', estimator))
+
     pipeline = Pipeline(
-        steps=[
-            ('preprocessor', make_preprocessor(numeric_features, categorical_features)),
-            ('model', estimator),
-        ]
+        steps=steps,
     )
     pipeline.fit(X_train, y_train)
     return pipeline
@@ -640,6 +819,12 @@ def build_feature_matrix(rows, numeric_features, categorical_features):
         categorical_values = [parse_category(row.get(feature)) for feature in categorical_features]
         matrix.append([*numeric_values, *categorical_values])
     return np.array(matrix, dtype=object)
+
+
+def to_dense_array(matrix):
+    if sparse.issparse(matrix):
+        return matrix.toarray()
+    return matrix
 
 
 def classification_metrics(y_true, predictions, probabilities):
@@ -771,7 +956,8 @@ This analysis is exploratory and uses heuristic weak labels.
 - The broad `weak_risk_label` is constructed from analytical procurement anomaly indicators.
 - High full-feature metrics may reflect leakage or circularity because some model inputs are also used to construct the weak label.
 - No official ground-truth risk events are used in this version.
-- Anomaly rankings are unsupervised and require human review.
+- Isolation Forest and Local Outlier Factor anomaly rankings are unsupervised and require human review.
+- PCA 2D/3D outputs are dimensionality-reduction coordinates for procurement profile visualization, not prediction results.
 - The procurement-based performance score is a proxy, not full financial performance.
 - Future work should add QKB notice/status event labels and stronger validation data.
 
@@ -780,6 +966,9 @@ This analysis is exploratory and uses heuristic weak labels.
 - Full-feature experiment: `{summary['full_feature_weak_label_replication_results']['experiment_name']}`.
 - Reduced-feature experiment: `{summary['reduced_feature_strict_label_results']['experiment_name']}`.
 - Shuffled-label sanity check: `{summary['shuffled_label_sanity_check']['model']}`.
+- Isolation Forest output: `{summary['unsupervised_anomaly_detection']['method']}`.
+- Local Outlier Factor output: `{summary['local_outlier_factor_anomaly_detection']['method']}`.
+- PCA output: `{summary['pca_dimensionality_reduction']['method']}` for profile visualization.
 
 Use these outputs for methodological discussion and exploratory review, not automated decisions.
 """

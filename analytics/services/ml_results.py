@@ -1,13 +1,24 @@
 import csv
 import json
+import math
 from pathlib import Path
 
 from django.conf import settings
 
 
 ML_OUTPUT_DIR = Path(settings.BASE_DIR) / 'reports' / 'ml'
+PLOTLY_ASSET_PATH = Path(settings.BASE_DIR) / 'static' / 'velzon' / 'libs' / 'plotly' / 'plotly.min.js'
+PCA_VISUALIZATION_LIMIT = 2000
+PCA_TOP_ANOMALY_LIMIT = 500
+PCA_TOP_LOF_LIMIT = 500
+PCA_TOP_PERFORMANCE_LIMIT = 300
+CUBE_VISUALIZATION_LIMIT = 2000
+CUBE_TOP_ANOMALY_LIMIT = 650
+CUBE_TOP_WINNER_VALUE_LIMIT = 550
+CUBE_TOP_PROCUREMENT_COUNT_LIMIT = 550
 
 ML_OUTPUT_FILES = [
+    'ml_dataset.csv',
     'ml_analysis_summary.json',
     'ml_classification_metrics.json',
     'ml_reduced_feature_metrics.json',
@@ -19,6 +30,11 @@ ML_OUTPUT_FILES = [
     'ml_cluster_summary.csv',
     'ml_feature_importance.csv',
     'ml_anomaly_ranking.csv',
+    'ml_lof_anomaly_ranking.csv',
+    'ml_cluster_assignments.csv',
+    'ml_pca_2d.csv',
+    'ml_pca_3d.csv',
+    'ml_pca_summary.json',
     'ml_classification_ranking.csv',
     'ml_reduced_feature_ranking.csv',
 ]
@@ -28,6 +44,9 @@ ML_CSV_EXPORTS = {
     'ml-feature-importance.csv': 'ml_feature_importance.csv',
     'ml-cluster-summary.csv': 'ml_cluster_summary.csv',
     'ml-reduced-feature-ranking.csv': 'ml_reduced_feature_ranking.csv',
+    'ml-pca-2d.csv': 'ml_pca_2d.csv',
+    'ml-pca-3d.csv': 'ml_pca_3d.csv',
+    'ml-lof-anomaly-ranking.csv': 'ml_lof_anomaly_ranking.csv',
 }
 
 
@@ -42,10 +61,19 @@ def get_ml_results_context(preview_limit=20):
     shuffled_check = read_json('ml_shuffled_label_sanity_check.json', errors)
     leakage_audit = read_json('ml_leakage_audit.json', errors)
     model_card = read_json('ml_model_card.json', errors)
+    pca_summary = read_json('ml_pca_summary.json', errors)
     limitations_text = read_text('ml_limitations.md', errors)
+    pca_2d_rows = sampled_pca_rows('ml_pca_2d.csv', PCA_VISUALIZATION_LIMIT, errors)
+    pca_3d_rows = sampled_pca_rows('ml_pca_3d.csv', PCA_VISUALIZATION_LIMIT, errors)
+    procurement_cube_rows = procurement_anomaly_cube_rows(CUBE_VISUALIZATION_LIMIT, errors)
+    lof_rows = preview_rows('ml_lof_anomaly_ranking.csv', preview_limit, add_detail_url=True)
+    cluster_summary_rows = cluster_rows()
+    feature_importance_preview = feature_importance_rows(preview_limit)
+    reduced_metric_rows = metrics_rows(reduced_metrics.get('metrics', {}))
 
     return {
         'output_dir': str(ML_OUTPUT_DIR),
+        'plotly_available': PLOTLY_ASSET_PATH.exists(),
         'files': file_status,
         'missing_files': [item for item in file_status if not item['available']],
         'available_files': [item for item in file_status if item['available']],
@@ -57,7 +85,7 @@ def get_ml_results_context(preview_limit=20):
         'summary': summary,
         'dataset': build_dataset_summary(summary),
         'full_metrics': metrics_rows(classification_metrics.get('metrics', {})),
-        'reduced_metrics': metrics_rows(reduced_metrics.get('metrics', {})),
+        'reduced_metrics': reduced_metric_rows,
         'full_interpretation': classification_metrics.get('interpretation', ''),
         'reduced_interpretation': reduced_metrics.get('interpretation', ''),
         'full_target_distribution': distribution_rows(
@@ -68,9 +96,10 @@ def get_ml_results_context(preview_limit=20):
         'strict_label_summary': strict_label_summary,
         'shuffled_check': build_shuffled_check(shuffled_check),
         'leakage_audit': build_leakage_audit(leakage_audit),
-        'feature_importance_rows': feature_importance_rows(preview_limit),
+        'feature_importance_rows': feature_importance_preview,
         'feature_importance_groups': feature_importance_groups(limit_per_group=8),
         'anomaly_rows': preview_rows('ml_anomaly_ranking.csv', preview_limit, add_detail_url=True),
+        'lof_rows': lof_rows,
         'classification_ranking_rows': preview_rows(
             'ml_classification_ranking.csv',
             preview_limit,
@@ -81,7 +110,20 @@ def get_ml_results_context(preview_limit=20):
             preview_limit,
             add_detail_url=True,
         ),
-        'cluster_rows': cluster_rows(),
+        'cluster_rows': cluster_summary_rows,
+        'pca_summary': build_pca_summary(pca_summary),
+        'pca_2d_rows': pca_2d_rows,
+        'pca_3d_rows': pca_3d_rows,
+        'procurement_cube_rows': procurement_cube_rows,
+        'chart_data': build_chart_data(
+            reduced_metric_rows=reduced_metric_rows,
+            pca_summary=pca_summary,
+            pca_2d_rows=pca_2d_rows,
+            pca_3d_rows=pca_3d_rows,
+            procurement_cube_rows=procurement_cube_rows,
+            cluster_summary_rows=cluster_summary_rows,
+            feature_importance_rows=feature_importance_preview,
+        ),
         'model_card': model_card,
         'limitations_text': limitations_text,
         'limitations_sections': parse_limitations_markdown(limitations_text),
@@ -306,6 +348,220 @@ def cluster_rows():
         row['weak_risk_label_rate_display'] = format_percent(row.get('weak_risk_label_rate'))
         row['strict_weak_risk_label_rate_display'] = format_percent(row.get('strict_weak_risk_label_rate'))
     return rows
+
+
+def procurement_anomaly_cube_rows(limit, errors):
+    dataset_rows = read_csv_rows('ml_dataset.csv', limit=None, errors=errors)
+    if not dataset_rows:
+        return []
+
+    anomaly_by_nipt = rows_by_nipt(read_csv_rows('ml_anomaly_ranking.csv', limit=None, errors=errors))
+    lof_by_nipt = rows_by_nipt(read_csv_rows('ml_lof_anomaly_ranking.csv', limit=None, errors=errors))
+    cluster_by_nipt = rows_by_nipt(read_csv_rows('ml_cluster_assignments.csv', limit=None, errors=errors))
+
+    merged_rows = []
+    for row in dataset_rows:
+        nipt = row.get('company_nipt', '')
+        anomaly_row = anomaly_by_nipt.get(nipt, {})
+        anomaly_score = safe_float(anomaly_row.get('anomaly_score'))
+        if anomaly_score is None:
+            continue
+
+        lof_row = lof_by_nipt.get(nipt, {})
+        cluster_row = cluster_by_nipt.get(nipt, {})
+        active_count = non_negative_float(row.get('active_procurement_count'))
+        active_winner_value = non_negative_float(row.get('active_total_winner_value_amount'))
+        performance_score = safe_float(row.get('performance_score'))
+
+        merged_rows.append(
+            {
+                'company_nipt': nipt,
+                'business_name': row.get('business_name') or anomaly_row.get('business_name') or '',
+                'active_procurement_count': active_count,
+                'active_total_winner_value_amount': active_winner_value,
+                'performance_score': performance_score,
+                'anomaly_score': anomaly_score,
+                'lof_score': safe_float(lof_row.get('lof_score')),
+                'cluster_id': cluster_row.get('cluster_id') or lof_row.get('cluster_id') or '',
+                'strict_weak_risk_label': (
+                    cluster_row.get('strict_weak_risk_label')
+                    or lof_row.get('strict_weak_risk_label')
+                    or row.get('strict_weak_risk_label')
+                    or ''
+                ),
+                'log_procurement_count': safe_log1p(active_count),
+                'log_winner_value': safe_log1p(active_winner_value),
+            }
+        )
+
+    return sampled_procurement_cube_rows(merged_rows, limit)
+
+
+def rows_by_nipt(rows):
+    return {
+        row.get('company_nipt', ''): row
+        for row in rows
+        if row.get('company_nipt')
+    }
+
+
+def sampled_procurement_cube_rows(rows, limit):
+    if len(rows) <= limit:
+        return rows
+
+    selected = set()
+    add_top_rows(rows, selected, 'anomaly_score', CUBE_TOP_ANOMALY_LIMIT)
+    add_top_rows(rows, selected, 'active_total_winner_value_amount', CUBE_TOP_WINNER_VALUE_LIMIT)
+    add_top_rows(rows, selected, 'active_procurement_count', CUBE_TOP_PROCUREMENT_COUNT_LIMIT)
+
+    stride = max(1, len(rows) // limit)
+    for index in range(0, len(rows), stride):
+        if len(selected) >= limit:
+            break
+        selected.add(index)
+
+    if len(selected) < limit:
+        for index in range(len(rows)):
+            if len(selected) >= limit:
+                break
+            selected.add(index)
+
+    return [rows[index] for index in sorted(selected)[:limit]]
+
+
+def sampled_pca_rows(filename, limit, errors):
+    rows = read_csv_rows(filename, limit=None, errors=errors)
+    if len(rows) <= limit:
+        return [chart_pca_point(row) for row in rows]
+
+    selected = set()
+    add_top_rows(rows, selected, 'anomaly_score', PCA_TOP_ANOMALY_LIMIT)
+    add_top_rows(rows, selected, 'lof_score', PCA_TOP_LOF_LIMIT)
+    add_top_rows(rows, selected, 'performance_score', PCA_TOP_PERFORMANCE_LIMIT)
+
+    stride = max(1, len(rows) // limit)
+    for index in range(0, len(rows), stride):
+        if len(selected) >= limit:
+            break
+        selected.add(index)
+
+    if len(selected) < limit:
+        for index in range(len(rows)):
+            if len(selected) >= limit:
+                break
+            selected.add(index)
+
+    return [chart_pca_point(rows[index]) for index in sorted(selected)[:limit]]
+
+
+def add_top_rows(rows, selected, column, limit):
+    ranked = sorted(
+        enumerate(rows),
+        key=lambda item: safe_float(item[1].get(column)) if safe_float(item[1].get(column)) is not None else -float('inf'),
+        reverse=True,
+    )
+    for index, _row in ranked[:limit]:
+        selected.add(index)
+
+
+def chart_pca_point(row):
+    return {
+        'company_nipt': row.get('company_nipt', ''),
+        'business_name': row.get('business_name', ''),
+        'pc1': safe_float(row.get('pc1')),
+        'pc2': safe_float(row.get('pc2')),
+        'pc3': safe_float(row.get('pc3')),
+        'cluster_id': row.get('cluster_id', ''),
+        'anomaly_score': safe_float(row.get('anomaly_score')),
+        'lof_score': safe_float(row.get('lof_score')),
+        'performance_score': safe_float(row.get('performance_score')),
+        'weak_risk_label': row.get('weak_risk_label', ''),
+        'strict_weak_risk_label': row.get('strict_weak_risk_label', ''),
+    }
+
+
+def safe_log1p(value):
+    if value is None:
+        return None
+    return math.log1p(max(0, value))
+
+
+def non_negative_float(value):
+    parsed = safe_float(value)
+    if parsed is None:
+        return 0
+    return max(0, parsed)
+
+
+def build_pca_summary(summary):
+    variance = summary.get('explained_variance_ratio', {})
+    return {
+        'pc1': format_percent(variance.get('pc1')),
+        'pc2': format_percent(variance.get('pc2')),
+        'pc3': format_percent(variance.get('pc3')),
+        'cumulative_2d': format_percent(summary.get('cumulative_explained_variance_2d')),
+        'cumulative_3d': format_percent(summary.get('cumulative_explained_variance_3d')),
+        'row_count': format_int(summary.get('row_count')),
+        'feature_count_used': format_int(summary.get('feature_count_used')),
+        'interpretation_note': summary.get('interpretation_note', ''),
+    }
+
+
+def build_chart_data(
+    reduced_metric_rows,
+    pca_summary,
+    pca_2d_rows,
+    pca_3d_rows,
+    procurement_cube_rows,
+    cluster_summary_rows,
+    feature_importance_rows,
+):
+    return {
+        'modelComparison': {
+            'models': [row['model'] for row in reduced_metric_rows],
+            'f1': [safe_float(row['f1']) for row in reduced_metric_rows],
+            'roc_auc': [safe_float(row['roc_auc']) for row in reduced_metric_rows],
+        },
+        'pcaVariance': pca_variance_chart_data(pca_summary),
+        'pca2d': pca_2d_rows,
+        'pca3d': pca_3d_rows,
+        'procurementAnomalyCube': procurement_cube_rows,
+        'clusterDistribution': {
+            'labels': [f"Cluster {row.get('cluster_id', '')}" for row in cluster_summary_rows],
+            'counts': [safe_float(row.get('company_count')) for row in cluster_summary_rows],
+        },
+        'featureImportance': feature_importance_chart_data(feature_importance_rows),
+    }
+
+
+def pca_variance_chart_data(summary):
+    variance = summary.get('explained_variance_ratio', {})
+    return {
+        'labels': ['PC1', 'PC2', 'PC3'],
+        'values': [
+            safe_float(variance.get('pc1')),
+            safe_float(variance.get('pc2')),
+            safe_float(variance.get('pc3')),
+        ],
+        'cumulative_2d': safe_float(summary.get('cumulative_explained_variance_2d')),
+        'cumulative_3d': safe_float(summary.get('cumulative_explained_variance_3d')),
+    }
+
+
+def feature_importance_chart_data(rows, limit=15):
+    ranked = sorted(
+        rows,
+        key=lambda row: abs(safe_float(row.get('importance')) or 0),
+        reverse=True,
+    )[:limit]
+    ranked.reverse()
+    return {
+        'labels': [
+            f"{row.get('model_display', '')}: {row.get('feature', '')}"
+            for row in ranked
+        ],
+        'values': [safe_float(row.get('importance')) for row in ranked],
+    }
 
 
 def display_model_name(value):

@@ -25,4 +25,7 @@ urlpatterns = [
     path('reports/export/ml-feature-importance.csv', views.export_ml_feature_importance_csv, name='export_ml_feature_importance_csv'),
     path('reports/export/ml-cluster-summary.csv', views.export_ml_cluster_summary_csv, name='export_ml_cluster_summary_csv'),
     path('reports/export/ml-reduced-feature-ranking.csv', views.export_ml_reduced_feature_ranking_csv, name='export_ml_reduced_feature_ranking_csv'),
+    path('reports/export/ml-pca-2d.csv', views.export_ml_pca_2d_csv, name='export_ml_pca_2d_csv'),
+    path('reports/export/ml-pca-3d.csv', views.export_ml_pca_3d_csv, name='export_ml_pca_3d_csv'),
+    path('reports/export/ml-lof-anomaly-ranking.csv', views.export_ml_lof_anomaly_ranking_csv, name='export_ml_lof_anomaly_ranking_csv'),
 ]
