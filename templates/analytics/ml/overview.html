@@ -1,0 +1,244 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}ML Results & Model Audit | Albiz Analytics{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'velzon/libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block content %}
+{% include 'analytics/ml/partials/page_header.html' with title='ML Results & Model Audit' subtitle='Exploratory machine learning outputs for procurement-based performance and analytical risk indicators.' crumb='Overview' %}
+{% include 'analytics/ml/partials/output_warnings.html' %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title mb-0">ML Results Status</h5>
+                    <p class="text-muted mb-0 mt-1">Generated output files read by the ML dashboard pages.</p>
+                </div>
+                {% if ml.status.missing_files_count == 0 %}
+                    <span class="badge bg-success-subtle text-success">Outputs available</span>
+                {% else %}
+                    <span class="badge bg-warning-subtle text-warning">Outputs incomplete</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="row g-3 align-items-stretch">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Generated files</p>
+                            <h5 class="mb-0">{{ ml.status.available_files_count }} / {{ ml.status.total_files_count }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Missing files</p>
+                            <h5 class="mb-0">{{ ml.status.missing_files_count }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Analysis summary updated</p>
+                            <h6 class="mb-0">{{ ml.status.analysis_summary_last_modified }}</h6>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Web refresh</p>
+                            {% if ml.web_ml_run_enabled %}
+                                <span class="badge bg-success-subtle text-success">Enabled</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary">Disabled</span>
+                            {% endif %}
+                            {% if ml.status.run_lock_exists %}
+                                <span class="badge bg-warning-subtle text-warning ms-1">Running</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning mt-3" role="alert">
+                    This may take some time. It rebuilds the local modelling dataset and reruns the exploratory ML analysis. No database writes are performed.
+                </div>
+
+                <form id="ml-run-form" method="post" action="{% url 'analytics:ml_run_analysis' %}" data-ml-run-form data-run-mode="{% if ml.missing_files %}generate{% else %}refresh{% endif %}" data-confirm-title="{% if ml.missing_files %}Generate ML Results?{% else %}Refresh ML Results?{% endif %}" data-confirm-text="This will rebuild the modelling dataset and rerun exploratory ML analysis. It may take some time. No database writes are performed.">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" data-ml-run-button {% if not ml.web_ml_run_enabled or ml.status.run_lock_exists %}disabled{% endif %}>
+                        <i class="ri-refresh-line align-bottom me-1"></i>
+                        {% if ml.missing_files %}Generate ML Results{% else %}Refresh ML Results{% endif %}
+                    </button>
+                    {% if not ml.web_ml_run_enabled %}
+                        <span class="text-muted ms-2">Set <code>ENABLE_WEB_ML_RUN=True</code> in a trusted local environment to enable this button.</span>
+                    {% elif ml.status.run_lock_exists %}
+                        <span class="text-muted ms-2">ML analysis is already running. Please wait for it to finish.</span>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-8">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Model Framing</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-warning-subtle text-warning mb-2">Weak-label replication</span>
+                            <p class="text-muted mb-0">Full-feature metrics measure heuristic consistency with constructed weak labels. They are not real-world validation.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-info-subtle text-info mb-2">Reduced-feature strict-label model</span>
+                            <p class="text-muted mb-0">The reduced-feature experiment excludes direct label-defining fields as much as possible, while still relying on heuristic labels.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-primary-subtle text-primary mb-2">Anomaly ranking</span>
+                            <p class="text-muted mb-0">Isolation Forest and Local Outlier Factor identify statistically unusual procurement profiles for exploratory review.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-secondary-subtle text-secondary mb-2">Human review required</span>
+                            <p class="text-muted mb-0">Results are not evidence of misconduct. They require source verification and contextual review.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Output Files</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    {% for file in ml.files %}
+                        {% if file.available %}
+                            <span class="badge bg-success-subtle text-success">{{ file.filename }}</span>
+                        {% else %}
+                            <span class="badge bg-warning-subtle text-warning">{{ file.filename }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <p class="text-muted mt-3 mb-0">Generated files are local, read-only dashboard inputs and remain ignored by Git.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Dataset rows</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.dataset.row_count }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Features</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.dataset.feature_count }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Best reduced F1</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-1">{{ ml.dataset.reduced_best_f1_score }}</h4>
+                <span class="text-muted">{{ ml.dataset.reduced_best_f1 }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Best reduced ROC AUC</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-1">{{ ml.dataset.reduced_best_roc_auc_score }}</h4>
+                <span class="text-muted">{{ ml.dataset.reduced_best_roc_auc }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">PCA cumulative 2D</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.pca_summary.cumulative_2d }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-md-6">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">PCA cumulative 3D</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.pca_summary.cumulative_3d }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Sanity check</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-1">
+                    {% if ml.shuffled_check.sanity_passed %}Passed{% else %}Review{% endif %}
+                </h4>
+                <span class="text-muted">Shuffled-label ROC AUC {{ ml.shuffled_check.roc_auc }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-8">
+        <div class="card h-100 mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Reduced-Feature Model Comparison</h5>
+                <span class="badge bg-info-subtle text-info">Exploratory strict-label experiment</span>
+            </div>
+            <div class="card-body">
+                <div id="ml-model-comparison-chart"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Go To</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'analytics:ml_classification' %}" class="btn btn-soft-primary text-start"><i class="ri-line-chart-line align-bottom me-1"></i> Classification Models</a>
+                <a href="{% url 'analytics:ml_anomaly' %}" class="btn btn-soft-warning text-start"><i class="ri-radar-line align-bottom me-1"></i> Anomaly Detection</a>
+                <a href="{% url 'analytics:ml_pca' %}" class="btn btn-soft-info text-start"><i class="ri-bubble-chart-line align-bottom me-1"></i> PCA Visualization</a>
+                <a href="{% url 'analytics:ml_clustering' %}" class="btn btn-soft-success text-start"><i class="ri-node-tree align-bottom me-1"></i> Clustering</a>
+                <a href="{% url 'analytics:ml_feature_importance' %}" class="btn btn-soft-secondary text-start"><i class="ri-list-check-2 align-bottom me-1"></i> Feature Importance</a>
+                <a href="{% url 'analytics:ml_model_card' %}" class="btn btn-soft-dark text-start"><i class="ri-file-list-3-line align-bottom me-1"></i> Model Card &amp; Limitations</a>
+                <a href="{% url 'analytics:ml_exports' %}" class="btn btn-soft-primary text-start"><i class="ri-download-cloud-2-line align-bottom me-1"></i> ML Exports</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% include 'analytics/ml/partials/chart_scripts.html' %}
+<script src="{% static 'velzon/libs/sweetalert2/sweetalert2.min.js' %}"></script>
+{{ ml_page_messages|json_script:"ml-page-messages" }}
+<script src="{% static 'albiz/js/ml-run-button.js' %}"></script>
+{% endblock %}

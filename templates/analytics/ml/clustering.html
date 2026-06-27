@@ -1,0 +1,80 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}ML Clustering | Albiz Analytics{% endblock %}
+
+{% block content %}
+{% include 'analytics/ml/partials/page_header.html' with title='Clustering' subtitle='KMeans segmentation of procurement profiles for exploratory interpretation.' crumb='Clustering' %}
+{% include 'analytics/ml/partials/output_warnings.html' %}
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">KMeans Framing</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-0">Clusters describe groups with similar procurement profiles. Cluster names are descriptive summaries, not legal or administrative classifications.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <div class="card h-100 mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Cluster Distribution</h5>
+                <a href="{% url 'analytics:export_ml_cluster_summary_csv' %}" class="btn btn-sm btn-soft-primary">
+                    <i class="ri-download-2-line align-bottom me-1"></i> CSV
+                </a>
+            </div>
+            <div class="card-body">
+                <div id="ml-cluster-distribution-chart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Cluster Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    Cluster labels summarize procurement profile patterns and should not be overinterpreted.
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Cluster</th><th>Companies</th><th>Share</th><th>Mean performance</th><th>Mean active count</th><th>Mean active winner value</th><th>Weak label rate</th><th>Strict label rate</th><th>Profile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.cluster_rows %}
+                                <tr>
+                                    <td>{{ row.cluster_id }}</td>
+                                    <td>{{ row.company_count }}</td>
+                                    <td>{{ row.share_display }}</td>
+                                    <td>{{ row.mean_performance_score_display }}</td>
+                                    <td>{{ row.mean_active_procurement_count_display }}</td>
+                                    <td>{{ row.mean_active_total_winner_value_amount_display }}</td>
+                                    <td>{{ row.weak_risk_label_rate_display }}</td>
+                                    <td>{{ row.strict_weak_risk_label_rate_display }}</td>
+                                    <td><span class="badge bg-info-subtle text-info">{{ row.profile_label }}</span></td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="9" class="text-muted">N/A</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% include 'analytics/ml/partials/chart_scripts.html' %}
+{% endblock %}

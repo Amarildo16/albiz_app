@@ -45,6 +45,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool('DEBUG', default=True)
 
+ENABLE_WEB_ML_RUN = os.getenv(
+    'ENABLE_WEB_ML_RUN',
+    'True' if DEBUG else 'False',
+).lower() in {'1', 'true', 'yes', 'on'}
+
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', '127.0.0.1,localhost')
 
 

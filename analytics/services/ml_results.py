@@ -1,9 +1,11 @@
 import csv
 import json
 import math
+from datetime import datetime
 from pathlib import Path
 
 from django.conf import settings
+from django.utils import timezone
 
 
 ML_OUTPUT_DIR = Path(settings.BASE_DIR) / 'reports' / 'ml'
@@ -77,6 +79,8 @@ def get_ml_results_context(preview_limit=20):
         'files': file_status,
         'missing_files': [item for item in file_status if not item['available']],
         'available_files': [item for item in file_status if item['available']],
+        'status': build_output_status(file_status),
+        'web_ml_run_enabled': getattr(settings, 'ENABLE_WEB_ML_RUN', False),
         'errors': errors,
         'commands': [
             r'.\.venv\Scripts\python.exe manage.py build_ml_dataset',
@@ -155,6 +159,24 @@ def get_file_status():
     return status
 
 
+def build_output_status(file_status):
+    summary_path = ML_OUTPUT_DIR / 'ml_analysis_summary.json'
+    return {
+        'available_files_count': sum(1 for item in file_status if item['available']),
+        'missing_files_count': sum(1 for item in file_status if not item['available']),
+        'total_files_count': len(file_status),
+        'analysis_summary_last_modified': format_file_timestamp(summary_path),
+        'run_lock_exists': (ML_OUTPUT_DIR / '.ml_run.lock').exists(),
+    }
+
+
+def format_file_timestamp(path):
+    if not path.exists() or not path.is_file():
+        return 'N/A'
+    modified_at = datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.get_current_timezone())
+    return timezone.localtime(modified_at).strftime('%Y-%m-%d %H:%M:%S %Z')
+
+
 def read_json(filename, errors):
     path = ML_OUTPUT_DIR / filename
     if not path.exists():
@@ -206,10 +228,26 @@ def build_dataset_summary(summary):
         'row_count': format_int(summary.get('dataset_row_count')),
         'feature_count': format_int(summary.get('feature_count')),
         'full_best_f1': display_model_name(full_results.get('best_model_by_f1')),
+        'full_best_f1_score': best_metric_value(full_results, 'best_model_by_f1', 'f1'),
         'full_best_roc_auc': display_model_name(full_results.get('best_model_by_roc_auc')),
+        'full_best_roc_auc_score': best_metric_value(full_results, 'best_model_by_roc_auc', 'roc_auc'),
         'reduced_best_f1': display_model_name(reduced_results.get('best_model_by_f1')),
+        'reduced_best_f1_score': best_metric_value(reduced_results, 'best_model_by_f1', 'f1'),
         'reduced_best_roc_auc': display_model_name(reduced_results.get('best_model_by_roc_auc')),
+        'reduced_best_roc_auc_score': best_metric_value(
+            reduced_results,
+            'best_model_by_roc_auc',
+            'roc_auc',
+        ),
     }
+
+
+def best_metric_value(results, model_key, metric_name):
+    model_name = results.get(model_key)
+    metrics = results.get('metrics', {})
+    if not model_name or model_name not in metrics:
+        return 'N/A'
+    return format_decimal(metrics[model_name].get(metric_name), 4)
 
 
 def metrics_rows(metrics):
@@ -323,6 +361,7 @@ def preview_rows(filename, limit, add_detail_url=False):
             row['detail_url'] = f'/companies/{row["company_nipt"]}/'
         for key in [
             'anomaly_score',
+            'lof_score',
             'performance_score',
             'predicted_probability',
             'weak_risk_label_predicted_probability',

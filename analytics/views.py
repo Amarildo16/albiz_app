@@ -1,8 +1,12 @@
 import csv
 
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.db import DatabaseError
 from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
 
 from analytics.models import JoinedCompanyFeature
 from analytics.services.collector import get_collector_health, get_dashboard_metrics
@@ -14,6 +18,7 @@ from analytics.services.companies import (
 )
 from analytics.services.data_quality import get_data_quality_report
 from analytics.services.ml_results import get_ml_export_path, get_ml_results_context
+from analytics.services.ml_runner import run_ml_pipeline_from_web
 from analytics.services.risk import (
     RISK_INDICATOR_OPTIONS,
     compute_risk_indicators,
@@ -153,14 +158,83 @@ def reports(request):
     )
 
 
-def ml_overview(request):
+def render_ml_results_page(request, template_name):
+    page_messages = [
+        {
+            'level': message.tags,
+            'text': str(message),
+        }
+        for message in get_messages(request)
+    ]
     return render(
         request,
-        'analytics/ml_overview.html',
+        template_name,
         {
             'ml': get_ml_results_context(),
+            'ml_page_messages': page_messages,
         },
     )
+
+
+def ml_overview(request):
+    return render_ml_results_page(request, 'analytics/ml/overview.html')
+
+
+def ml_classification(request):
+    return render_ml_results_page(request, 'analytics/ml/classification.html')
+
+
+def ml_anomaly(request):
+    return render_ml_results_page(request, 'analytics/ml/anomaly.html')
+
+
+def ml_pca(request):
+    return render_ml_results_page(request, 'analytics/ml/pca.html')
+
+
+def ml_clustering(request):
+    return render_ml_results_page(request, 'analytics/ml/clustering.html')
+
+
+def ml_feature_importance(request):
+    return render_ml_results_page(request, 'analytics/ml/feature_importance.html')
+
+
+def ml_model_card(request):
+    return render_ml_results_page(request, 'analytics/ml/model_card.html')
+
+
+def ml_exports(request):
+    return render_ml_results_page(request, 'analytics/ml/exports.html')
+
+
+@require_POST
+def ml_run_analysis(request):
+    if not settings.ENABLE_WEB_ML_RUN:
+        messages.error(
+            request,
+            'Web-triggered ML runs are disabled. Set ENABLE_WEB_ML_RUN=True to enable this in a trusted local environment.',
+        )
+        return redirect('analytics:ml_overview')
+
+    result = run_ml_pipeline_from_web()
+    if result.get('locked'):
+        messages.warning(request, result['message'])
+    elif result.get('success'):
+        messages.success(
+            request,
+            (
+                f'ML results refreshed successfully in {result["duration_seconds"]} seconds. '
+                f'Generated files available: {result["generated_files_count"]}.'
+            ),
+        )
+    else:
+        messages.error(
+            request,
+            f'{result["message"]} {result.get("error_details", "")}'.strip(),
+        )
+
+    return redirect('analytics:ml_overview')
 
 
 def export_risk_summary_csv(request):

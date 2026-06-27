@@ -89,3 +89,20 @@ The analysis writes additional outputs under `reports/ml/`:
 The broad `weak_risk_label` is a heuristic analytical label derived from procurement anomaly indicators. The stricter `strict_weak_risk_label` uses stronger anomaly conditions and is used with a reduced feature set to lower leakage and circularity risk.
 
 The full-feature classification metrics are heuristic consistency results: they measure how well models replicate constructed weak labels, not official risk events. Anomaly rankings are exploratory and require human review before interpretation.
+
+### Web refresh button
+
+The ML Overview page includes a local `Generate / Refresh ML Results` button. It runs the same two Django management commands from a POST request:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py build_ml_dataset
+.\.venv\Scripts\python.exe manage.py run_ml_analysis
+```
+
+The button is controlled by:
+
+```env
+ENABLE_WEB_ML_RUN=True
+```
+
+It is enabled by default in local `DEBUG=True` mode and disabled by default outside DEBUG unless explicitly enabled. Do not enable web-triggered ML runs on a public deployment without authentication, authorization, and operational safeguards. The web action rebuilds local files under `reports/ml/`; it does not write to the database or run migrations.

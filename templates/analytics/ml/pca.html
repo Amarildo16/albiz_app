@@ -1,0 +1,102 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}ML PCA Visualization | Albiz Analytics{% endblock %}
+
+{% block content %}
+{% include 'analytics/ml/partials/page_header.html' with title='PCA Visualization' subtitle='PCA projection and dimensionality reduction for procurement profile visualization.' crumb='PCA Visualization' %}
+{% include 'analytics/ml/partials/output_warnings.html' %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title mb-0">PCA Procurement Profile Projection</h5>
+                    <p class="text-muted mb-0 mt-1">PCA dimensionality reduction for exploratory visualization of procurement profiles.</p>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'analytics:export_ml_pca_2d_csv' %}" class="btn btn-sm btn-soft-primary">
+                        <i class="ri-download-2-line align-bottom me-1"></i> PCA 2D CSV
+                    </a>
+                    <a href="{% url 'analytics:export_ml_pca_3d_csv' %}" class="btn btn-sm btn-soft-primary">
+                        <i class="ri-download-2-line align-bottom me-1"></i> PCA 3D CSV
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning" role="alert">
+                    PCA visualizes structure in the feature space. It does not define risk by itself and should not be interpreted as evidence of misconduct.
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-xl col-md-4 col-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">PC1</p>
+                            <h5 class="mb-0">{{ ml.pca_summary.pc1 }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-4 col-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">PC2</p>
+                            <h5 class="mb-0">{{ ml.pca_summary.pc2 }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-4 col-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">PC3</p>
+                            <h5 class="mb-0">{{ ml.pca_summary.pc3 }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-6 col-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Cumulative 2D</p>
+                            <h5 class="mb-0">{{ ml.pca_summary.cumulative_2d }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl col-md-6 col-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Cumulative 3D</p>
+                            <h5 class="mb-0">{{ ml.pca_summary.cumulative_3d }}</h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-xl-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="mb-3">Explained Variance</h6>
+                            <div id="ml-pca-variance-chart"></div>
+                            <p class="text-muted mb-0 mt-2">{{ ml.pca_summary.interpretation_note|default:'PCA is used for dimensionality reduction and visualization.' }}</p>
+                        </div>
+                    </div>
+                    <div class="col-xl-8">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="mb-3">PCA 2D Scatter</h6>
+                            <div id="ml-pca-2d-chart"></div>
+                            <p class="text-muted mb-0 mt-2">Showing a deterministic capped sample of {{ ml.pca_2d_rows|length }} companies for browser performance. Full data remains available by CSV export.</p>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="border rounded p-3">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                                <h6 class="mb-0">PCA 3D Interactive Scatter</h6>
+                                <span class="badge bg-primary-subtle text-primary">Rotate, zoom, and hover</span>
+                            </div>
+                            {% if not ml.plotly_available %}
+                                <div class="alert alert-warning" role="alert">Local Plotly is not available. Add <code>static/velzon/libs/plotly/plotly.min.js</code> to enable the interactive 3D chart.</div>
+                            {% endif %}
+                            <div id="ml-pca-3d-warning" class="alert alert-warning d-none" role="alert">Plotly did not load, so the interactive PCA 3D scatter could not render.</div>
+                            <div id="ml-pca-3d-chart" style="min-height: 520px;"></div>
+                            <p class="text-muted mb-0 mt-2">Showing a deterministic capped sample of {{ ml.pca_3d_rows|length }} companies. This projection supports procurement profile visualization and human review.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% include 'analytics/ml/partials/chart_scripts.html' %}
+{% endblock %}

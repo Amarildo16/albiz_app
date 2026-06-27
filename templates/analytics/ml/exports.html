@@ -1,0 +1,128 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}ML Exports | Albiz Analytics{% endblock %}
+
+{% block content %}
+{% include 'analytics/ml/partials/page_header.html' with title='ML Exports' subtitle='Download existing generated ML outputs without retraining models from the dashboard.' crumb='Exports' %}
+{% include 'analytics/ml/partials/output_warnings.html' %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info mb-0" role="alert">
+            Export links serve existing files from <code>reports/ml/</code>. Generated files are local analysis artifacts and remain ignored by Git.
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Dataset / Preparation</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Dataset and preparation files are generated locally by <code>build_ml_dataset</code>.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-light text-body">ml_dataset.csv</span>
+                    <span class="badge bg-light text-body">ml_dataset_summary.json</span>
+                    <span class="badge bg-light text-body">ml_feature_missingness.csv</span>
+                    <span class="badge bg-light text-body">ml_feature_columns.json</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Classification</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'analytics:export_ml_reduced_feature_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Reduced-feature ranking CSV
+                </a>
+                <p class="text-muted mb-0">Metrics JSON files remain available locally under <code>reports/ml/</code>.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Anomaly Detection</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'analytics:export_ml_anomaly_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Isolation Forest ranking CSV
+                </a>
+                <a href="{% url 'analytics:export_ml_lof_anomaly_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> LOF ranking CSV
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">PCA</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'analytics:export_ml_pca_2d_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> PCA 2D CSV
+                </a>
+                <a href="{% url 'analytics:export_ml_pca_3d_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> PCA 3D CSV
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Clustering</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'analytics:export_ml_cluster_summary_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Cluster summary CSV
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Feature Importance</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'analytics:export_ml_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Feature importance CSV
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Documentation / Model Card</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Documentation outputs are generated local files and are read by the model card page.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-light text-body">ml_model_card.json</span>
+                    <span class="badge bg-light text-body">ml_limitations.md</span>
+                    <span class="badge bg-light text-body">ml_leakage_audit.json</span>
+                    <span class="badge bg-light text-body">ml_pca_summary.json</span>
+                </div>
+                <a href="{% url 'analytics:ml_model_card' %}" class="btn btn-soft-secondary mt-3">
+                    <i class="ri-file-list-3-line align-bottom me-1"></i> Open Model Card &amp; Limitations
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

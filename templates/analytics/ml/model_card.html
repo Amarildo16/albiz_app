@@ -1,0 +1,196 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}ML Model Card | Albiz Analytics{% endblock %}
+
+{% block content %}
+{% include 'analytics/ml/partials/page_header.html' with title='Model Card & Limitations' subtitle='Model audit notes, intended use, limitations, and interpretation guidance.' crumb='Model Card' %}
+{% include 'analytics/ml/partials/output_warnings.html' %}
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Dataset Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                            <tr><th>Dataset</th><td>{{ ml.model_card.dataset_name|default:'N/A' }}</td></tr>
+                            <tr><th>Rows</th><td>{{ ml.model_card.row_count|default:'N/A' }}</td></tr>
+                            <tr><th>Features</th><td>{{ ml.model_card.feature_count|default:'N/A' }}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Target Definitions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-warning-subtle text-warning mb-2">Broad weak label</span>
+                            <p class="text-muted mb-0">{{ ml.model_card.target_definitions.weak_risk_label|default:'Heuristic weak label derived from analytical indicators.' }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-info-subtle text-info mb-2">Strict weak label</span>
+                            <p class="text-muted mb-0">{{ ml.model_card.target_definitions.strict_weak_risk_label|default:'Conservative heuristic weak label.' }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-warning mt-3 mb-0" role="alert">
+                    Weak labels are heuristic analytical labels. Model outputs are exploratory and require human review.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Intended Use</h5>
+            </div>
+            <div class="card-body">
+                <ul class="text-muted mb-0">
+                    {% for item in ml.model_card.intended_use %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>N/A</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Not Intended Use</h5>
+            </div>
+            <div class="card-body">
+                <ul class="text-muted mb-0">
+                    {% for item in ml.model_card.not_intended_use %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>N/A</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Limitations</h5>
+            </div>
+            <div class="card-body">
+                <ul class="text-muted mb-0">
+                    {% for item in ml.model_card.limitations %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>N/A</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Ethical Cautions</h5>
+            </div>
+            <div class="card-body">
+                <ul class="text-muted mb-0">
+                    {% for item in ml.model_card.ethical_cautions %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>N/A</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Leakage / Circularity Notes</h5>
+            </div>
+            <div class="card-body">
+                {% if ml.leakage_audit.warning %}
+                    <div class="alert alert-warning" role="alert">{{ ml.leakage_audit.warning }}</div>
+                {% endif %}
+                <p class="text-muted">{{ ml.leakage_audit.recommendation|default:'N/A' }}</p>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for feature in ml.leakage_audit.features %}
+                        <span class="badge bg-light text-body">{{ feature }}</span>
+                    {% empty %}
+                        <span class="text-muted">N/A</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Interpretation Guidance</h5>
+            </div>
+            <div class="card-body">
+                <ul class="text-muted mb-0">
+                    {% for item in ml.model_card.interpretation_guidance %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>N/A</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Limitations File</h5>
+            </div>
+            <div class="card-body">
+                {% for section in ml.limitations_sections %}
+                    <div class="{% if not forloop.last %}mb-4{% endif %}">
+                        {% if section.title %}
+                            <h6 class="mb-2">{{ section.title }}</h6>
+                        {% endif %}
+                        {% for paragraph in section.paragraphs %}
+                            <p class="text-muted mb-2">{{ paragraph }}</p>
+                        {% endfor %}
+                        {% if section.bullets %}
+                            <ul class="text-muted mb-0">
+                                {% for bullet in section.bullets %}
+                                    <li>{{ bullet }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">N/A</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

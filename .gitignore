@@ -8,6 +8,7 @@ db.sqlite3
 media/
 staticfiles/
 reports/ml/
+reports/registry/
 .DS_Store
 .idea/
 .vscode/
