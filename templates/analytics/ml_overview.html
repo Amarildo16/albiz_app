@@ -1,0 +1,604 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}ML Results & Model Audit | Albiz Analytics{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+            <div>
+                <h4 class="mb-sm-0">ML Results &amp; Model Audit</h4>
+                <p class="text-muted mb-0 mt-1">Exploratory machine learning outputs for procurement-based performance and analytical risk indicators.</p>
+            </div>
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">ML Results</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if ml.missing_files %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-warning mb-0">
+            <div class="card-body">
+                <div class="d-flex gap-3">
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-warning-subtle text-warning rounded fs-3">
+                            <i class="ri-alert-line"></i>
+                        </span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="card-title mb-2">Generated ML outputs are incomplete</h5>
+                        <p class="text-muted mb-3">This page only reads files under <code>reports/ml/</code>. Run these commands from <code>albiz_app</code>, then refresh:</p>
+                        {% for command in ml.commands %}
+                            <pre class="bg-light border rounded p-2 mb-2"><code>{{ command }}</code></pre>
+                        {% endfor %}
+                        <div class="mt-3">
+                            <span class="fw-medium">Missing files:</span>
+                            {% for file in ml.missing_files %}
+                                <span class="badge bg-warning-subtle text-warning ms-1">{{ file.filename }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if ml.errors %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-warning mb-0" role="alert">
+            Some ML output files could not be parsed:
+            {% for error in ml.errors %}
+                <span class="d-block">{{ error }}</span>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-8">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Model Framing</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-warning-subtle text-warning mb-2">Weak-label replication</span>
+                            <p class="text-muted mb-0">Full-feature metrics measure heuristic consistency with constructed weak labels. They are not real-world validation.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-info-subtle text-info mb-2">Reduced-feature strict-label model</span>
+                            <p class="text-muted mb-0">The reduced-feature experiment excludes direct label-defining fields as much as possible, while still relying on heuristic labels.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-primary-subtle text-primary mb-2">Anomaly ranking</span>
+                            <p class="text-muted mb-0">Isolation Forest highlights statistically unusual procurement profiles for exploratory review and prioritization.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <span class="badge bg-secondary-subtle text-secondary mb-2">Human review required</span>
+                            <p class="text-muted mb-0">Results are not evidence of misconduct. They require source verification and contextual review.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Output Files</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex flex-wrap gap-2">
+                    {% for file in ml.files %}
+                        {% if file.available %}
+                            <span class="badge bg-success-subtle text-success">{{ file.filename }}</span>
+                        {% else %}
+                            <span class="badge bg-warning-subtle text-warning">{{ file.filename }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <p class="text-muted mt-3 mb-0">Generated files are local, read-only dashboard inputs and remain ignored by Git.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Dataset rows</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.dataset.row_count }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Features</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.dataset.feature_count }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Weak label best F1</p>
+                <h5 class="fs-16 fw-semibold mt-3 mb-0">{{ ml.dataset.full_best_f1 }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Weak label best AUC</p>
+                <h5 class="fs-16 fw-semibold mt-3 mb-0">{{ ml.dataset.full_best_roc_auc }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Strict label best F1</p>
+                <h5 class="fs-16 fw-semibold mt-3 mb-0">{{ ml.dataset.reduced_best_f1 }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Strict label best AUC</p>
+                <h5 class="fs-16 fw-semibold mt-3 mb-0">{{ ml.dataset.reduced_best_roc_auc }}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="card-title mb-0">Broad Weak Label Distribution</h5>
+                <span class="badge bg-warning-subtle text-warning">Heuristic</span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-nowrap align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>Label</th><th>Count</th><th>Share</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.full_target_distribution %}
+                                <tr><td>{{ row.label }}</td><td>{{ row.count }}</td><td>{{ row.percentage }}</td></tr>
+                            {% empty %}
+                                <tr><td colspan="3" class="text-muted">N/A</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="card-title mb-0">Strict Weak Label Distribution</h5>
+                <span class="badge bg-info-subtle text-info">Conservative</span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-nowrap align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>Label</th><th>Count</th><th>Share</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.strict_target_distribution %}
+                                <tr><td>{{ row.label }}</td><td>{{ row.count }}</td><td>{{ row.percentage }}</td></tr>
+                            {% empty %}
+                                <tr><td colspan="3" class="text-muted">N/A</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Full-Feature Weak-Label Replication Metrics</h5>
+                <span class="badge bg-warning-subtle text-warning">Heuristic consistency check, not real-world validation.</span>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning" role="alert">
+                    Full-feature metrics measure agreement with constructed heuristic weak labels. High scores are expected when label-defining signals appear in the feature matrix.
+                </div>
+                <p class="text-muted">{{ ml.full_interpretation|default:"Full-feature weak-label replication metrics." }}</p>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC AUC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.full_metrics %}
+                                <tr>
+                                    <td>{{ row.model }}</td>
+                                    <td>{{ row.accuracy }}</td>
+                                    <td>{{ row.precision }}</td>
+                                    <td>{{ row.recall }}</td>
+                                    <td>{{ row.f1 }}</td>
+                                    <td>{{ row.roc_auc }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="6" class="text-muted">N/A</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Reduced-Feature Strict-Label Metrics</h5>
+                <span class="badge bg-info-subtle text-info">More cautious exploratory experiment; still based on heuristic labels.</span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">{{ ml.reduced_interpretation|default:"Reduced feature experiment excludes direct label-defining fields as much as possible." }}</p>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC AUC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.reduced_metrics %}
+                                <tr>
+                                    <td>{{ row.model }}</td>
+                                    <td>{{ row.accuracy }}</td>
+                                    <td>{{ row.precision }}</td>
+                                    <td>{{ row.recall }}</td>
+                                    <td>{{ row.f1 }}</td>
+                                    <td>{{ row.roc_auc }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="6" class="text-muted">N/A</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Shuffled-Label Sanity Check</h5>
+                {% if ml.shuffled_check.sanity_passed %}
+                    <span class="badge bg-success-subtle text-success">Pipeline sanity check passed</span>
+                {% else %}
+                    <span class="badge bg-warning-subtle text-warning">Review needed</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm mb-3">
+                        <tbody>
+                            <tr><th>Model</th><td>{{ ml.shuffled_check.model }}</td></tr>
+                            <tr><th>ROC AUC</th><td>{{ ml.shuffled_check.roc_auc }}</td></tr>
+                            <tr><th>F1</th><td>{{ ml.shuffled_check.f1 }}</td></tr>
+                            <tr><th>Accuracy</th><td>{{ ml.shuffled_check.accuracy }}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-muted mb-0">{{ ml.shuffled_check.interpretation }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Leakage / Circularity Audit</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-muted mb-1">Target</p>
+                            <h6 class="mb-1">{{ ml.leakage_audit.target_name }}</h6>
+                            <span class="badge bg-warning-subtle text-warning">{{ ml.leakage_audit.target_type }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-muted mb-1">Recommendation</p>
+                            <p class="mb-0">{{ ml.leakage_audit.recommendation|default:"N/A" }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% if ml.leakage_audit.warning %}
+                    <div class="alert alert-warning mt-3 mb-0" role="alert">{{ ml.leakage_audit.warning }}</div>
+                {% endif %}
+                <div class="mt-3">
+                    <p class="fw-medium mb-2">Likely label-defining or circular features</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for feature in ml.leakage_audit.features %}
+                            <span class="badge bg-light text-body">{{ feature }}</span>
+                        {% empty %}
+                            <span class="text-muted">N/A</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Feature Importance Preview</h5>
+                <a href="{% url 'analytics:export_ml_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary">
+                    <i class="ri-download-2-line align-bottom me-1"></i> CSV
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    Feature importance from the full-feature weak-label replication model mainly explains the constructed heuristic label. Reduced-feature importance is more useful for cautious exploratory interpretation.
+                </div>
+                {% for group in ml.feature_importance_groups %}
+                    <div class="border rounded p-3 mb-3">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                            <div>
+                                <h6 class="mb-1">{{ group.experiment_display }}</h6>
+                                <span class="text-muted">{{ group.model_display }}</span>
+                            </div>
+                            <span class="badge bg-light text-body">{{ group.rows|length }} preview rows</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr><th>Experiment</th><th>Model</th><th>Feature</th><th>Importance</th><th>Rank</th></tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in group.rows %}
+                                        <tr>
+                                            <td>{{ row.experiment_display }}</td>
+                                            <td>{{ row.model_display }}</td>
+                                            <td>{{ row.feature }}</td>
+                                            <td>{{ row.importance_display }}</td>
+                                            <td>{{ row.rank }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">N/A</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Anomaly Ranking Preview</h5>
+                <a href="{% url 'analytics:export_ml_anomaly_ranking_csv' %}" class="btn btn-sm btn-soft-primary">
+                    <i class="ri-download-2-line align-bottom me-1"></i> CSV
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning" role="alert">
+                    The anomaly ranking identifies statistically unusual procurement profiles. It is not evidence of misconduct, legal wrongdoing, or confirmed risk. Results require human review and source verification.
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Rank</th><th>NIPT</th><th>Business name</th><th>Anomaly score</th><th>Performance</th><th>Weak label</th><th>Indicators</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.anomaly_rows %}
+                                <tr>
+                                    <td>{{ row.anomaly_rank }}</td>
+                                    <td><a href="{{ row.detail_url }}">{{ row.company_nipt }}</a></td>
+                                    <td>{{ row.business_name }}</td>
+                                    <td>{{ row.anomaly_score_display }}</td>
+                                    <td>{{ row.performance_score_display }}</td>
+                                    <td><span class="badge bg-light text-body">{{ row.weak_risk_label }}</span></td>
+                                    <td>{{ row.risk_indicator_count|default:"N/A" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="7" class="text-muted">N/A</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Cluster Summary</h5>
+                <a href="{% url 'analytics:export_ml_cluster_summary_csv' %}" class="btn btn-sm btn-soft-primary">
+                    <i class="ri-download-2-line align-bottom me-1"></i> CSV
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                    Clusters describe groups with similar procurement profiles. Cluster names are descriptive summaries, not legal or administrative classifications.
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Cluster</th><th>Companies</th><th>Share</th><th>Mean performance</th><th>Mean active count</th><th>Mean active winner value</th><th>Weak label rate</th><th>Strict label rate</th><th>Profile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.cluster_rows %}
+                                <tr>
+                                    <td>{{ row.cluster_id }}</td>
+                                    <td>{{ row.company_count }}</td>
+                                    <td>{{ row.share_display }}</td>
+                                    <td>{{ row.mean_performance_score_display }}</td>
+                                    <td>{{ row.mean_active_procurement_count_display }}</td>
+                                    <td>{{ row.mean_active_total_winner_value_amount_display }}</td>
+                                    <td>{{ row.weak_risk_label_rate_display }}</td>
+                                    <td>{{ row.strict_weak_risk_label_rate_display }}</td>
+                                    <td><span class="badge bg-info-subtle text-info">{{ row.profile_label }}</span></td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="9" class="text-muted">N/A</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Reduced-Feature Ranking Preview</h5>
+                <a href="{% url 'analytics:export_ml_reduced_feature_ranking_csv' %}" class="btn btn-sm btn-soft-primary">
+                    <i class="ri-download-2-line align-bottom me-1"></i> CSV
+                </a>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">This preview ranks companies by the reduced-feature strict-label model score. It remains exploratory and should be interpreted with the model audit.</p>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>NIPT</th><th>Business name</th><th>Probability</th><th>Strict label</th><th>Reason</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.reduced_ranking_rows %}
+                                <tr>
+                                    <td><a href="{{ row.detail_url }}">{{ row.company_nipt }}</a></td>
+                                    <td>{{ row.business_name }}</td>
+                                    <td>{{ row.strict_weak_risk_label_predicted_probability_display }}</td>
+                                    <td><span class="badge bg-light text-body">{{ row.strict_weak_risk_label }}</span></td>
+                                    <td>{{ row.strict_weak_risk_reason|default:"N/A" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="5" class="text-muted">N/A</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Model Card Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive mb-3">
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                            <tr><th>Dataset</th><td>{{ ml.model_card.dataset_name|default:"N/A" }}</td></tr>
+                            <tr><th>Rows</th><td>{{ ml.model_card.row_count|default:"N/A" }}</td></tr>
+                            <tr><th>Features</th><td>{{ ml.model_card.feature_count|default:"N/A" }}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="fw-medium mb-2">Intended use</p>
+                <ul class="text-muted mb-3">
+                    {% for item in ml.model_card.intended_use %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>N/A</li>
+                    {% endfor %}
+                </ul>
+                <p class="fw-medium mb-2">Not intended use</p>
+                <ul class="text-muted mb-0">
+                    {% for item in ml.model_card.not_intended_use %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li>N/A</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Limitations</h5>
+            </div>
+            <div class="card-body">
+                {% for section in ml.limitations_sections %}
+                    <div class="{% if not forloop.last %}mb-4{% endif %}">
+                        {% if section.title %}
+                            <h6 class="mb-2">{{ section.title }}</h6>
+                        {% endif %}
+                        {% for paragraph in section.paragraphs %}
+                            <p class="text-muted mb-2">{{ paragraph }}</p>
+                        {% endfor %}
+                        {% if section.bullets %}
+                            <ul class="text-muted mb-0">
+                                {% for bullet in section.bullets %}
+                                    <li>{{ bullet }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">N/A</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

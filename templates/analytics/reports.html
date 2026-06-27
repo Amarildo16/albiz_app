@@ -107,6 +107,37 @@
 </div>
 
 <div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <span class="badge bg-primary-subtle text-primary">Exploratory ML</span>
+                <h5 class="card-title mb-0">ML Output Exports</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">These exports serve existing generated files from <code>reports/ml/</code>. They are local analysis artifacts and remain ignored by Git.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'analytics:ml_overview' %}" class="btn btn-soft-primary">
+                        <i class="ri-brain-line align-bottom me-1"></i> ML Results &amp; Model Audit
+                    </a>
+                    <a href="{% url 'analytics:export_ml_anomaly_ranking_csv' %}" class="btn btn-sm btn-soft-secondary">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Anomaly ranking CSV
+                    </a>
+                    <a href="{% url 'analytics:export_ml_feature_importance_csv' %}" class="btn btn-sm btn-soft-secondary">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Feature importance CSV
+                    </a>
+                    <a href="{% url 'analytics:export_ml_cluster_summary_csv' %}" class="btn btn-sm btn-soft-secondary">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Cluster summary CSV
+                    </a>
+                    <a href="{% url 'analytics:export_ml_reduced_feature_ranking_csv' %}" class="btn btn-sm btn-soft-secondary">
+                        <i class="ri-download-2-line align-bottom me-1"></i> Reduced-feature ranking CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
     <div class="col-xl-8">
         <div class="card">
             <div class="card-header">
@@ -136,6 +167,9 @@
                 </a>
                 <a href="{% url 'analytics:methodology' %}" class="btn btn-soft-secondary text-start">
                     <i class="ri-file-list-3-line align-bottom me-1"></i> Methodology
+                </a>
+                <a href="{% url 'analytics:ml_overview' %}" class="btn btn-soft-primary text-start">
+                    <i class="ri-brain-line align-bottom me-1"></i> ML Results
                 </a>
             </div>
         </div>

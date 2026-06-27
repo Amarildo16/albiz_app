@@ -13,6 +13,7 @@ from analytics.services.companies import (
     status_options,
 )
 from analytics.services.data_quality import get_data_quality_report
+from analytics.services.ml_results import get_ml_export_path, get_ml_results_context
 from analytics.services.risk import (
     RISK_INDICATOR_OPTIONS,
     compute_risk_indicators,
@@ -152,6 +153,16 @@ def reports(request):
     )
 
 
+def ml_overview(request):
+    return render(
+        request,
+        'analytics/ml_overview.html',
+        {
+            'ml': get_ml_results_context(),
+        },
+    )
+
+
 def export_risk_summary_csv(request):
     return export_csv('risk-summary.csv', risk_summary_export)
 
@@ -176,6 +187,22 @@ def export_indicator_distribution_csv(request):
     return export_csv('indicator-distribution.csv', indicator_distribution_export)
 
 
+def export_ml_anomaly_ranking_csv(request):
+    return export_generated_ml_csv('ml-anomaly-ranking.csv')
+
+
+def export_ml_feature_importance_csv(request):
+    return export_generated_ml_csv('ml-feature-importance.csv')
+
+
+def export_ml_cluster_summary_csv(request):
+    return export_generated_ml_csv('ml-cluster-summary.csv')
+
+
+def export_ml_reduced_feature_ranking_csv(request):
+    return export_generated_ml_csv('ml-reduced-feature-ranking.csv')
+
+
 def export_csv(filename, export_builder):
     try:
         headers, rows = export_builder()
@@ -187,6 +214,23 @@ def export_csv(filename, export_builder):
             [[f'Collector database is not reachable or the export is unavailable: {exc}']],
             status=503,
         )
+
+
+def export_generated_ml_csv(download_filename):
+    path = get_ml_export_path(download_filename)
+    if path is None:
+        return csv_response(
+            download_filename,
+            ['error'],
+            [[
+                'Generated ML output is unavailable. Run build_ml_dataset and run_ml_analysis, then retry this export.'
+            ]],
+            status=404,
+        )
+
+    response = HttpResponse(path.read_text(encoding='utf-8'), content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{download_filename}"'
+    return response
 
 
 def csv_response(filename, headers, rows, status=200):
