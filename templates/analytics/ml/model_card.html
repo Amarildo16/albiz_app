@@ -54,6 +54,27 @@
     </div>
 </div>
 
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Financial Enrichment Limitation</h5>
+                <a href="{% url 'analytics:ml_financial_enrichment' %}" class="btn btn-sm btn-soft-primary">
+                    Open Experiment
+                </a>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-2">
+                    The financial enrichment experiment uses the OpenCorporates financial subset as secondary exploratory data. Coverage is limited to {{ ml.financial_enrichment.summary.companies_with_financial_enrichment }} joined companies ({{ ml.financial_enrichment.summary.coverage_percentage }}).
+                </p>
+                <div class="alert alert-info mb-0" role="alert">
+                    In the current generated run, adding secondary financial enrichment did not produce a clear improvement over the best procurement-only baseline. These results should be interpreted as heuristic-label model behavior, not official validation.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row g-4 mb-4">
     <div class="col-xl-6">
         <div class="card h-100 mb-0">

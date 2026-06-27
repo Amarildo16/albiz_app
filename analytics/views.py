@@ -225,6 +225,10 @@ def ml_feature_importance(request):
     return render_ml_results_page(request, 'analytics/ml/feature_importance.html')
 
 
+def ml_financial_enrichment(request):
+    return render_ml_results_page(request, 'analytics/ml/financial_enrichment.html')
+
+
 def ml_model_card(request):
     return render_ml_results_page(request, 'analytics/ml/model_card.html')
 
@@ -323,6 +327,18 @@ def export_ml_pca_3d_csv(request):
 
 def export_ml_lof_anomaly_ranking_csv(request):
     return export_generated_ml_csv('ml-lof-anomaly-ranking.csv')
+
+
+def export_ml_financial_subset_ranking_csv(request):
+    return export_generated_ml_csv('ml-financial-subset-ranking.csv')
+
+
+def export_ml_financial_subset_feature_importance_csv(request):
+    return export_generated_ml_csv('ml-financial-subset-feature-importance.csv')
+
+
+def export_ml_financial_feature_missingness_csv(request):
+    return export_generated_ml_csv('ml-financial-feature-missingness.csv')
 
 
 def export_csv(filename, export_builder):

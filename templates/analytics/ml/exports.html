@@ -108,6 +108,28 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
+                <h5 class="card-title mb-0">Financial Enrichment Experiment</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'analytics:export_ml_financial_subset_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Financial subset ranking CSV
+                </a>
+                <a href="{% url 'analytics:export_ml_financial_subset_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Financial subset feature importance CSV
+                </a>
+                <a href="{% url 'analytics:export_ml_financial_feature_missingness_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Financial feature missingness CSV
+                </a>
+                <p class="text-muted mb-0">These outputs compare a procurement-only baseline with procurement plus secondary financial enrichment on the covered subset.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header">
                 <h5 class="card-title mb-0">Documentation / Model Card</h5>
             </div>
             <div class="card-body">

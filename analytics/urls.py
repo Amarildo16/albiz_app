@@ -22,6 +22,7 @@ urlpatterns = [
     path('ml/pca/', views.ml_pca, name='ml_pca'),
     path('ml/clustering/', views.ml_clustering, name='ml_clustering'),
     path('ml/feature-importance/', views.ml_feature_importance, name='ml_feature_importance'),
+    path('ml/financial-enrichment/', views.ml_financial_enrichment, name='ml_financial_enrichment'),
     path('ml/model-card/', views.ml_model_card, name='ml_model_card'),
     path('ml/exports/', views.ml_exports, name='ml_exports'),
     path('ml/run-analysis/', views.ml_run_analysis, name='ml_run_analysis'),
@@ -39,4 +40,7 @@ urlpatterns = [
     path('reports/export/ml-pca-2d.csv', views.export_ml_pca_2d_csv, name='export_ml_pca_2d_csv'),
     path('reports/export/ml-pca-3d.csv', views.export_ml_pca_3d_csv, name='export_ml_pca_3d_csv'),
     path('reports/export/ml-lof-anomaly-ranking.csv', views.export_ml_lof_anomaly_ranking_csv, name='export_ml_lof_anomaly_ranking_csv'),
+    path('reports/export/ml-financial-subset-ranking.csv', views.export_ml_financial_subset_ranking_csv, name='export_ml_financial_subset_ranking_csv'),
+    path('reports/export/ml-financial-subset-feature-importance.csv', views.export_ml_financial_subset_feature_importance_csv, name='export_ml_financial_subset_feature_importance_csv'),
+    path('reports/export/ml-financial-feature-missingness.csv', views.export_ml_financial_feature_missingness_csv, name='export_ml_financial_feature_missingness_csv'),
 ]

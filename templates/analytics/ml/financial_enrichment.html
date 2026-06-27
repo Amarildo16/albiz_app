@@ -1,0 +1,325 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Financial Enrichment Experiment | Albiz Analytics{% endblock %}
+
+{% block content %}
+{% include 'analytics/ml/partials/page_header.html' with title='Financial Enrichment Experiment' subtitle='Procurement-only baseline compared with procurement plus secondary OpenCorporates financial features.' crumb='Financial Enrichment' %}
+{% include 'analytics/ml/partials/output_warnings.html' %}
+
+{% if ml.financial_enrichment.missing_files %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-warning mb-0">
+            <div class="card-body">
+                <h5 class="card-title mb-2">Financial enrichment outputs are incomplete</h5>
+                <p class="text-muted mb-3">{{ ml.financial_enrichment.missing_message }}</p>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for filename in ml.financial_enrichment.missing_files %}
+                        <span class="badge bg-warning-subtle text-warning">{{ filename }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-warning mb-0" role="alert">
+            OpenCorporates financial data is secondary exploratory enrichment. This experiment uses only companies where the financial subset exists, and the target is a heuristic strict weak label. Results describe model behavior over available generated data; they are not official real-world risk validation.
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Joined companies</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.total_joined_companies }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Financial subset</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.companies_with_financial_enrichment }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Coverage</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.coverage_percentage }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Financial rows</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.financial_table_rows }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Financial NIPTs</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.distinct_financial_nipts }}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Year range</p>
+                <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.financial_year_range }}</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-4">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Subset Label Distribution</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">Target: {{ ml.financial_enrichment.subset.target }} ({{ ml.financial_enrichment.subset.target_type }})</p>
+                <div class="table-responsive">
+                    <table class="table table-sm table-nowrap align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>Class</th><th>Count</th><th>Share</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.financial_enrichment.label_distribution %}
+                                <tr><td>{{ row.label }}</td><td>{{ row.count }}</td><td>{{ row.percentage }}</td></tr>
+                            {% empty %}
+                                <tr><td colspan="3" class="text-muted">N/A</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-muted mt-3 mb-0">Subset rows: {{ ml.financial_enrichment.subset.subset_row_count }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <div class="card h-100 mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Main Conclusion</h5>
+                <span class="badge bg-info-subtle text-info">Exploratory result</span>
+            </div>
+            <div class="card-body">
+                <p class="fs-15 mb-3">{{ ml.financial_enrichment.conclusion }}</p>
+                <div class="alert alert-info mb-0" role="alert">
+                    This suggests that the current heuristic label is mainly explained by procurement and registry-derived signals, while the available financial subset may require stronger official validation or different targets to add measurable value.
+                </div>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-muted mb-1">Best F1</p>
+                            <h6 class="mb-1">{{ ml.financial_enrichment.subset.best_model_by_f1.experiment }}</h6>
+                            <span class="text-muted">{{ ml.financial_enrichment.subset.best_model_by_f1.model }}: {{ ml.financial_enrichment.subset.best_model_by_f1.metric }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-muted mb-1">Best ROC AUC</p>
+                            <h6 class="mb-1">{{ ml.financial_enrichment.subset.best_model_by_roc_auc.experiment }}</h6>
+                            <span class="text-muted">{{ ml.financial_enrichment.subset.best_model_by_roc_auc.model }}: {{ ml.financial_enrichment.subset.best_model_by_roc_auc.metric }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Metrics Comparison</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th rowspan="2">Model</th>
+                                <th colspan="5">Procurement-only baseline</th>
+                                <th colspan="5">Procurement plus financial enrichment</th>
+                                <th colspan="2">Delta</th>
+                            </tr>
+                            <tr>
+                                <th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC AUC</th>
+                                <th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC AUC</th>
+                                <th>F1</th><th>ROC AUC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.financial_enrichment.metric_rows %}
+                                <tr>
+                                    <td>{{ row.model }}</td>
+                                    <td>{{ row.baseline_accuracy }}</td>
+                                    <td>{{ row.baseline_precision }}</td>
+                                    <td>{{ row.baseline_recall }}</td>
+                                    <td>{{ row.baseline_f1 }}</td>
+                                    <td>{{ row.baseline_roc_auc }}</td>
+                                    <td>{{ row.enriched_accuracy }}</td>
+                                    <td>{{ row.enriched_precision }}</td>
+                                    <td>{{ row.enriched_recall }}</td>
+                                    <td>{{ row.enriched_f1 }}</td>
+                                    <td>{{ row.enriched_roc_auc }}</td>
+                                    <td>{{ row.delta_f1 }}</td>
+                                    <td>{{ row.delta_roc_auc }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="13" class="text-muted">Financial subset metrics are unavailable.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Financial Subset Feature Importance</h5>
+                <span class="badge bg-warning-subtle text-warning">Explains heuristic labels, not verified outcomes</span>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>Experiment</th><th>Model</th><th>Feature</th><th>Importance</th><th>Rank</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.financial_enrichment.feature_importance_rows %}
+                                <tr>
+                                    <td>{{ row.experiment_display }}</td>
+                                    <td>{{ row.model_display }}</td>
+                                    <td><code>{{ row.feature }}</code></td>
+                                    <td>{{ row.importance_display }}</td>
+                                    <td>{{ row.rank }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="5" class="text-muted">Feature importance rows are unavailable.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Financial Subset Ranking Preview</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>NIPT</th>
+                                <th>Business name</th>
+                                <th>Predicted probability</th>
+                                <th>Strict label</th>
+                                <th>Latest year</th>
+                                <th>Latest revenue</th>
+                                <th>Latest profit before tax</th>
+                                <th>Revenue growth</th>
+                                <th>Profit growth</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.financial_enrichment.ranking_rows %}
+                                <tr>
+                                    <td><a href="{{ row.detail_url }}">{{ row.company_nipt }}</a></td>
+                                    <td><a href="{{ row.detail_url }}">{{ row.business_name }}</a></td>
+                                    <td>{{ row.predicted_probability_display }}</td>
+                                    <td>{{ row.strict_weak_risk_label }}</td>
+                                    <td>{{ row.latest_financial_year|default:'N/A' }}</td>
+                                    <td>{{ row.latest_revenue_amount_display }}</td>
+                                    <td>{{ row.latest_profit_before_tax_amount_display }}</td>
+                                    <td>{{ row.revenue_growth_latest_pct_display }}</td>
+                                    <td>{{ row.profit_growth_latest_pct_display }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="9" class="text-muted">Ranking rows are unavailable.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-muted mt-3 mb-0">This preview is sorted by the generated financial subset ranking. It does not retrain models or query the collector database.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-7">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Financial Feature Missingness</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>Feature</th><th>Missing count</th><th>Missing percentage</th><th>Usable</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.financial_enrichment.missingness_rows %}
+                                <tr>
+                                    <td><code>{{ row.feature }}</code></td>
+                                    <td>{{ row.missing_count_display }}</td>
+                                    <td>{{ row.missing_percentage }}</td>
+                                    <td>{{ row.usable }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="4" class="text-muted">Missingness rows are unavailable.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Exports</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'analytics:export_ml_financial_subset_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Financial subset ranking CSV
+                </a>
+                <a href="{% url 'analytics:export_ml_financial_subset_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Financial subset feature importance CSV
+                </a>
+                <a href="{% url 'analytics:export_ml_financial_feature_missingness_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Financial feature missingness CSV
+                </a>
+                <div class="alert alert-light border mt-2 mb-0" role="alert">
+                    The enriched dataset CSV remains available locally under <code>reports/ml/</code>. It is intentionally not exposed as a large dashboard export here.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

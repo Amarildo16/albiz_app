@@ -39,6 +39,13 @@ ML_OUTPUT_FILES = [
     'ml_pca_summary.json',
     'ml_classification_ranking.csv',
     'ml_reduced_feature_ranking.csv',
+    'ml_dataset_with_financial_enrichment.csv',
+    'ml_financial_enrichment_summary.json',
+    'ml_financial_feature_missingness.csv',
+    'ml_financial_feature_columns.json',
+    'ml_financial_subset_metrics.json',
+    'ml_financial_subset_feature_importance.csv',
+    'ml_financial_subset_ranking.csv',
 ]
 
 ML_CSV_EXPORTS = {
@@ -49,6 +56,9 @@ ML_CSV_EXPORTS = {
     'ml-pca-2d.csv': 'ml_pca_2d.csv',
     'ml-pca-3d.csv': 'ml_pca_3d.csv',
     'ml-lof-anomaly-ranking.csv': 'ml_lof_anomaly_ranking.csv',
+    'ml-financial-subset-ranking.csv': 'ml_financial_subset_ranking.csv',
+    'ml-financial-subset-feature-importance.csv': 'ml_financial_subset_feature_importance.csv',
+    'ml-financial-feature-missingness.csv': 'ml_financial_feature_missingness.csv',
 }
 
 
@@ -64,6 +74,8 @@ def get_ml_results_context(preview_limit=20):
     leakage_audit = read_json('ml_leakage_audit.json', errors)
     model_card = read_json('ml_model_card.json', errors)
     pca_summary = read_json('ml_pca_summary.json', errors)
+    financial_summary = read_json('ml_financial_enrichment_summary.json', errors)
+    financial_subset_metrics = read_json('ml_financial_subset_metrics.json', errors)
     limitations_text = read_text('ml_limitations.md', errors)
     pca_2d_rows = sampled_pca_rows('ml_pca_2d.csv', PCA_VISUALIZATION_LIMIT, errors)
     pca_3d_rows = sampled_pca_rows('ml_pca_3d.csv', PCA_VISUALIZATION_LIMIT, errors)
@@ -119,6 +131,11 @@ def get_ml_results_context(preview_limit=20):
         'pca_2d_rows': pca_2d_rows,
         'pca_3d_rows': pca_3d_rows,
         'procurement_cube_rows': procurement_cube_rows,
+        'financial_enrichment': build_financial_enrichment_context(
+            financial_summary=financial_summary,
+            financial_subset_metrics=financial_subset_metrics,
+            preview_limit=preview_limit,
+        ),
         'chart_data': build_chart_data(
             reduced_metric_rows=reduced_metric_rows,
             pca_summary=pca_summary,
@@ -546,6 +563,216 @@ def build_pca_summary(summary):
     }
 
 
+def build_financial_enrichment_context(financial_summary, financial_subset_metrics, preview_limit):
+    required_files = [
+        'ml_financial_enrichment_summary.json',
+        'ml_financial_subset_metrics.json',
+        'ml_financial_subset_feature_importance.csv',
+        'ml_financial_subset_ranking.csv',
+        'ml_financial_feature_missingness.csv',
+    ]
+    missing_files = [
+        filename
+        for filename in required_files
+        if not (ML_OUTPUT_DIR / filename).exists()
+    ]
+    summary = build_financial_summary(financial_summary)
+    metrics = build_financial_subset_metrics(financial_subset_metrics)
+    return {
+        'available': not missing_files and bool(financial_summary) and bool(financial_subset_metrics),
+        'missing_files': missing_files,
+        'missing_message': (
+            'Financial enrichment ML outputs are unavailable. Run build_ml_dataset and run_ml_analysis.'
+            if missing_files else ''
+        ),
+        'summary': summary,
+        'subset': metrics,
+        'label_distribution': distribution_rows(financial_subset_metrics.get('target_distribution', {})),
+        'metric_rows': financial_metric_comparison_rows(financial_subset_metrics),
+        'feature_importance_rows': financial_feature_importance_rows(preview_limit),
+        'ranking_rows': financial_subset_ranking_rows(preview_limit),
+        'missingness_rows': financial_missingness_rows(preview_limit),
+        'conclusion': financial_conclusion(financial_subset_metrics),
+    }
+
+
+def build_financial_summary(summary):
+    return {
+        'total_joined_companies': format_int(summary.get('total_joined_companies')),
+        'companies_with_financial_enrichment': format_int(summary.get('companies_with_financial_enrichment')),
+        'coverage_percentage': summary.get('coverage_percentage') or 'N/A',
+        'financial_table_rows': format_int(summary.get('financial_table_rows')),
+        'distinct_financial_nipts': format_int(summary.get('distinct_financial_nipts')),
+        'financial_year_range': year_range_display(
+            summary.get('min_financial_year'),
+            summary.get('max_financial_year'),
+        ),
+        'min_financial_year': summary.get('min_financial_year') or 'N/A',
+        'max_financial_year': summary.get('max_financial_year') or 'N/A',
+        'columns_detected': summary.get('columns_detected', {}),
+        'warnings': summary.get('warnings', []),
+    }
+
+
+def build_financial_subset_metrics(payload):
+    return {
+        'ran': payload.get('ran', False),
+        'subset_row_count': format_int(payload.get('subset_row_count')),
+        'subset_row_count_raw': safe_int(payload.get('subset_row_count')),
+        'target': payload.get('target', 'strict_weak_risk_label'),
+        'target_type': payload.get('target_type', 'heuristic strict weak label'),
+        'interpretation': payload.get('interpretation', ''),
+        'best_model_by_f1': best_financial_model_display(payload.get('best_model_by_f1')),
+        'best_model_by_roc_auc': best_financial_model_display(payload.get('best_model_by_roc_auc')),
+        'warnings': payload.get('warnings', []),
+        'reason': payload.get('reason', ''),
+    }
+
+
+def best_financial_model_display(payload):
+    if not payload:
+        return {'experiment': 'N/A', 'model': 'N/A', 'metric': 'N/A'}
+    metric_name = 'f1' if 'f1' in payload else 'roc_auc'
+    return {
+        'experiment': display_experiment_name(payload.get('experiment')),
+        'model': display_model_name(payload.get('model')),
+        'metric': format_decimal(payload.get(metric_name), 4),
+        'metric_name': metric_name.upper().replace('_', ' '),
+    }
+
+
+def financial_metric_comparison_rows(payload):
+    procurement_only = (
+        payload.get('procurement_only_on_financial_subset', {}).get('metrics', {})
+    )
+    procurement_plus = (
+        payload.get('procurement_plus_financial_enrichment', {}).get('metrics', {})
+    )
+    deltas = payload.get('metric_deltas_procurement_plus_minus_procurement_only', {})
+    rows = []
+    model_names = sorted(set(procurement_only) | set(procurement_plus))
+    for model_name in model_names:
+        baseline = procurement_only.get(model_name, {})
+        enriched = procurement_plus.get(model_name, {})
+        delta = deltas.get(model_name, {})
+        rows.append(
+            {
+                'model': display_model_name(model_name),
+                'baseline_accuracy': format_decimal(baseline.get('accuracy'), 4),
+                'baseline_precision': format_decimal(baseline.get('precision'), 4),
+                'baseline_recall': format_decimal(baseline.get('recall'), 4),
+                'baseline_f1': format_decimal(baseline.get('f1'), 4),
+                'baseline_roc_auc': format_decimal(baseline.get('roc_auc'), 4),
+                'enriched_accuracy': format_decimal(enriched.get('accuracy'), 4),
+                'enriched_precision': format_decimal(enriched.get('precision'), 4),
+                'enriched_recall': format_decimal(enriched.get('recall'), 4),
+                'enriched_f1': format_decimal(enriched.get('f1'), 4),
+                'enriched_roc_auc': format_decimal(enriched.get('roc_auc'), 4),
+                'delta_f1': signed_decimal(delta.get('f1'), 4),
+                'delta_roc_auc': signed_decimal(delta.get('roc_auc'), 4),
+            }
+        )
+    return rows
+
+
+def financial_feature_importance_rows(limit):
+    rows = []
+    all_rows = read_csv_rows('ml_financial_subset_feature_importance.csv', limit=None)
+    priority = {
+        ('procurement_plus_financial_enrichment', 'random_forest'): 0,
+        ('procurement_plus_financial_enrichment', 'extra_trees'): 1,
+        ('procurement_only_on_financial_subset', 'random_forest'): 2,
+        ('procurement_only_on_financial_subset', 'extra_trees'): 3,
+    }
+    sorted_rows = sorted(
+        all_rows,
+        key=lambda row: (
+            priority.get((row.get('experiment', ''), row.get('model', '')), 99),
+            safe_int(row.get('rank')),
+        ),
+    )
+    for row in sorted_rows[:limit]:
+        row['experiment_display'] = display_experiment_name(row.get('experiment'))
+        row['model_display'] = display_model_name(row.get('model'))
+        row['importance_display'] = format_decimal(row.get('importance'), 6)
+        rows.append(row)
+    return rows
+
+
+def financial_subset_ranking_rows(limit):
+    rows = []
+    for row in read_csv_rows('ml_financial_subset_ranking.csv', limit=limit):
+        if row.get('company_nipt'):
+            row['detail_url'] = row.get('detail_url') or f'/companies/{row["company_nipt"]}/'
+        row['predicted_probability_display'] = format_decimal(row.get('predicted_probability'), 4)
+        row['latest_revenue_amount_display'] = format_money(row.get('latest_revenue_amount'))
+        row['latest_profit_before_tax_amount_display'] = format_money(row.get('latest_profit_before_tax_amount'))
+        row['revenue_growth_latest_pct_display'] = format_percent(row.get('revenue_growth_latest_pct'))
+        row['profit_growth_latest_pct_display'] = format_percent(row.get('profit_growth_latest_pct'))
+        rows.append(row)
+    return rows
+
+
+def financial_missingness_rows(limit):
+    rows = []
+    financial_prefixes = {
+        'has_financial_enrichment',
+        'financial_year_count',
+        'financial_year_min',
+        'financial_year_max',
+        'financial_year_span',
+        'latest_financial_year',
+        'latest_revenue_amount',
+        'latest_profit_before_tax_amount',
+        'revenue_growth_latest_pct',
+        'profit_growth_latest_pct',
+        'revenue_mean',
+        'revenue_median',
+        'revenue_min',
+        'revenue_max',
+        'profit_before_tax_mean',
+        'profit_before_tax_median',
+        'profit_before_tax_min',
+        'profit_before_tax_max',
+        'latest_profit_margin_before_tax',
+        'log_latest_revenue_amount',
+        'signed_log_latest_profit_before_tax',
+    }
+    for row in read_csv_rows('ml_financial_feature_missingness.csv', limit=None):
+        if row.get('feature') not in financial_prefixes:
+            continue
+        row['missing_count_display'] = format_int(row.get('missing_count'))
+        rows.append(row)
+        if len(rows) >= limit:
+            break
+    return rows
+
+
+def financial_conclusion(payload):
+    best_f1 = payload.get('best_model_by_f1', {})
+    best_roc = payload.get('best_model_by_roc_auc', {})
+    if not payload.get('ran'):
+        return 'Financial enrichment subset metrics are not available in the current generated outputs.'
+    if (
+        best_f1.get('experiment') == 'procurement_only_on_financial_subset'
+        and best_roc.get('experiment') == 'procurement_only_on_financial_subset'
+    ):
+        return (
+            'In this run, the procurement-only baseline produced the best F1 and ROC AUC. '
+            'Adding secondary financial enrichment did not produce a clear improvement over the best procurement-only model.'
+        )
+    return (
+        'In this run, financial enrichment appears to add signal for at least one metric in this heuristic-label experiment. '
+        'This is exploratory and is not real-world validation.'
+    )
+
+
+def year_range_display(year_min, year_max):
+    if year_min in (None, '') or year_max in (None, ''):
+        return 'N/A'
+    return f'{year_min}-{year_max}'
+
+
 def build_chart_data(
     reduced_metric_rows,
     pca_summary,
@@ -615,6 +842,9 @@ def display_experiment_name(value):
     labels = {
         'weak_label_replication_model': 'Weak-label replication model',
         'reduced_feature_strict_label_model': 'Reduced-feature strict-label model',
+        'financial_enrichment_subset_experiment': 'Financial enrichment subset experiment',
+        'procurement_only_on_financial_subset': 'Procurement-only baseline',
+        'procurement_plus_financial_enrichment': 'Procurement plus financial enrichment',
     }
     return labels.get(str(value), display_model_name(value))
 
@@ -666,6 +896,16 @@ def format_decimal(value, places=4):
         return f'{float(value):,.{places}f}'
     except (TypeError, ValueError):
         return str(value)
+
+
+def signed_decimal(value, places=4):
+    if value in (None, ''):
+        return 'N/A'
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return str(value)
+    return f'{number:+,.{places}f}'
 
 
 def format_percent(value):

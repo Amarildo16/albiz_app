@@ -205,6 +205,55 @@
     </div>
 </div>
 
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title mb-0">Financial Enrichment Experiment</h5>
+                    <p class="text-muted mb-0 mt-1">Procurement-only baseline compared with procurement plus secondary OpenCorporates financial features.</p>
+                </div>
+                <span class="badge bg-info-subtle text-info">Secondary enrichment</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 align-items-stretch">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Companies covered</p>
+                            <h5 class="mb-0">{{ ml.financial_enrichment.summary.companies_with_financial_enrichment }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Financial coverage</p>
+                            <h5 class="mb-0">{{ ml.financial_enrichment.summary.coverage_percentage }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Best result</p>
+                            <h6 class="mb-0">{{ ml.financial_enrichment.subset.best_model_by_f1.experiment }}</h6>
+                            <span class="text-muted">{{ ml.financial_enrichment.subset.best_model_by_f1.model }}</span>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Interpretation</p>
+                            <span class="text-muted">No clear improvement in this run</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-info mt-3 mb-3" role="alert">
+                    The current run suggests the heuristic strict weak label is mainly explained by procurement and registry-derived signals; secondary financial enrichment did not clearly improve the best model.
+                </div>
+                <a href="{% url 'analytics:ml_financial_enrichment' %}" class="btn btn-soft-primary">
+                    <i class="ri-bank-card-line align-bottom me-1"></i> Open Financial Enrichment Experiment
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row g-4 mb-4">
     <div class="col-xl-8">
         <div class="card h-100 mb-0">
@@ -228,6 +277,7 @@
                 <a href="{% url 'analytics:ml_pca' %}" class="btn btn-soft-info text-start"><i class="ri-bubble-chart-line align-bottom me-1"></i> PCA Visualization</a>
                 <a href="{% url 'analytics:ml_clustering' %}" class="btn btn-soft-success text-start"><i class="ri-node-tree align-bottom me-1"></i> Clustering</a>
                 <a href="{% url 'analytics:ml_feature_importance' %}" class="btn btn-soft-secondary text-start"><i class="ri-list-check-2 align-bottom me-1"></i> Feature Importance</a>
+                <a href="{% url 'analytics:ml_financial_enrichment' %}" class="btn btn-soft-info text-start"><i class="ri-bank-card-line align-bottom me-1"></i> Financial Enrichment</a>
                 <a href="{% url 'analytics:ml_model_card' %}" class="btn btn-soft-dark text-start"><i class="ri-file-list-3-line align-bottom me-1"></i> Model Card &amp; Limitations</a>
                 <a href="{% url 'analytics:ml_exports' %}" class="btn btn-soft-primary text-start"><i class="ri-download-cloud-2-line align-bottom me-1"></i> ML Exports</a>
             </div>
