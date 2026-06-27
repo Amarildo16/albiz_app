@@ -65,6 +65,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link menu-link {% if request.resolver_match.url_name == 'registry_enrichment' %}active{% endif %}" href="{% url 'analytics:registry_enrichment' %}">
+                        <i class="ri-government-line"></i>
+                        <span>Registry &amp; Enrichment</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}" href="{% url 'analytics:reports' %}">
                         <i class="ri-download-cloud-2-line"></i>
                         <span>Reports</span>

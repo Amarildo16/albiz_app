@@ -1,4 +1,5 @@
 from analytics.services.data_quality import get_data_quality_report
+from analytics.services.registry_enrichment import registry_enrichment_summary_export
 from analytics.services.risk import get_risk_overview
 
 EXPORT_LIMIT = 100
@@ -194,6 +195,10 @@ def indicator_distribution_export():
     return headers, rows
 
 
+def registry_enrichment_export():
+    return registry_enrichment_summary_export()
+
+
 def reports_catalog():
     return [
         {
@@ -230,6 +235,12 @@ def reports_catalog():
             'title': 'Data quality summary CSV',
             'description': 'Source counts, coverage rates, and completeness metrics.',
             'url_name': 'analytics:export_data_quality_summary_csv',
+            'group': 'Data quality exports',
+        },
+        {
+            'title': 'Registry enrichment summary CSV',
+            'description': 'QKB registry coverage, OpenCorporates enrichment coverage, and compact name-comparison metrics.',
+            'url_name': 'analytics:export_registry_enrichment_summary_csv',
             'group': 'Data quality exports',
         },
     ]

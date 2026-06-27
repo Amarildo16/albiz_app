@@ -34,6 +34,11 @@ from analytics.services.reports import (
     top_risk_companies_export,
     top_winner_value_companies_export,
 )
+from analytics.services.registry_enrichment import (
+    get_registry_enrichment_fallback,
+    get_registry_enrichment_report,
+    registry_enrichment_summary_export,
+)
 from analytics.services.visuals import get_visual_analytics
 
 
@@ -148,6 +153,22 @@ def data_quality(request):
     return render(request, 'analytics/data_quality.html', context)
 
 
+def registry_enrichment(request):
+    context = {
+        'collector_error': '',
+        'registry': None,
+        'audit_fallback': None,
+    }
+
+    try:
+        context['registry'] = get_registry_enrichment_report()
+    except DatabaseError as exc:
+        context['collector_error'] = str(exc)
+        context['audit_fallback'] = get_registry_enrichment_fallback()
+
+    return render(request, 'analytics/registry_enrichment.html', context)
+
+
 def reports(request):
     return render(
         request,
@@ -259,6 +280,10 @@ def export_data_quality_summary_csv(request):
 
 def export_indicator_distribution_csv(request):
     return export_csv('indicator-distribution.csv', indicator_distribution_export)
+
+
+def export_registry_enrichment_summary_csv(request):
+    return export_csv('registry-enrichment-summary.csv', registry_enrichment_summary_export)
 
 
 def export_ml_anomaly_ranking_csv(request):
