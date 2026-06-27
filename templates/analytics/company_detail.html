@@ -39,13 +39,18 @@
                         <h5 class="card-title mb-1">{{ company.business_name|default:"-" }}</h5>
                         <p class="text-muted mb-3">{{ company.company_nipt }}</p>
                     </div>
-                    {% if company.has_red_flags %}
-                        <span class="badge bg-danger-subtle text-danger">QKB flag</span>
-                    {% elif company.has_red_flags == False %}
-                        <span class="badge bg-success-subtle text-success">No QKB flag</span>
-                    {% else %}
-                        <span class="badge bg-secondary-subtle text-secondary">Unknown QKB flag</span>
-                    {% endif %}
+                    <div class="d-flex flex-column align-items-end gap-2">
+                        {% if financial_enrichment.available %}
+                            <span class="badge bg-primary-subtle text-primary">Financial subset available</span>
+                        {% endif %}
+                        {% if company.has_red_flags %}
+                            <span class="badge bg-danger-subtle text-danger">QKB flag</span>
+                        {% elif company.has_red_flags == False %}
+                            <span class="badge bg-success-subtle text-success">No QKB flag</span>
+                        {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary">Unknown QKB flag</span>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-borderless mb-0">
@@ -189,5 +194,125 @@
         </div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title mb-0">Secondary Financial Enrichment</h5>
+                    <p class="text-muted mb-0 mt-1">OpenCorporates financial subset for this company, when available.</p>
+                </div>
+                <a href="{% url 'analytics:company_financials_csv' company.company_nipt %}" class="btn btn-sm btn-soft-primary">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Export financial enrichment CSV
+                </a>
+            </div>
+            <div class="card-body">
+                {% if financial_enrichment.available %}
+                    <div class="alert alert-warning" role="alert">
+                        These values come from a secondary exploratory enrichment source and should be validated against official filings where required.
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-xl-2 col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Financial years</p>
+                                <h5 class="mb-0">{{ financial_enrichment.row_count_display }}</h5>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Latest year</p>
+                                <h5 class="mb-0">{{ financial_enrichment.latest_year_display }}</h5>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Latest revenue</p>
+                                <h5 class="mb-0">{{ financial_enrichment.latest_revenue_amount_display }}</h5>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Latest profit before tax</p>
+                                <h5 class="mb-0">{{ financial_enrichment.latest_profit_before_tax_amount_display }}</h5>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Revenue growth</p>
+                                <h5 class="mb-0">{{ financial_enrichment.revenue_growth_latest_pct_display }}</h5>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Profit growth</p>
+                                <h5 class="mb-0">{{ financial_enrichment.profit_growth_latest_pct_display }}</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-xl-7">
+                            <div class="border rounded p-3 h-100">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                                    <h6 class="mb-0">Financial Year Trend</h6>
+                                    <span class="badge bg-secondary-subtle text-secondary">Exploratory financial data</span>
+                                </div>
+                                <div id="company-financials-chart-warning" class="alert alert-warning d-none" role="alert">
+                                    The financial enrichment chart could not render because the chart library is unavailable.
+                                </div>
+                                <div id="company-financials-chart"></div>
+                            </div>
+                        </div>
+                        <div class="col-xl-5">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Year</th>
+                                            <th class="text-end">Revenue amount</th>
+                                            <th class="text-end">Profit before tax amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in financial_enrichment.rows %}
+                                            <tr>
+                                                <td>{{ row.year_display }}</td>
+                                                <td class="text-end">{{ row.revenue_amount_display }}</td>
+                                                <td class="text-end">{{ row.profit_before_tax_amount_display }}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr><td colspan="3" class="text-muted">No financial rows available.</td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted mt-3 mb-0">
+                        Source: {{ financial_enrichment.source }}. Numeric fields detected:
+                        {% for field in financial_enrichment.numeric_fields_available %}
+                            <code>{{ field }}</code>{% if not forloop.last %}, {% endif %}
+                        {% empty %}
+                            <span>N/A</span>
+                        {% endfor %}
+                    </p>
+                {% else %}
+                    <div class="border rounded p-4 text-center bg-light">
+                        <h6 class="mb-1">No secondary financial-year enrichment found</h6>
+                        <p class="text-muted mb-0">No OpenCorporates financial-year enrichment was found for this company in the current local dataset.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ financial_enrichment.chart_data|json_script:'company-financials-data' }}
 {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'velzon/libs/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'albiz/js/company-financials.js' %}"></script>
 {% endblock %}

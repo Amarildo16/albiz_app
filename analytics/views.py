@@ -16,6 +16,10 @@ from analytics.services.companies import (
     legal_form_options,
     status_options,
 )
+from analytics.services.company_financials import (
+    company_financial_enrichment_csv_rows,
+    get_company_financial_enrichment,
+)
 from analytics.services.data_quality import get_data_quality_report
 from analytics.services.ml_results import get_ml_export_path, get_ml_results_context
 from analytics.services.ml_runner import run_ml_pipeline_from_web
@@ -274,6 +278,13 @@ def export_top_procurement_count_companies_csv(request):
     return export_csv('top-procurement-count-companies.csv', top_procurement_count_companies_export)
 
 
+def company_financials_csv(request, company_nipt):
+    def export_builder():
+        return company_financial_enrichment_csv_rows(company_nipt)
+
+    return export_csv(f'{company_nipt}-financial-enrichment.csv', export_builder)
+
+
 def export_data_quality_summary_csv(request):
     return export_csv('data-quality-summary.csv', data_quality_summary_export)
 
@@ -356,6 +367,7 @@ def csv_response(filename, headers, rows, status=200):
 def company_detail(request, company_nipt):
     try:
         company = get_company_by_nipt(company_nipt)
+        financial_enrichment = get_company_financial_enrichment(company_nipt)
     except JoinedCompanyFeature.DoesNotExist as exc:
         raise Http404('Company not found') from exc
     except DatabaseError as exc:
@@ -367,6 +379,7 @@ def company_detail(request, company_nipt):
                 'collector_error': str(exc),
                 'risk_indicators': [],
                 'winner_value': None,
+                'financial_enrichment': None,
             },
             status=503,
         )
@@ -379,5 +392,6 @@ def company_detail(request, company_nipt):
             'collector_error': '',
             'risk_indicators': compute_risk_indicators(company),
             'winner_value': get_winner_value(company),
+            'financial_enrichment': financial_enrichment,
         },
     )
