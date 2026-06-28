@@ -112,7 +112,7 @@
                 <p class="text-muted">{{ ml.reduced_interpretation|default:'Reduced feature experiment excludes direct label-defining fields as much as possible.' }}</p>
                 <div id="ml-model-comparison-chart" class="mb-4"></div>
                 <div class="alert alert-light border mb-4 py-2" role="alert">
-                    The reduced-feature strict-label model is more cautious, but it still evaluates heuristic labels rather than verified real-world outcomes.
+                    The reduced-feature strict-label model is more cautious, but it still evaluates heuristic labels rather than external outcome labels.
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
@@ -177,7 +177,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <p class="text-muted mt-3 mb-0">This matrix evaluates the best reduced-feature model against the heuristic strict weak label, not verified real-world outcomes.</p>
+                    <p class="text-muted mt-3 mb-0">This matrix evaluates the best reduced-feature model against the heuristic strict weak label, not external outcome labels.</p>
                 {% else %}
                     <p class="text-muted mb-0">Confusion matrix data is unavailable in the generated metrics.</p>
                 {% endif %}

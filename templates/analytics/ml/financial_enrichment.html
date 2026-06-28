@@ -28,7 +28,7 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="alert alert-warning mb-0" role="alert">
-            OpenCorporates financial data is secondary exploratory enrichment. This experiment uses only companies where the financial subset exists, and the target is a heuristic strict weak label. Results describe model behavior over available generated data; they are not official real-world risk validation.
+            OpenCorporates financial data is secondary exploratory enrichment. This experiment uses only companies where the financial subset exists, and the target is a heuristic strict weak label. Results describe model behavior over available generated data; they are not external validation.
         </div>
     </div>
 </div>
@@ -150,7 +150,7 @@
             <div class="card-body">
                 <p class="fs-15 mb-3">{{ ml.financial_enrichment.conclusion }}</p>
                 <div class="alert alert-info mb-0" role="alert">
-                    This suggests that the current heuristic label is mainly explained by procurement and registry-derived signals, while the available financial subset may require stronger official validation or different targets to add measurable value.
+                    In this run, the procurement-only baseline produced the best F1 and ROC AUC. Adding secondary financial enrichment did not clearly improve the best model. This should not be interpreted as financial data being useless; it means that for the current heuristic strict weak label and the available OpenCorporates subset, procurement/registry-derived signals dominate the model behavior.
                 </div>
                 <div class="row g-3 mt-1">
                     <div class="col-md-6">
@@ -229,12 +229,12 @@
         <div class="card mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <h5 class="card-title mb-0">Financial Subset Feature Importance</h5>
-                <span class="badge bg-warning-subtle text-warning">Explains heuristic labels, not verified outcomes</span>
+                <span class="badge bg-warning-subtle text-warning">Explains heuristic labels, not external outcomes</span>
             </div>
             <div class="card-body">
                 <div id="ml-financial-feature-importance-chart" class="apex-charts mb-4" style="min-height: 420px;"></div>
                 <div class="alert alert-light border mb-4 py-2" role="alert">
-                    Feature importance describes model behavior within this secondary financial subset and should not be read as proof of real-world risk.
+                    Feature importance describes model behavior within this secondary financial subset and should not be read as evidence of external outcomes.
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">

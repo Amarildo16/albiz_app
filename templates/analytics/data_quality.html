@@ -32,6 +32,44 @@
 {% endif %}
 
 {% if report %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="mb-2">APP coverage</h6>
+                            <p class="text-muted mb-0">APP coverage describes procurement source rows and distinct winner companies derived from APP data.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="mb-2">QKB coverage</h6>
+                            <p class="text-muted mb-0">QKB coverage describes the registry backbone used for company identity, legal form, status, city, and registration fields.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="mb-2">Joined coverage</h6>
+                            <p class="text-muted mb-0">Joined APP-QKB companies are APP winner companies matched to QKB subjects by exact normalized NIPT.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="mb-2">Financial coverage</h6>
+                            <p class="text-muted mb-0">OpenCorporates financial coverage is a secondary subset and is summarized in Registry &amp; Enrichment.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
+                    Missingness matters because absent identifiers, amounts, dates, or registry fields can affect joins, feature engineering, and downstream interpretation.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xl-3 col-md-6">
         <div class="card card-animate">
@@ -317,6 +355,8 @@
                 <ul class="text-muted mb-0">
                     <li>APP winner companies are distinct procurement winner identifiers derived from APP data.</li>
                     <li>Joined companies are APP winner companies that matched QKB subjects by exact normalized NIPT.</li>
+                    <li>The joined dataset is smaller than the full QKB registry layer because it only contains QKB companies that also appear as APP winner companies.</li>
+                    <li>OpenCorporates financial enrichment is a secondary subset and should be interpreted as data availability for exploratory analysis.</li>
                     <li>Coverage values are based on the current local database state and may change after pipeline reruns.</li>
                     <li>Missing values should be interpreted in relation to source availability and normalization rules.</li>
                 </ul>

@@ -10,7 +10,8 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="alert alert-info mb-0" role="alert">
-            Export links serve existing files from <code>reports/ml/</code>. Generated files are local analysis artifacts and remain ignored by Git.
+            Export links serve existing files from <code>reports/ml/</code>. Generated files are local analysis artifacts for thesis review and remain ignored by Git.
+            These exports document exploratory ML behavior; they do not train models or validate real-world outcomes from the dashboard.
         </div>
     </div>
 </div>
@@ -23,6 +24,7 @@
             </div>
             <div class="card-body">
                 <p class="text-muted">Dataset and preparation files are generated locally by <code>build_ml_dataset</code>.</p>
+                <p class="text-muted mb-3">Use these files to document the feature matrix, missingness, and modelling dataset construction.</p>
                 <div class="d-flex flex-wrap gap-2">
                     <span class="badge bg-light text-body">ml_dataset.csv</span>
                     <span class="badge bg-light text-body">ml_dataset_summary.json</span>
@@ -38,6 +40,7 @@
                 <h5 class="card-title mb-0">Classification</h5>
             </div>
             <div class="card-body d-grid gap-2">
+                <p class="text-muted mb-1">Reduced-feature outputs are the more cautious classification artifacts because direct label-defining fields are excluded as much as possible.</p>
                 <a href="{% url 'analytics:export_ml_reduced_feature_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
                     <i class="ri-download-2-line align-bottom me-1"></i> Reduced-feature ranking CSV
                 </a>
@@ -51,6 +54,7 @@
                 <h5 class="card-title mb-0">Anomaly Detection</h5>
             </div>
             <div class="card-body d-grid gap-2">
+                <p class="text-muted mb-1">Anomaly exports rank statistically unusual procurement profiles for human review and source verification.</p>
                 <a href="{% url 'analytics:export_ml_anomaly_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
                     <i class="ri-download-2-line align-bottom me-1"></i> Isolation Forest ranking CSV
                 </a>
@@ -69,6 +73,7 @@
                 <h5 class="card-title mb-0">PCA</h5>
             </div>
             <div class="card-body d-grid gap-2">
+                <p class="text-muted mb-1">PCA exports support dimensionality-reduction visualization of procurement profiles. PCA is not a risk model.</p>
                 <a href="{% url 'analytics:export_ml_pca_2d_csv' %}" class="btn btn-sm btn-soft-primary text-start">
                     <i class="ri-download-2-line align-bottom me-1"></i> PCA 2D CSV
                 </a>
@@ -84,6 +89,7 @@
                 <h5 class="card-title mb-0">Clustering</h5>
             </div>
             <div class="card-body d-grid gap-2">
+                <p class="text-muted mb-1">Cluster exports summarize descriptive procurement-profile segments, not legal or administrative classifications.</p>
                 <a href="{% url 'analytics:export_ml_cluster_summary_csv' %}" class="btn btn-sm btn-soft-primary text-start">
                     <i class="ri-download-2-line align-bottom me-1"></i> Cluster summary CSV
                 </a>
@@ -96,6 +102,7 @@
                 <h5 class="card-title mb-0">Feature Importance</h5>
             </div>
             <div class="card-body d-grid gap-2">
+                <p class="text-muted mb-1">Feature importance explains heuristic-label model behavior and should be interpreted cautiously.</p>
                 <a href="{% url 'analytics:export_ml_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary text-start">
                     <i class="ri-download-2-line align-bottom me-1"></i> Feature importance CSV
                 </a>
@@ -111,6 +118,7 @@
                 <h5 class="card-title mb-0">Financial Enrichment Experiment</h5>
             </div>
             <div class="card-body d-grid gap-2">
+                <p class="text-muted mb-1">These outputs compare a procurement-only baseline with procurement plus secondary OpenCorporates financial features on the covered subset.</p>
                 <a href="{% url 'analytics:export_ml_financial_subset_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
                     <i class="ri-download-2-line align-bottom me-1"></i> Financial subset ranking CSV
                 </a>
@@ -120,7 +128,7 @@
                 <a href="{% url 'analytics:export_ml_financial_feature_missingness_csv' %}" class="btn btn-sm btn-soft-primary text-start">
                     <i class="ri-download-2-line align-bottom me-1"></i> Financial feature missingness CSV
                 </a>
-                <p class="text-muted mb-0">These outputs compare a procurement-only baseline with procurement plus secondary financial enrichment on the covered subset.</p>
+                <p class="text-muted mb-0">Use these files to document coverage, model comparison, feature importance, and ranking previews for the financial subset experiment.</p>
             </div>
         </div>
     </div>

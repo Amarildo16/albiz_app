@@ -30,8 +30,9 @@
             </div>
             <div class="card-body">
                 <p class="text-muted mb-3">
-                    Albiz is an analytical platform for exploring Albanian business registry and public procurement data.
-                    It separates collection and analysis into two independent components.
+                    Albiz is an academic analytical platform for exploring Albanian APP procurement data, QKB registry coverage,
+                    analytical risk indicators, and exploratory ML outputs. It separates collection and analysis into two
+                    independent components so the dashboard can remain a read-only interpretation layer.
                 </p>
                 <div class="row g-3">
                     <div class="col-md-6">
@@ -87,7 +88,7 @@
                                 <span class="badge bg-info-subtle text-info">Secondary</span>
                                 <h6 class="mb-0">OpenCorporates</h6>
                             </div>
-                            <p class="text-muted mb-0">OpenCorporates is treated only as secondary exploratory enrichment, not as an authoritative core financial source.</p>
+                            <p class="text-muted mb-0">OpenCorporates is treated only as secondary exploratory enrichment, not as the QKB registry backbone or complete financial coverage.</p>
                         </div>
                     </div>
                 </div>
@@ -143,6 +144,36 @@
 
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
+                <span class="badge bg-info-subtle text-info">Definitions</span>
+                <h5 class="card-title mb-0">Analytical Definitions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="mb-2">Procurement-based performance proxy</h6>
+                            <p class="text-muted mb-0">
+                                Company performance in this dashboard means activity observed in APP procurement data, such as
+                                active procurement count, winner value, authority diversity, and active year span. It is not a
+                                full financial-performance measure.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="mb-2">Analytical risk indicators</h6>
+                            <p class="text-muted mb-0">
+                                Risk indicators are heuristic analytical flags for prioritizing review. They are not evidence
+                                for legal findings or administrative determinations.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
                 <span class="badge bg-primary-subtle text-primary">Core join</span>
                 <h5 class="card-title mb-0">Exact NIPT Matching</h5>
             </div>
@@ -178,6 +209,26 @@
                     <span class="badge bg-warning-subtle text-warning">Cancelled rate</span>
                     <span class="badge bg-danger-subtle text-danger">QKB flag</span>
                 </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <span class="badge bg-primary-subtle text-primary">ML</span>
+                <h5 class="card-title mb-0">Exploratory ML Methodology</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">
+                    ML outputs are built from generated files under <code>reports/ml/</code> and are not trained inside page views.
+                    The models are exploratory tools for understanding heuristic labels and procurement-profile structure.
+                </p>
+                <ul class="text-muted mb-0">
+                    <li>Weak-label classification measures agreement with constructed heuristic labels, not external ground truth.</li>
+                    <li>The reduced-feature strict-label experiment excludes direct label-defining fields as much as possible to reduce circularity.</li>
+                    <li>Isolation Forest and Local Outlier Factor provide statistical anomaly rankings for unusual procurement profiles.</li>
+                    <li>KMeans clustering and PCA summarize procurement-profile structure for interpretation and visualization.</li>
+                    <li>The financial enrichment subset experiment compares procurement-only features with secondary OpenCorporates financial features where coverage exists.</li>
+                </ul>
             </div>
         </div>
 
@@ -240,8 +291,9 @@
                     <li>Some APP records have missing winner NIPT values.</li>
                     <li>QKB historical documents are not fully batch-extracted in the current version.</li>
                     <li>Scanned PDFs and OCR are not part of the core pipeline.</li>
-                    <li>OpenCorporates is not used as an authoritative core financial source.</li>
-                    <li>Risk indicators are heuristic and should be interpreted as analytical signals.</li>
+                    <li>OpenCorporates financial data is incomplete, secondary, and should be validated against source filings where required.</li>
+                    <li>There is no official ground-truth risk label in this version.</li>
+                    <li>Risk indicators and ML outputs are heuristic analytical signals that require human interpretation and future validation.</li>
                 </ul>
             </div>
         </div>

@@ -705,7 +705,7 @@ def run_lof_anomaly_detection(rows, numeric_features, categorical_features, clus
         'n_neighbors': LOF_NEIGHBORS,
         'interpretation': (
             'Unsupervised local-neighborhood anomaly ranking for statistically unusual '
-            'procurement profiles. It is not a misconduct detection model.'
+            'procurement profiles. It is not a legal or administrative determination model.'
         ),
         'ranking': ranking,
         'scores': lof_scores.tolist(),
@@ -916,7 +916,7 @@ def build_analysis_summary(
             'row_count': len(anomaly['ranking']),
             'interpretation': (
                 'Anomaly score identifies statistically unusual company profiles. It does not '
-                'prove misconduct and is useful only for prioritization and exploratory review.'
+                'support legal or administrative conclusions by itself and is useful only for prioritization and exploratory review.'
             ),
         },
         'local_outlier_factor_anomaly_detection': {
@@ -925,7 +925,7 @@ def build_analysis_summary(
             'row_count': len(lof_anomaly['ranking']),
             'interpretation': (
                 'LOF provides a local-neighborhood statistical anomaly ranking. It does not '
-                'prove misconduct and requires human review.'
+                'support legal or administrative conclusions by itself and requires human review.'
             ),
         },
         'clustering': {

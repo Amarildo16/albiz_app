@@ -205,19 +205,19 @@ def reports_catalog():
             'title': 'Risk summary CSV',
             'description': 'High-level counts and coverage for computed analytical indicators.',
             'url_name': 'analytics:export_risk_summary_csv',
-            'group': 'Risk reports',
+            'group': 'Risk indicator reports',
         },
         {
             'title': 'Indicator distribution CSV',
             'description': 'Counts and shares for each procurement anomaly indicator.',
             'url_name': 'analytics:export_indicator_distribution_csv',
-            'group': 'Risk reports',
+            'group': 'Risk indicator reports',
         },
         {
-            'title': 'Top risk companies CSV',
+            'title': 'Top indicator-count companies CSV',
             'description': 'Top companies ranked by number of computed indicators.',
             'url_name': 'analytics:export_top_risk_companies_csv',
-            'group': 'Risk reports',
+            'group': 'Risk indicator reports',
         },
         {
             'title': 'Top winner value companies CSV',
