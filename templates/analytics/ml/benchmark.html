@@ -3,9 +3,83 @@
 
 {% block title %}ML Benchmark Suite | Albiz Analytics{% endblock %}
 
+{% block extra_css %}
+<link href="{% static 'velzon/libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block content %}
 {% include 'analytics/ml/partials/page_header.html' with title='ML Benchmark Suite' subtitle='Repeated cross-validation benchmark for heuristic weak-label experiments.' crumb='Benchmark' %}
 {% include 'analytics/ml/partials/output_warnings.html' %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title mb-0">Benchmark Suite Status</h5>
+                    <p class="text-muted mb-0 mt-1">Generated benchmark outputs read by this page.</p>
+                </div>
+                {% if ml.benchmark.status.missing_files_count == 0 %}
+                    <span class="badge bg-success-subtle text-success">Benchmark outputs available</span>
+                {% else %}
+                    <span class="badge bg-warning-subtle text-warning">Benchmark outputs incomplete</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="row g-3 align-items-stretch">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Benchmark files</p>
+                            <h5 class="mb-0">{{ ml.benchmark.status.available_files_count }} / {{ ml.benchmark.status.total_files_count }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Missing files</p>
+                            <h5 class="mb-0">{{ ml.benchmark.status.missing_files_count }}</h5>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Summary updated</p>
+                            <h6 class="mb-0">{{ ml.benchmark.status.summary_last_modified }}</h6>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="border rounded p-3 h-100">
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Web benchmark run</p>
+                            {% if ml.benchmark.web_run_enabled %}
+                                <span class="badge bg-success-subtle text-success">Enabled</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary">Disabled</span>
+                            {% endif %}
+                            {% if ml.benchmark.status.run_lock_exists %}
+                                <span class="badge bg-warning-subtle text-warning ms-1">Running</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning mt-3" role="alert">
+                    This benchmark is heavier than the normal ML refresh. It runs repeated cross-validation and may take several minutes. No database writes or migrations are performed.
+                </div>
+
+                <form id="ml-benchmark-run-form" method="post" action="{% url 'analytics:ml_run_benchmark' %}" data-confirm-title="{% if ml.benchmark.missing_files %}Run benchmark suite?{% else %}Refresh benchmark suite?{% endif %}" data-confirm-text="This will run repeated cross-validation benchmarks and may take several minutes. Existing benchmark outputs will be refreshed.">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary" data-ml-benchmark-run-button {% if not ml.benchmark.web_run_enabled or ml.benchmark.status.run_lock_exists %}disabled{% endif %}>
+                        <i class="ri-refresh-line align-bottom me-1"></i>
+                        {% if ml.benchmark.missing_files %}Run Benchmark Suite{% else %}Refresh Benchmark Suite{% endif %}
+                    </button>
+                    {% if not ml.benchmark.web_run_enabled %}
+                        <span class="text-muted ms-2">Web benchmark runs are disabled in this environment. Run <code>manage.py run_ml_benchmark</code> from the terminal or enable <code>ENABLE_WEB_ML_BENCHMARK_RUN</code>.</span>
+                    {% elif ml.benchmark.status.run_lock_exists %}
+                        <span class="text-muted ms-2">Benchmark suite is already running. Please wait for it to finish.</span>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% if ml.benchmark.missing_files %}
 <div class="row mb-4">
@@ -353,4 +427,7 @@
 
 {% block extra_js %}
 {% include 'analytics/ml/partials/chart_scripts.html' %}
+<script src="{% static 'velzon/libs/sweetalert2/sweetalert2.min.js' %}"></script>
+{{ ml_page_messages|json_script:"ml-page-messages" }}
+<script src="{% static 'albiz/js/ml-benchmark-run-button.js' %}"></script>
 {% endblock %}

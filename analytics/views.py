@@ -22,6 +22,7 @@ from analytics.services.company_financials import (
 )
 from analytics.services.data_quality import get_data_quality_report
 from analytics.services.ml_results import get_ml_export_path, get_ml_results_context
+from analytics.services.ml_benchmark_runner import run_ml_benchmark_from_web
 from analytics.services.ml_runner import run_ml_pipeline_from_web
 from analytics.services.risk import (
     RISK_INDICATOR_OPTIONS,
@@ -268,6 +269,35 @@ def ml_run_analysis(request):
         )
 
     return redirect('analytics:ml_overview')
+
+
+@require_POST
+def ml_run_benchmark(request):
+    if not settings.ENABLE_WEB_ML_BENCHMARK_RUN:
+        messages.warning(
+            request,
+            'Web benchmark runs are disabled. Run manage.py run_ml_benchmark from the terminal or enable ENABLE_WEB_ML_BENCHMARK_RUN in a trusted local environment.',
+        )
+        return redirect('analytics:ml_benchmark')
+
+    result = run_ml_benchmark_from_web()
+    if result.get('locked'):
+        messages.warning(request, result['message'])
+    elif result.get('success'):
+        messages.success(
+            request,
+            (
+                f'Benchmark suite refreshed successfully in {result["duration_seconds"]} seconds. '
+                f'Generated benchmark files available: {result["generated_files_count"]}.'
+            ),
+        )
+    else:
+        messages.error(
+            request,
+            f'{result["message"]} {result.get("error_details", "")}'.strip(),
+        )
+
+    return redirect('analytics:ml_benchmark')
 
 
 def export_risk_summary_csv(request):

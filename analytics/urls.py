@@ -27,6 +27,7 @@ urlpatterns = [
     path('ml/model-card/', views.ml_model_card, name='ml_model_card'),
     path('ml/exports/', views.ml_exports, name='ml_exports'),
     path('ml/run-analysis/', views.ml_run_analysis, name='ml_run_analysis'),
+    path('ml/run-benchmark/', views.ml_run_benchmark, name='ml_run_benchmark'),
     path('reports/export/risk-summary.csv', views.export_risk_summary_csv, name='export_risk_summary_csv'),
     path('reports/export/top-risk-companies.csv', views.export_top_risk_companies_csv, name='export_top_risk_companies_csv'),
     path('reports/export/top-winner-value-companies.csv', views.export_top_winner_value_companies_csv, name='export_top_winner_value_companies_csv'),

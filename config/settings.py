@@ -50,6 +50,11 @@ ENABLE_WEB_ML_RUN = os.getenv(
     'True' if DEBUG else 'False',
 ).lower() in {'1', 'true', 'yes', 'on'}
 
+ENABLE_WEB_ML_BENCHMARK_RUN = os.getenv(
+    'ENABLE_WEB_ML_BENCHMARK_RUN',
+    'True' if DEBUG else 'False',
+).lower() in {'1', 'true', 'yes', 'on'}
+
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', '127.0.0.1,localhost')
 
 

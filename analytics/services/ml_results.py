@@ -72,6 +72,7 @@ BENCHMARK_REQUIRED_FILES = [
     'ml_benchmark_feature_importance.csv',
     'ml_benchmark_notes.md',
 ]
+BENCHMARK_LOCK_FILENAME = '.ml_benchmark_run.lock'
 
 
 def get_ml_results_context(preview_limit=20):
@@ -824,11 +825,8 @@ def financial_missingness_rows(limit):
 
 
 def build_benchmark_context(summary, confusion_matrices, notes_text, preview_limit):
-    missing_files = [
-        filename
-        for filename in BENCHMARK_REQUIRED_FILES
-        if not (ML_OUTPUT_DIR / filename).exists()
-    ]
+    file_status = benchmark_file_status()
+    missing_files = [item['filename'] for item in file_status if not item['available']]
     ranking_rows = benchmark_model_ranking_rows()
     feature_rows = benchmark_feature_importance_rows(preview_limit)
     return {
@@ -846,6 +844,34 @@ def build_benchmark_context(summary, confusion_matrices, notes_text, preview_lim
         'notes_text': notes_text,
         'notes_sections': parse_limitations_markdown(notes_text),
         'financial_comparison': benchmark_financial_comparison(ranking_rows),
+        'status': benchmark_output_status(file_status),
+        'web_run_enabled': getattr(settings, 'ENABLE_WEB_ML_BENCHMARK_RUN', False),
+    }
+
+
+def benchmark_file_status():
+    status = []
+    for filename in BENCHMARK_REQUIRED_FILES:
+        path = ML_OUTPUT_DIR / filename
+        status.append(
+            {
+                'filename': filename,
+                'path': str(path),
+                'available': path.exists() and path.is_file(),
+            }
+        )
+    return status
+
+
+def benchmark_output_status(file_status):
+    summary_path = ML_OUTPUT_DIR / 'ml_benchmark_summary.json'
+    available = sum(1 for item in file_status if item['available'])
+    return {
+        'available_files_count': available,
+        'missing_files_count': len(file_status) - available,
+        'total_files_count': len(file_status),
+        'summary_last_modified': format_file_timestamp(summary_path),
+        'run_lock_exists': (ML_OUTPUT_DIR / BENCHMARK_LOCK_FILENAME).exists(),
     }
 
 
