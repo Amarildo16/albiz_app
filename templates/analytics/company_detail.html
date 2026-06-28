@@ -210,7 +210,7 @@
             <div class="card-body">
                 {% if financial_enrichment.available %}
                     <div class="alert alert-warning" role="alert">
-                        These values come from a secondary exploratory enrichment source and should be validated against official filings where required.
+                        These values come from the OpenCorporates financial subset, a secondary exploratory enrichment source. Validate values against official filings where required.
                     </div>
                     <div class="row g-3 mb-4">
                         <div class="col-xl-2 col-md-4">
@@ -261,7 +261,10 @@
                                 <div id="company-financials-chart-warning" class="alert alert-warning d-none" role="alert">
                                     The financial enrichment chart could not render because the chart library is unavailable.
                                 </div>
-                                <div id="company-financials-chart"></div>
+                                <div id="company-financials-chart" style="min-height: 340px;"></div>
+                                <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
+                                    This trend is shown for exploratory context only and does not represent a complete or authoritative financial statement panel.
+                                </div>
                             </div>
                         </div>
                         <div class="col-xl-5">

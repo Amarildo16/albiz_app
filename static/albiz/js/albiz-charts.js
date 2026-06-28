@@ -108,7 +108,14 @@
                         return formatCount(value);
                     }
                 }
-            }
+            },
+            responsive: [{
+                breakpoint: 576,
+                options: {
+                    chart: { height: Math.min(settings.height || 320, 280) },
+                    xaxis: { labels: { rotate: settings.horizontal ? 0 : -45 } }
+                }
+            }]
         };
     }
 
@@ -163,7 +170,14 @@
                         return formatCount(value);
                     }
                 }
-            }
+            },
+            responsive: [{
+                breakpoint: 576,
+                options: {
+                    chart: { height: Math.min(settings.height || 320, 280) },
+                    xaxis: { labels: { rotate: -35 } }
+                }
+            }]
         };
     }
 
@@ -238,6 +252,62 @@
         };
     }
 
+    function percentBarOptions(dataset, settings) {
+        settings = settings || {};
+        if (!hasSeries(dataset)) {
+            return emptyChartOptions();
+        }
+        return {
+            chart: {
+                type: 'bar',
+                height: settings.height || 330,
+                toolbar: { show: false }
+            },
+            colors: settings.colors || [colors()[1]],
+            dataLabels: {
+                enabled: true,
+                formatter: function (value) {
+                    return Number(value).toFixed(1) + '%';
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    borderRadius: 3,
+                    barHeight: settings.barHeight || '65%'
+                }
+            },
+            series: [{
+                name: settings.seriesName || 'Completeness',
+                data: dataset.series || []
+            }],
+            xaxis: {
+                categories: dataset.labels || [],
+                max: 100,
+                labels: {
+                    formatter: function (value) {
+                        return Number(value).toFixed(0) + '%';
+                    }
+                }
+            },
+            yaxis: { labels: { maxWidth: 260 } },
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return Number(value).toFixed(1) + '%';
+                    }
+                }
+            },
+            responsive: [{
+                breakpoint: 576,
+                options: {
+                    chart: { height: Math.min(settings.height || 330, 300) },
+                    dataLabels: { enabled: false }
+                }
+            }]
+        };
+    }
+
     function renderRegistryCharts(data) {
         if (!data) {
             return;
@@ -296,6 +366,35 @@
         }));
     }
 
+    function renderDataQualityCharts(data) {
+        if (!data) {
+            return;
+        }
+        render('data-quality-coverage-chart', barOptions(data.coverageSnapshot, {
+            horizontal: true,
+            height: 300,
+            seriesName: 'Rows / companies',
+            colors: ['#405189']
+        }));
+        render('data-quality-completeness-chart', percentBarOptions(data.completenessRates, {
+            height: 340,
+            seriesName: 'Present rate',
+            colors: ['#0ab39c']
+        }));
+        render('data-quality-legal-form-chart', barOptions(data.legalForms, {
+            horizontal: true,
+            height: 300,
+            seriesName: 'Companies',
+            colors: ['#299cdb']
+        }));
+        render('data-quality-status-chart', barOptions(data.statuses, {
+            horizontal: true,
+            height: 260,
+            seriesName: 'Companies',
+            colors: ['#f7b84b']
+        }));
+    }
+
     window.AlbizCharts = {
         readJsonScript: readJsonScript,
         render: render,
@@ -303,6 +402,7 @@
         lineOptions: lineOptions,
         donutOptions: donutOptions,
         groupedMetricOptions: groupedMetricOptions,
+        percentBarOptions: percentBarOptions,
         formatCount: formatCount,
         formatPercent: formatPercent
     };
@@ -311,5 +411,6 @@
         renderRegistryCharts(readJsonScript('registry-chart-data'));
         renderRiskCharts(readJsonScript('risk-overview-chart-data'));
         renderDashboardCharts(readJsonScript('dashboard-chart-data'));
+        renderDataQualityCharts(readJsonScript('data-quality-chart-data'));
     });
 })();

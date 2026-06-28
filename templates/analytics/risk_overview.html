@@ -3,6 +3,24 @@
 
 {% block title %}Risk Overview | Albiz Analytics{% endblock %}
 
+{% block extra_css %}
+<style>
+    .risk-heatmap-cell {
+        background-color: #f3f6f9;
+        min-width: 92px;
+    }
+    .risk-heatmap-cell-light {
+        background-color: rgba(247, 184, 75, 0.18);
+    }
+    .risk-heatmap-cell-medium {
+        background-color: rgba(247, 184, 75, 0.36);
+    }
+    .risk-heatmap-cell-strong {
+        background-color: rgba(240, 101, 72, 0.34);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-12">
@@ -119,6 +137,9 @@
             <div class="card-body">
                 <p class="text-muted mb-3">Frequency of analytical procurement anomaly indicators across joined APP-QKB companies.</p>
                 <div id="risk-indicator-frequency-chart" class="apex-charts" style="min-height: 360px;"></div>
+                <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
+                    Risk indicators are analytical signals for prioritizing review; they are not proof of misconduct.
+                </div>
             </div>
         </div>
     </div>
@@ -130,6 +151,54 @@
             <div class="card-body">
                 <p class="text-muted mb-3">Companies grouped by the number of computed analytical indicators.</p>
                 <div id="risk-indicator-count-chart" class="apex-charts" style="min-height: 300px;"></div>
+                <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
+                    Indicator counts summarize how many heuristic signals are present for each company, not the severity of any legal finding.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Risk Indicator Concentration by City</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">This heatmap shows where the most frequent procurement anomaly indicators appear among top joined-company cities.</p>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>City</th>
+                                <th class="text-end">Joined companies</th>
+                                {% for indicator in overview.risk_indicator_heatmap.columns %}
+                                    <th class="text-center">{{ indicator.label }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in overview.risk_indicator_heatmap.rows %}
+                                <tr>
+                                    <th>{{ row.label }}</th>
+                                    <td class="text-end">{{ row.total_display }}</td>
+                                    {% for cell in row.cells %}
+                                        <td class="{{ cell.class }} text-center">
+                                            <span class="fw-semibold">{{ cell.count_display }}</span>
+                                            <small class="text-muted d-block">{{ cell.percentage_display }}</small>
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="8" class="text-muted text-center py-4">No indicator concentration data available.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
+                    Higher cell intensity means more companies in that city meet the indicator condition. This is an exploratory distribution, not an accusation.
+                </div>
             </div>
         </div>
     </div>

@@ -27,6 +27,15 @@
         if (!container || !hasApexCharts()) {
             return null;
         }
+        if (!options.responsive) {
+            options.responsive = [{
+                breakpoint: 576,
+                options: {
+                    chart: { height: Math.min((options.chart && options.chart.height) || 320, 300) },
+                    legend: { position: 'bottom' }
+                }
+            }];
+        }
         var chart = new window.ApexCharts(container, options);
         chart.render();
         return chart;

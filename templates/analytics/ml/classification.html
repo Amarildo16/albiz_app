@@ -72,6 +72,9 @@
                 </div>
                 <p class="text-muted">{{ ml.full_interpretation|default:'Full-feature weak-label replication metrics.' }}</p>
                 <div id="ml-full-model-comparison-chart" class="mb-4"></div>
+                <div class="alert alert-light border mb-4 py-2" role="alert">
+                    High full-feature weak-label metrics may reflect circularity because some features are close to the heuristic label definition.
+                </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
@@ -108,6 +111,9 @@
             <div class="card-body">
                 <p class="text-muted">{{ ml.reduced_interpretation|default:'Reduced feature experiment excludes direct label-defining fields as much as possible.' }}</p>
                 <div id="ml-model-comparison-chart" class="mb-4"></div>
+                <div class="alert alert-light border mb-4 py-2" role="alert">
+                    The reduced-feature strict-label model is more cautious, but it still evaluates heuristic labels rather than verified real-world outcomes.
+                </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">

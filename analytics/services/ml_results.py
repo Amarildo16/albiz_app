@@ -811,7 +811,9 @@ def financial_conclusion(payload):
     ):
         return (
             'In this run, the procurement-only baseline produced the best F1 and ROC AUC. '
-            'Adding secondary financial enrichment did not produce a clear improvement over the best procurement-only model.'
+            'Adding secondary financial enrichment did not clearly improve the best model. '
+            'This should not be interpreted as financial data being useless; it means that for the current heuristic strict weak label '
+            'and the available OpenCorporates subset, procurement/registry-derived signals dominate the model behavior.'
         )
     return (
         'In this run, financial enrichment appears to add signal for at least one metric in this heuristic-label experiment. '

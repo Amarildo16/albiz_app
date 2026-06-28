@@ -93,6 +93,9 @@
             <div class="card-body">
                 <p class="text-muted mb-3">Grouped comparison of F1 and ROC AUC by model for the financial subset experiment.</p>
                 <div id="ml-financial-comparison-chart" class="apex-charts" style="min-height: 360px;"></div>
+                <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
+                    This compares a procurement-only baseline with the same subset plus secondary financial enrichment features; it is still evaluated against a heuristic strict weak label.
+                </div>
             </div>
         </div>
     </div>
@@ -104,6 +107,9 @@
             <div class="card-body">
                 <p class="text-muted mb-3">Joined companies with and without secondary financial enrichment.</p>
                 <div id="ml-financial-coverage-chart" class="apex-charts" style="min-height: 300px;"></div>
+                <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
+                    The financial enrichment experiment is limited to companies with available OpenCorporates financial-year rows.
+                </div>
             </div>
         </div>
     </div>
@@ -174,7 +180,7 @@
                 <h5 class="card-title mb-0">Metrics Comparison</h5>
             </div>
             <div class="card-body">
-                <div id="ml-financial-feature-importance-chart" class="mb-4"></div>
+                <p class="text-muted mb-3">The table compares model metrics on the same financial-enrichment subset so the procurement-only and enriched feature sets are directly comparable.</p>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
@@ -226,6 +232,10 @@
                 <span class="badge bg-warning-subtle text-warning">Explains heuristic labels, not verified outcomes</span>
             </div>
             <div class="card-body">
+                <div id="ml-financial-feature-importance-chart" class="apex-charts mb-4" style="min-height: 420px;"></div>
+                <div class="alert alert-light border mb-4 py-2" role="alert">
+                    Feature importance describes model behavior within this secondary financial subset and should not be read as proof of real-world risk.
+                </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">

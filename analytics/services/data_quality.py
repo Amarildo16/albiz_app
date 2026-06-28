@@ -46,6 +46,43 @@ def get_data_quality_report():
     qkb_match_rate = safe_rate(counts['joined_companies'], counts['app_winner_companies'])
     joined_over_qkb_rate = safe_rate(counts['joined_companies'], counts['qkb_company_features'])
 
+    app_completeness_rows = app_completeness(
+        connection,
+        table_names,
+        columns_by_table,
+        counts['normalized_app_rows'],
+    )
+    qkb_completeness_rows = qkb_completeness(
+        connection,
+        table_names,
+        columns_by_table,
+        counts['normalized_qkb_rows'],
+    )
+    legal_form_distribution = distribution(
+        connection,
+        table_names,
+        columns_by_table,
+        preferred_table=QKB_FEATURES_TABLE,
+        fallback_table=JOINED_FEATURES_TABLE,
+        column='legal_form',
+        source_counts={
+            QKB_FEATURES_TABLE: counts['qkb_company_features'],
+            JOINED_FEATURES_TABLE: counts['joined_companies'],
+        },
+    )
+    status_distribution = distribution(
+        connection,
+        table_names,
+        columns_by_table,
+        preferred_table=QKB_FEATURES_TABLE,
+        fallback_table=JOINED_FEATURES_TABLE,
+        column='subject_status',
+        source_counts={
+            QKB_FEATURES_TABLE: counts['qkb_company_features'],
+            JOINED_FEATURES_TABLE: counts['joined_companies'],
+        },
+    )
+
     return {
         'table_availability': table_availability(table_names),
         'counts': display_counts(counts),
@@ -65,41 +102,16 @@ def get_data_quality_report():
                 'percent_for_bar': percent_for_bar(joined_over_qkb_rate),
             },
         ],
-        'app_completeness': app_completeness(
-            connection,
-            table_names,
-            columns_by_table,
-            counts['normalized_app_rows'],
-        ),
-        'qkb_completeness': qkb_completeness(
-            connection,
-            table_names,
-            columns_by_table,
-            counts['normalized_qkb_rows'],
-        ),
-        'legal_form_distribution': distribution(
-            connection,
-            table_names,
-            columns_by_table,
-            preferred_table=QKB_FEATURES_TABLE,
-            fallback_table=JOINED_FEATURES_TABLE,
-            column='legal_form',
-            source_counts={
-                QKB_FEATURES_TABLE: counts['qkb_company_features'],
-                JOINED_FEATURES_TABLE: counts['joined_companies'],
-            },
-        ),
-        'status_distribution': distribution(
-            connection,
-            table_names,
-            columns_by_table,
-            preferred_table=QKB_FEATURES_TABLE,
-            fallback_table=JOINED_FEATURES_TABLE,
-            column='subject_status',
-            source_counts={
-                QKB_FEATURES_TABLE: counts['qkb_company_features'],
-                JOINED_FEATURES_TABLE: counts['joined_companies'],
-            },
+        'app_completeness': app_completeness_rows,
+        'qkb_completeness': qkb_completeness_rows,
+        'legal_form_distribution': legal_form_distribution,
+        'status_distribution': status_distribution,
+        'chart_data': data_quality_chart_data(
+            counts,
+            app_completeness_rows,
+            qkb_completeness_rows,
+            legal_form_distribution,
+            status_distribution,
         ),
         'limitations': LIMITATION_NOTES,
     }
@@ -337,6 +349,46 @@ def first_table_with_column(table_names, columns_by_table, table_options, column
         if table_name in table_names and column in columns_by_table.get(table_name, set()):
             return table_name
     return None
+
+
+def data_quality_chart_data(
+    counts,
+    app_completeness_rows,
+    qkb_completeness_rows,
+    legal_form_distribution,
+    status_distribution,
+):
+    coverage_items = [
+        ('APP winner companies', counts.get('app_winner_companies')),
+        ('Joined APP-QKB companies', counts.get('joined_companies')),
+        ('QKB company features', counts.get('qkb_company_features')),
+        ('Normalized QKB rows', counts.get('normalized_qkb_rows')),
+    ]
+    completeness_rows = [
+        row
+        for row in [*app_completeness_rows, *qkb_completeness_rows]
+        if row.get('available') and 'missing count' not in row.get('label', '').lower()
+    ]
+    return {
+        'coverageSnapshot': {
+            'labels': [label for label, value in coverage_items if value is not None],
+            'series': [value for _label, value in coverage_items if value is not None],
+        },
+        'completenessRates': {
+            'labels': [row['label'].replace(' present rate', '') for row in completeness_rows],
+            'series': [float(row['rate'] * Decimal('100')) if row['rate'] is not None else 0 for row in completeness_rows],
+        },
+        'legalForms': distribution_chart_data(legal_form_distribution, limit=8),
+        'statuses': distribution_chart_data(status_distribution, limit=8),
+    }
+
+
+def distribution_chart_data(distribution_data, limit=8):
+    items = distribution_data.get('items', [])[:limit] if distribution_data else []
+    return {
+        'labels': [item['label'] for item in items],
+        'series': [item['count'] for item in items],
+    }
 
 
 def safe_rate(numerator, denominator):

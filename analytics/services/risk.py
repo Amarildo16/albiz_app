@@ -1,3 +1,4 @@
+from collections import defaultdict
 from decimal import Decimal
 
 from django.db.models import Q
@@ -153,6 +154,8 @@ def get_risk_overview(top_limit=OVERVIEW_TOP_LIMIT):
         '2 indicators': 0,
         '3+ indicators': 0,
     }
+    city_totals = defaultdict(int)
+    city_indicator_counts = defaultdict(lambda: defaultdict(int))
 
     companies = base_risk_queryset().only(*RISK_OVERVIEW_FIELDS).iterator(chunk_size=1000)
     for company in companies:
@@ -162,11 +165,14 @@ def get_risk_overview(top_limit=OVERVIEW_TOP_LIMIT):
         winner_value = get_winner_value(company)
         company_row = _risk_company_row(company, indicators, winner_value)
         risk_count_distribution[risk_count_bucket(risk_count)] += 1
+        city = normalize_group_value(company.city)
+        city_totals[city] += 1
 
         if risk_count:
             companies_with_indicators += 1
             for indicator in indicators:
                 distribution[indicator['code']]['count'] += 1
+                city_indicator_counts[city][indicator['code']] += 1
             risk_rows.append(company_row)
 
         if (company.zero_budget_with_winner_value_count or 0) > 0:
@@ -204,6 +210,11 @@ def get_risk_overview(top_limit=OVERVIEW_TOP_LIMIT):
         'risk_indicator_count_distribution': risk_count_distribution_rows(
             risk_count_distribution,
             total_joined_companies,
+        ),
+        'risk_indicator_heatmap': risk_indicator_heatmap_rows(
+            city_totals,
+            city_indicator_counts,
+            distribution,
         ),
         'top_companies_by_risk_count': sorted(
             risk_rows,
@@ -261,6 +272,11 @@ def risk_count_bucket(risk_count):
     return '3+ indicators'
 
 
+def normalize_group_value(value):
+    normalized = (value or '').strip()
+    return normalized if normalized else 'Unknown'
+
+
 def risk_count_distribution_rows(distribution, total):
     return [
         {
@@ -272,6 +288,66 @@ def risk_count_distribution_rows(distribution, total):
         }
         for label, count in distribution.items()
     ]
+
+
+def risk_indicator_heatmap_rows(city_totals, city_indicator_counts, indicator_distribution, row_limit=8, column_limit=6):
+    top_cities = [
+        city
+        for city, _count in sorted(
+            city_totals.items(),
+            key=lambda item: (-item[1], item[0].lower()),
+        )[:row_limit]
+    ]
+    top_indicators = [
+        item
+        for item in sorted(
+            indicator_distribution.values(),
+            key=lambda indicator: (-indicator['count'], indicator['label']),
+        )
+        if item['count'] > 0
+    ][:column_limit]
+    max_count = 0
+    for city in top_cities:
+        for indicator in top_indicators:
+            max_count = max(max_count, city_indicator_counts[city].get(indicator['code'], 0))
+
+    return {
+        'columns': top_indicators,
+        'rows': [
+            {
+                'label': city,
+                'total_display': format_integer(city_totals[city]),
+                'cells': [
+                    heatmap_cell(
+                        city_indicator_counts[city].get(indicator['code'], 0),
+                        city_totals[city],
+                        max_count,
+                    )
+                    for indicator in top_indicators
+                ],
+            }
+            for city in top_cities
+        ],
+    }
+
+
+def heatmap_cell(count, row_total, max_count):
+    percentage = _percentage(count, row_total)
+    intensity = int((count / max_count) * 100) if max_count else 0
+    if intensity >= 70:
+        css_class = 'risk-heatmap-cell risk-heatmap-cell-strong'
+    elif intensity >= 35:
+        css_class = 'risk-heatmap-cell risk-heatmap-cell-medium'
+    elif intensity > 0:
+        css_class = 'risk-heatmap-cell risk-heatmap-cell-light'
+    else:
+        css_class = 'risk-heatmap-cell'
+    return {
+        'count': count,
+        'count_display': format_integer(count),
+        'percentage_display': format_percent(percentage),
+        'class': css_class,
+    }
 
 
 def risk_chart_data(indicator_distribution, risk_count_distribution):

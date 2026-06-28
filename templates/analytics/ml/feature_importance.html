@@ -21,6 +21,9 @@
                     Feature importance explains heuristic labels, not verified real-world outcomes. Full-feature importance mainly explains the constructed weak label; reduced-feature importance is more useful for cautious exploratory interpretation.
                 </div>
                 <div id="ml-feature-importance-chart" class="mb-4"></div>
+                <div class="alert alert-light border mb-4 py-2" role="alert">
+                    The chart highlights the largest absolute importances in the generated outputs; the grouped tables below retain experiment and model context.
+                </div>
                 {% for group in ml.feature_importance_groups %}
                     <div class="border rounded p-3 mb-3">
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">

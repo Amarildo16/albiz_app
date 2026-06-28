@@ -131,6 +131,37 @@
     {% endfor %}
 </div>
 
+<div class="row g-4 mb-4">
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">APP-QKB Coverage Snapshot</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">This chart summarizes the main source and feature-table counts used to interpret dataset coverage.</p>
+                <div id="data-quality-coverage-chart" class="apex-charts" style="min-height: 300px;"></div>
+                <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
+                    Joined companies are APP winner companies matched to QKB registry subjects by exact normalized NIPT.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Key Field Completeness</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Completeness rates show whether selected source fields are present after normalization.</p>
+                <div id="data-quality-completeness-chart" class="apex-charts" style="min-height: 340px;"></div>
+                <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
+                    Missing values reflect source availability and normalization rules; they are not automatically data errors.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xl-6">
         <div class="card">
@@ -172,6 +203,33 @@
                         <small class="text-muted">{{ metric.present_count_display }} of {{ metric.total_count_display }} rows</small>
                     </div>
                 {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between gap-2">
+                <h5 class="card-title mb-0">Legal Form Distribution Chart</h5>
+                <span class="badge bg-light text-muted">{{ report.legal_form_distribution.source_table }}</span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">This chart highlights the most common legal forms available in the registry coverage layer.</p>
+                <div id="data-quality-legal-form-chart" class="apex-charts" style="min-height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between gap-2">
+                <h5 class="card-title mb-0">Subject Status Distribution Chart</h5>
+                <span class="badge bg-light text-muted">{{ report.status_distribution.source_table }}</span>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Status distribution is shown as data availability context, not as an administrative conclusion.</p>
+                <div id="data-quality-status-chart" class="apex-charts" style="min-height: 260px;"></div>
             </div>
         </div>
     </div>
@@ -304,5 +362,11 @@
         </div>
     </div>
 </div>
+{{ report.chart_data|json_script:'data-quality-chart-data' }}
 {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'velzon/libs/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'albiz/js/albiz-charts.js' %}"></script>
 {% endblock %}
