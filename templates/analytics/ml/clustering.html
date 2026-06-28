@@ -1,27 +1,30 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}ML Clustering | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'ML Clustering' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
-{% include 'analytics/ml/partials/page_header.html' with title='Clustering' subtitle='KMeans segmentation of procurement profiles for exploratory interpretation.' crumb='Clustering' %}
+{% trans 'Clustering' as page_title %}
+{% trans 'KMeans segmentation of procurement profiles for exploratory interpretation.' as page_subtitle %}
+{% trans 'Clustering' as page_crumb %}
+{% include 'analytics/ml/partials/page_header.html' with title=page_title subtitle=page_subtitle crumb=page_crumb %}
 {% include 'analytics/ml/partials/output_warnings.html' %}
 
 <div class="row g-4 mb-4">
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">KMeans Framing</h5>
+                <h5 class="card-title mb-0">{% trans 'KMeans Framing' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-0">Clusters describe groups with similar procurement profiles. Cluster names are descriptive summaries, not legal or administrative classifications.</p>
+                <p class="text-muted mb-0">{% trans 'Clusters describe groups with similar procurement profiles. Cluster names are descriptive summaries, not legal or administrative classifications.' %}</p>
             </div>
         </div>
     </div>
     <div class="col-xl-8">
         <div class="card h-100 mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Cluster Distribution</h5>
+                <h5 class="card-title mb-0">{% trans 'Cluster Distribution' %}</h5>
                 <a href="{% url 'analytics:export_ml_cluster_summary_csv' %}" class="btn btn-sm btn-soft-primary">
                     <i class="ri-download-2-line align-bottom me-1"></i> CSV
                 </a>
@@ -37,17 +40,17 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Cluster Summary</h5>
+                <h5 class="card-title mb-0">{% trans 'Cluster Summary' %}</h5>
             </div>
             <div class="card-body">
                 <div class="alert alert-info" role="alert">
-                    Cluster labels summarize procurement profile patterns and should not be overinterpreted.
+                    {% trans 'Cluster labels summarize procurement profile patterns and should not be overinterpreted.' %}
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Cluster</th><th>Companies</th><th>Share</th><th>Mean performance</th><th>Mean active count</th><th>Mean active winner value</th><th>Weak label rate</th><th>Strict label rate</th><th>Profile</th>
+                                <th>{% trans 'Cluster' %}</th><th>{% trans 'Companies' %}</th><th>{% trans 'Share' %}</th><th>{% trans 'Mean performance' %}</th><th>{% trans 'Mean active count' %}</th><th>{% trans 'Mean active winner value' %}</th><th>{% trans 'Weak label rate' %}</th><th>{% trans 'Strict label rate' %}</th><th>{% trans 'Profile' %}</th>
                             </tr>
                         </thead>
                         <tbody>

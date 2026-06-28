@@ -1,16 +1,16 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Albiz Analytics{% endblock %}
+{% block title %}{% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Albiz Analytics</h4>
+            <h4 class="mb-sm-0">{% trans 'Albiz Analytics' %}</h4>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item active">Dashboard</li>
+                    <li class="breadcrumb-item active">{% trans 'Dashboard' %}</li>
                 </ol>
             </div>
         </div>
@@ -21,41 +21,41 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center flex-wrap gap-3">
                     <div class="flex-shrink-0 avatar-sm">
                         <span class="avatar-title bg-primary-subtle text-primary rounded-2 fs-22">
                             <i class="ri-pulse-line"></i>
                         </span>
                     </div>
-                    <div class="flex-grow-1 ms-3">
-                        <h5 class="card-title mb-1">Albiz analytics app is running</h5>
-                        <p class="text-muted mb-0">Dashboard shell is ready for collector database analytics.</p>
+                    <div class="flex-grow-1" style="min-width: 220px;">
+                        <h5 class="card-title mb-1">{% trans 'Albiz analytics app is running' %}</h5>
+                        <p class="text-muted mb-0">{% trans 'Dashboard shell is ready for collector database analytics.' %}</p>
                     </div>
-                    <div class="flex-shrink-0 ms-3">
-                        <div class="d-flex flex-wrap gap-2 justify-content-end">
+                    <div class="flex-grow-1">
+                        <div class="d-flex flex-wrap gap-2 justify-content-start justify-content-xl-end">
                             <a href="{% url 'analytics:companies' %}" class="btn btn-primary">
-                                <i class="ri-building-2-line align-bottom me-1"></i> Companies
+                                <i class="ri-building-2-line align-bottom me-1"></i> {% trans 'Companies' %}
                             </a>
                             <a href="{% url 'analytics:risk_overview' %}" class="btn btn-soft-warning">
-                                <i class="ri-alert-line align-bottom me-1"></i> Risk Overview
+                                <i class="ri-alert-line align-bottom me-1"></i> {% trans 'Risk Overview' %}
                             </a>
                             <a href="{% url 'analytics:visual_analytics' %}" class="btn btn-soft-info">
-                                <i class="ri-bar-chart-2-line align-bottom me-1"></i> Visual Analytics
+                                <i class="ri-bar-chart-2-line align-bottom me-1"></i> {% trans 'Visual Analytics' %}
                             </a>
                             <a href="{% url 'analytics:methodology' %}" class="btn btn-soft-secondary">
-                                <i class="ri-file-list-3-line align-bottom me-1"></i> Methodology
+                                <i class="ri-file-list-3-line align-bottom me-1"></i> {% trans 'Methodology' %}
                             </a>
                             <a href="{% url 'analytics:data_quality' %}" class="btn btn-soft-success">
-                                <i class="ri-shield-check-line align-bottom me-1"></i> Data Quality
+                                <i class="ri-shield-check-line align-bottom me-1"></i> {% trans 'Data Quality' %}
                             </a>
                             <a href="{% url 'analytics:registry_enrichment' %}" class="btn btn-soft-success">
-                                <i class="ri-government-line align-bottom me-1"></i> Registry
+                                <i class="ri-government-line align-bottom me-1"></i> {% trans 'Registry' %}
                             </a>
                             <a href="{% url 'analytics:reports' %}" class="btn btn-soft-dark">
-                                <i class="ri-download-cloud-2-line align-bottom me-1"></i> Reports
+                                <i class="ri-download-cloud-2-line align-bottom me-1"></i> {% trans 'Reports' %}
                             </a>
                             <a href="{% url 'analytics:ml_overview' %}" class="btn btn-soft-primary">
-                                <i class="ri-brain-line align-bottom me-1"></i> ML Results
+                                <i class="ri-brain-line align-bottom me-1"></i> {% trans 'ML Results' %}
                             </a>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
 <div class="row">
     <div class="col-12">
         <div class="alert alert-warning" role="alert">
-            Collector database is not reachable: {{ metrics.collector_error }}
+            {% blocktrans with error=metrics.collector_error %}Collector database is not reachable: {{ error }}{% endblocktrans %}
         </div>
     </div>
 </div>
@@ -81,10 +81,10 @@
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">APP winner companies</p>
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'APP winner companies' %}</p>
                     </div>
                     <div class="flex-shrink-0">
-                        <span class="badge bg-primary-subtle text-primary">Collector</span>
+                        <span class="badge bg-primary-subtle text-primary">{% trans 'Collector' %}</span>
                     </div>
                 </div>
                 <div class="d-flex align-items-end justify-content-between mt-4">
@@ -107,10 +107,10 @@
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">QKB companies</p>
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'QKB companies' %}</p>
                     </div>
                     <div class="flex-shrink-0">
-                        <span class="badge bg-success-subtle text-success">Collector</span>
+                        <span class="badge bg-success-subtle text-success">{% trans 'Collector' %}</span>
                     </div>
                 </div>
                 <div class="d-flex align-items-end justify-content-between mt-4">
@@ -133,10 +133,10 @@
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Joined companies</p>
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Joined companies' %}</p>
                     </div>
                     <div class="flex-shrink-0">
-                        <span class="badge bg-info-subtle text-info">Collector</span>
+                        <span class="badge bg-info-subtle text-info">{% trans 'Collector' %}</span>
                     </div>
                 </div>
                 <div class="d-flex align-items-end justify-content-between mt-4">
@@ -159,16 +159,16 @@
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1 overflow-hidden">
-                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">QKB match rate</p>
+                        <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'QKB match rate' %}</p>
                     </div>
                     <div class="flex-shrink-0">
-                        <span class="badge bg-warning-subtle text-warning">Derived</span>
+                        <span class="badge bg-warning-subtle text-warning">{% trans 'Derived' %}</span>
                     </div>
                 </div>
                 <div class="d-flex align-items-end justify-content-between mt-4">
                     <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ metrics.qkb_match_rate_over_app_winner_companies_label }}</h4>
-                        <span class="text-muted">Joined / APP winner companies</span>
+                        <span class="text-muted">{% trans 'Joined / APP winner companies' %}</span>
                     </div>
                     <div class="avatar-sm flex-shrink-0">
                         <span class="avatar-title bg-warning-subtle rounded fs-3">
@@ -186,15 +186,15 @@
         <div class="card mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div>
-                    <h5 class="card-title mb-0">Data Coverage Snapshot</h5>
-                    <p class="text-muted mb-0 mt-1">Compact view of core collector coverage and local ML dataset availability.</p>
+                    <h5 class="card-title mb-0">{% trans 'Data Coverage Snapshot' %}</h5>
+                    <p class="text-muted mb-0 mt-1">{% trans 'Compact view of core collector coverage and local ML dataset availability.' %}</p>
                 </div>
-                <span class="badge bg-info-subtle text-info">Read-only summary</span>
+                <span class="badge bg-info-subtle text-info">{% trans 'Read-only summary' %}</span>
             </div>
             <div class="card-body">
                 <div id="dashboard-data-coverage-chart" class="apex-charts" style="min-height: 300px;"></div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    This snapshot compares core collector counts with the local ML dataset size so coverage can be read before opening detailed pages.
+                    {% trans 'This snapshot compares core collector counts with the local ML dataset size so coverage can be read before opening detailed pages.' %}
                 </div>
             </div>
         </div>

@@ -36,6 +36,19 @@
     }
 
     function messageTitle(icon) {
+        var form = byId('ml-run-form');
+        if (form) {
+            if (icon === 'success') {
+                return form.getAttribute('data-success-title') || 'ML results refreshed';
+            }
+            if (icon === 'error') {
+                return form.getAttribute('data-error-title') || 'ML refresh failed';
+            }
+            if (icon === 'warning') {
+                return form.getAttribute('data-warning-title') || 'ML refresh not started';
+            }
+            return form.getAttribute('data-info-title') || 'ML results';
+        }
         if (icon === 'success') {
             return 'ML results refreshed';
         }
@@ -62,7 +75,7 @@
             title: messageTitle(icon),
             text: message.text || '',
             icon: icon,
-            confirmButtonText: 'OK'
+            confirmButtonText: (byId('ml-run-form') || {}).getAttribute ? (byId('ml-run-form').getAttribute('data-ok-button') || 'OK') : 'OK'
         });
     }
 
@@ -72,15 +85,15 @@
             return;
         }
         button.disabled = true;
-        button.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Running ML analysis...';
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> ' + (form.getAttribute('data-running-label') || 'Running ML analysis...');
     }
 
     function submitWithLoading(form) {
         setRunningState(form);
         if (hasSwal()) {
             window.Swal.fire({
-                title: 'Running ML analysis',
-                text: 'Please wait while the modelling dataset is rebuilt and exploratory ML outputs are regenerated.',
+                title: form.getAttribute('data-loading-title') || 'Running ML analysis',
+                text: form.getAttribute('data-loading-text') || 'Please wait while the modelling dataset is rebuilt and exploratory ML outputs are regenerated.',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: function () {
@@ -115,8 +128,8 @@
                 text: text,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, run analysis',
-                cancelButtonText: 'Cancel',
+                confirmButtonText: form.getAttribute('data-confirm-button') || 'Yes, run analysis',
+                cancelButtonText: form.getAttribute('data-cancel-button') || 'Cancel',
                 reverseButtons: true
             }).then(function (result) {
                 if (result.isConfirmed) {

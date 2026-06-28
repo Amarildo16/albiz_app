@@ -21,13 +21,17 @@
         return typeof window.ApexCharts !== 'undefined';
     }
 
+    function t(key, fallback) {
+        return (window.AlbizI18n && window.AlbizI18n[key]) || fallback;
+    }
+
     function render(containerId, options) {
         var container = byId(containerId);
         if (!container) {
             return null;
         }
         if (!hasApexCharts()) {
-            container.innerHTML = '<div class="alert alert-light border mb-0">Chart library is unavailable. The table below remains available.</div>';
+            container.innerHTML = '<div class="alert alert-light border mb-0">' + t('chartUnavailable', 'Chart library is unavailable. The table below remains available.') + '</div>';
             return null;
         }
         var chart = new window.ApexCharts(container, options);
@@ -60,7 +64,7 @@
         return {
             chart: { type: 'bar', height: 240, toolbar: { show: false } },
             series: [],
-            noData: { text: message || 'No chart data available' }
+            noData: { text: message || t('noChartData', 'No chart data available') }
         };
     }
 

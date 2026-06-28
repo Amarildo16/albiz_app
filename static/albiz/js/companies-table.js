@@ -47,6 +47,10 @@
             .replace(/'/g, '&#039;');
     }
 
+    function t(key, fallback) {
+        return (window.AlbizI18n && window.AlbizI18n[key]) || fallback;
+    }
+
     function renderMutedDash(value) {
         var escaped = escapeHtml(value);
         return escaped || '<span class="text-muted">-</span>';
@@ -108,14 +112,14 @@
 
     function renderQkbFlag(value) {
         if (value === true || value === 'true' || value === 1 || value === '1') {
-            return '<span class="badge bg-danger-subtle text-danger">QKB flag</span>';
+            return '<span class="badge bg-danger-subtle text-danger">' + escapeHtml(t('qkbFlag', 'QKB flag')) + '</span>';
         }
 
         if (value === false || value === 'false' || value === 0 || value === '0') {
-            return '<span class="badge bg-success-subtle text-success">No QKB flag</span>';
+            return '<span class="badge bg-success-subtle text-success">' + escapeHtml(t('noQkbFlag', 'No QKB flag')) + '</span>';
         }
 
-        return '<span class="badge bg-secondary-subtle text-secondary">Unknown</span>';
+        return '<span class="badge bg-secondary-subtle text-secondary">' + escapeHtml(t('unknown', 'Unknown')) + '</span>';
     }
 
     function getIndicatorBadgeClass(level) {
@@ -133,7 +137,7 @@
 
     function renderRiskIndicators(indicators) {
         if (!Array.isArray(indicators) || indicators.length === 0) {
-            return '<span class="badge bg-secondary-subtle text-secondary">No indicators</span>';
+            return '<span class="badge bg-secondary-subtle text-secondary">' + escapeHtml(t('noIndicators', 'No indicators')) + '</span>';
         }
 
         return '<div class="d-flex flex-wrap gap-1">' + indicators.map(function (indicator) {
@@ -145,7 +149,7 @@
 
     function renderActions(row) {
         var detailUrl = row && row.detail_url ? row.detail_url : '#';
-        return '<a href="' + escapeHtml(detailUrl) + '" class="btn btn-sm btn-soft-primary">View</a>';
+        return '<a href="' + escapeHtml(detailUrl) + '" class="btn btn-sm btn-soft-primary">' + escapeHtml(t('view', 'View')) + '</a>';
     }
 
     function showError(message) {
@@ -222,7 +226,7 @@
                     return json.data || [];
                 },
                 error: function () {
-                    showError('Unable to load companies from the collector database.');
+                    showError(t('unableLoadCompanies', 'Unable to load companies from the collector database.'));
                 }
             },
             autoWidth: false,
@@ -271,7 +275,7 @@
 
     function renderFallbackRows(tableElement, rows) {
         if (!rows.length) {
-            setTableBody(tableElement, '<tr><td colspan="12" class="text-center text-muted py-4">No companies found.</td></tr>');
+            setTableBody(tableElement, '<tr><td colspan="12" class="text-center text-muted py-4">' + escapeHtml(t('noCompaniesFound', 'No companies found.')) + '</td></tr>');
             return;
         }
 
@@ -335,7 +339,10 @@
             var last = state.start + rowCount;
 
             if (infoElement) {
-                infoElement.textContent = 'Showing ' + first + ' to ' + last + ' of ' + total + ' rows';
+                infoElement.textContent = t('showingRows', 'Showing {first} to {last} of {total} rows')
+                    .replace('{first}', first)
+                    .replace('{last}', last)
+                    .replace('{total}', total);
             }
             if (previousButton) {
                 previousButton.disabled = state.start <= 0;
@@ -351,7 +358,7 @@
             }
 
             state.draw += 1;
-            setTableBody(tableElement, '<tr><td colspan="12" class="text-center text-muted py-4">Loading companies...</td></tr>');
+            setTableBody(tableElement, '<tr><td colspan="12" class="text-center text-muted py-4">' + escapeHtml(t('loadingCompanies', 'Loading companies...')) + '</td></tr>');
 
             fetch(buildUrl(), {
                 credentials: 'same-origin',
@@ -370,7 +377,7 @@
                     updateInfo((payload.data || []).length);
                 })
                 .catch(function (error) {
-                    showError('Unable to load companies from the collector database: ' + error.message);
+                    showError(t('unableLoadCompaniesPrefix', 'Unable to load companies from the collector database:') + ' ' + error.message);
                     setTableBody(tableElement, '<tr><td colspan="12" class="text-center text-muted py-4">No companies available.</td></tr>');
                     state.recordsFiltered = 0;
                     updateInfo(0);

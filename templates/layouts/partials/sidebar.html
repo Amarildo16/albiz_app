@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 <div class="app-menu navbar-menu">
     <div class="navbar-brand-box">
         <a href="{% url 'analytics:dashboard' %}" class="logo logo-dark">
@@ -17,7 +17,7 @@
                 <span class="fw-semibold fs-18 text-white">Albiz</span>
             </span>
         </a>
-        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover" aria-label="Toggle compact sidebar">
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover" aria-label="{% trans 'Toggle compact sidebar' %}">
             <i class="ri-record-circle-line"></i>
         </button>
     </div>
@@ -26,92 +26,92 @@
         <div class="container-fluid">
             <div id="two-column-menu"></div>
             <ul class="navbar-nav" id="navbar-nav">
-                <li class="menu-title"><span>Analytics</span></li>
+                <li class="menu-title"><span>{% trans 'Analytics' %}</span></li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'analytics:dashboard' %}">
                         <i class="ri-dashboard-2-line"></i>
-                        <span>Dashboard</span>
+                        <span>{% trans 'Dashboard' %}</span>
                     </a>
                 </li>
-                <li class="menu-title"><span>Data Views</span></li>
+                <li class="menu-title"><span>{% trans 'Data Views' %}</span></li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'companies' or request.resolver_match.url_name == 'company_detail' %}active{% endif %}" href="{% url 'analytics:companies' %}">
                         <i class="ri-building-2-line"></i>
-                        <span>Companies</span>
+                        <span>{% trans 'Companies' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'risk_overview' %}active{% endif %}" href="{% url 'analytics:risk_overview' %}">
                         <i class="ri-alert-line"></i>
-                        <span>Risk Overview</span>
+                        <span>{% trans 'Risk Overview' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'visual_analytics' %}active{% endif %}" href="{% url 'analytics:visual_analytics' %}">
                         <i class="ri-bar-chart-2-line"></i>
-                        <span>Visual Analytics</span>
+                        <span>{% trans 'Visual Analytics' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'methodology' %}active{% endif %}" href="{% url 'analytics:methodology' %}">
                         <i class="ri-file-list-3-line"></i>
-                        <span>Methodology</span>
+                        <span>{% trans 'Methodology' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'data_quality' %}active{% endif %}" href="{% url 'analytics:data_quality' %}">
                         <i class="ri-shield-check-line"></i>
-                        <span>Data Quality</span>
+                        <span>{% trans 'Data Quality' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'registry_enrichment' %}active{% endif %}" href="{% url 'analytics:registry_enrichment' %}">
                         <i class="ri-government-line"></i>
-                        <span>Registry &amp; Enrichment</span>
+                        <span>{% trans 'Registry & Enrichment' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}" href="{% url 'analytics:reports' %}">
                         <i class="ri-download-cloud-2-line"></i>
-                        <span>Reports</span>
+                        <span>{% trans 'Reports' %}</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link menu-link {% if request.resolver_match.url_name == 'ml_overview' or request.resolver_match.url_name == 'ml_classification' or request.resolver_match.url_name == 'ml_anomaly' or request.resolver_match.url_name == 'ml_pca' or request.resolver_match.url_name == 'ml_clustering' or request.resolver_match.url_name == 'ml_feature_importance' or request.resolver_match.url_name == 'ml_financial_enrichment' or request.resolver_match.url_name == 'ml_benchmark' or request.resolver_match.url_name == 'ml_model_card' or request.resolver_match.url_name == 'ml_exports' %}active{% endif %}" href="#sidebarMlResults" data-bs-toggle="collapse" role="button" aria-expanded="{% if request.resolver_match.url_name == 'ml_overview' or request.resolver_match.url_name == 'ml_classification' or request.resolver_match.url_name == 'ml_anomaly' or request.resolver_match.url_name == 'ml_pca' or request.resolver_match.url_name == 'ml_clustering' or request.resolver_match.url_name == 'ml_feature_importance' or request.resolver_match.url_name == 'ml_financial_enrichment' or request.resolver_match.url_name == 'ml_benchmark' or request.resolver_match.url_name == 'ml_model_card' or request.resolver_match.url_name == 'ml_exports' %}true{% else %}false{% endif %}" aria-controls="sidebarMlResults">
                         <i class="ri-brain-line"></i>
-                        <span>ML Results</span>
+                        <span>{% trans 'ML Results' %}</span>
                     </a>
                     <div class="collapse menu-dropdown {% if request.resolver_match.url_name == 'ml_overview' or request.resolver_match.url_name == 'ml_classification' or request.resolver_match.url_name == 'ml_anomaly' or request.resolver_match.url_name == 'ml_pca' or request.resolver_match.url_name == 'ml_clustering' or request.resolver_match.url_name == 'ml_feature_importance' or request.resolver_match.url_name == 'ml_financial_enrichment' or request.resolver_match.url_name == 'ml_benchmark' or request.resolver_match.url_name == 'ml_model_card' or request.resolver_match.url_name == 'ml_exports' %}show{% endif %}" id="sidebarMlResults">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_overview' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_overview' %}active{% endif %}">Overview</a>
+                                <a href="{% url 'analytics:ml_overview' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_overview' %}active{% endif %}">{% trans 'Overview' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_classification' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_classification' %}active{% endif %}">Classification</a>
+                                <a href="{% url 'analytics:ml_classification' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_classification' %}active{% endif %}">{% trans 'Classification' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_anomaly' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_anomaly' %}active{% endif %}">Anomaly Detection</a>
+                                <a href="{% url 'analytics:ml_anomaly' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_anomaly' %}active{% endif %}">{% trans 'Anomaly Detection' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_pca' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_pca' %}active{% endif %}">PCA Visualization</a>
+                                <a href="{% url 'analytics:ml_pca' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_pca' %}active{% endif %}">{% trans 'PCA Visualization' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_clustering' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_clustering' %}active{% endif %}">Clustering</a>
+                                <a href="{% url 'analytics:ml_clustering' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_clustering' %}active{% endif %}">{% trans 'Clustering' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_feature_importance' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_feature_importance' %}active{% endif %}">Feature Importance</a>
+                                <a href="{% url 'analytics:ml_feature_importance' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_feature_importance' %}active{% endif %}">{% trans 'Feature Importance' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_financial_enrichment' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_financial_enrichment' %}active{% endif %}">Financial Enrichment</a>
+                                <a href="{% url 'analytics:ml_financial_enrichment' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_financial_enrichment' %}active{% endif %}">{% trans 'Financial Enrichment' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_benchmark' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_benchmark' %}active{% endif %}">Benchmark</a>
+                                <a href="{% url 'analytics:ml_benchmark' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_benchmark' %}active{% endif %}">{% trans 'Benchmark' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_model_card' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_model_card' %}active{% endif %}">Model Card</a>
+                                <a href="{% url 'analytics:ml_model_card' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_model_card' %}active{% endif %}">{% trans 'Model Card' %}</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{% url 'analytics:ml_exports' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_exports' %}active{% endif %}">Exports</a>
+                                <a href="{% url 'analytics:ml_exports' %}" class="nav-link {% if request.resolver_match.url_name == 'ml_exports' %}active{% endif %}">{% trans 'Exports' %}</a>
                             </li>
                         </ul>
                     </div>
@@ -119,7 +119,7 @@
                 <li class="nav-item">
                     <a class="nav-link menu-link disabled" href="javascript:void(0);" aria-disabled="true">
                         <i class="ri-database-2-line"></i>
-                        <span>Collector Tables</span>
+                        <span>{% trans 'Collector Tables' %}</span>
                     </a>
                 </li>
             </ul>

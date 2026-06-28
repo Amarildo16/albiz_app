@@ -1,10 +1,13 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Financial Enrichment Experiment | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'Financial Enrichment Experiment' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
-{% include 'analytics/ml/partials/page_header.html' with title='Financial Enrichment Experiment' subtitle='Procurement-only baseline compared with procurement plus secondary OpenCorporates financial features.' crumb='Financial Enrichment' %}
+{% trans 'Financial Enrichment Experiment' as page_title %}
+{% trans 'Procurement-only baseline compared with procurement plus secondary OpenCorporates financial features.' as page_subtitle %}
+{% trans 'Financial Enrichment' as page_crumb %}
+{% include 'analytics/ml/partials/page_header.html' with title=page_title subtitle=page_subtitle crumb=page_crumb %}
 {% include 'analytics/ml/partials/output_warnings.html' %}
 
 {% if ml.financial_enrichment.missing_files %}
@@ -12,7 +15,7 @@
     <div class="col-12">
         <div class="card border-warning mb-0">
             <div class="card-body">
-                <h5 class="card-title mb-2">Financial enrichment outputs are incomplete</h5>
+                <h5 class="card-title mb-2">{% trans 'Financial enrichment outputs are incomplete' %}</h5>
                 <p class="text-muted mb-3">{{ ml.financial_enrichment.missing_message }}</p>
                 <div class="d-flex flex-wrap gap-2">
                     {% for filename in ml.financial_enrichment.missing_files %}
@@ -28,7 +31,7 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="alert alert-warning mb-0" role="alert">
-            OpenCorporates financial data is secondary exploratory enrichment. This experiment uses only companies where the financial subset exists, and the target is a heuristic strict weak label. Results describe model behavior over available generated data; they are not external validation.
+            {% trans 'OpenCorporates financial data is secondary exploratory enrichment. This experiment uses only companies where the financial subset exists, and the target is a heuristic strict weak label. Results describe model behavior over available generated data; they are not external validation.' %}
         </div>
     </div>
 </div>
@@ -37,7 +40,7 @@
     <div class="col-xl-2 col-md-4">
         <div class="card card-animate h-100 mb-0">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Joined companies</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Joined companies' %}</p>
                 <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.total_joined_companies }}</h4>
             </div>
         </div>
@@ -45,7 +48,7 @@
     <div class="col-xl-2 col-md-4">
         <div class="card card-animate h-100 mb-0">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Financial subset</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Financial subset' %}</p>
                 <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.companies_with_financial_enrichment }}</h4>
             </div>
         </div>
@@ -53,7 +56,7 @@
     <div class="col-xl-2 col-md-4">
         <div class="card card-animate h-100 mb-0">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Coverage</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Coverage' %}</p>
                 <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.coverage_percentage }}</h4>
             </div>
         </div>
@@ -61,7 +64,7 @@
     <div class="col-xl-2 col-md-4">
         <div class="card card-animate h-100 mb-0">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Financial rows</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Financial rows' %}</p>
                 <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.financial_table_rows }}</h4>
             </div>
         </div>
@@ -69,7 +72,7 @@
     <div class="col-xl-2 col-md-4">
         <div class="card card-animate h-100 mb-0">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Financial NIPTs</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Financial NIPTs' %}</p>
                 <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.distinct_financial_nipts }}</h4>
             </div>
         </div>
@@ -77,7 +80,7 @@
     <div class="col-xl-2 col-md-4">
         <div class="card card-animate h-100 mb-0">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Year range</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Year range' %}</p>
                 <h4 class="fs-22 fw-semibold mt-3 mb-0">{{ ml.financial_enrichment.summary.financial_year_range }}</h4>
             </div>
         </div>
@@ -88,13 +91,13 @@
     <div class="col-xl-8">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Procurement-only vs Procurement + Financial</h5>
+                <h5 class="card-title mb-0">{% trans 'Procurement-only vs Procurement + Financial' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">Grouped comparison of F1 and ROC AUC by model for the financial subset experiment.</p>
+                <p class="text-muted mb-3">{% trans 'Grouped comparison of F1 and ROC AUC by model for the financial subset experiment.' %}</p>
                 <div id="ml-financial-comparison-chart" class="apex-charts" style="min-height: 360px;"></div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    This compares a procurement-only baseline with the same subset plus secondary financial enrichment features; it is still evaluated against a heuristic strict weak label.
+                    {% trans 'This compares a procurement-only baseline with the same subset plus secondary financial enrichment features; it is still evaluated against a heuristic strict weak label.' %}
                 </div>
             </div>
         </div>
@@ -102,13 +105,13 @@
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Financial Coverage</h5>
+                <h5 class="card-title mb-0">{% trans 'Financial Coverage' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">Joined companies with and without secondary financial enrichment.</p>
+                <p class="text-muted mb-3">{% trans 'Joined companies with and without secondary financial enrichment.' %}</p>
                 <div id="ml-financial-coverage-chart" class="apex-charts" style="min-height: 300px;"></div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    The financial enrichment experiment is limited to companies with available OpenCorporates financial-year rows.
+                    {% trans 'The financial enrichment experiment is limited to companies with available OpenCorporates financial-year rows.' %}
                 </div>
             </div>
         </div>
@@ -119,14 +122,14 @@
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Subset Label Distribution</h5>
+                <h5 class="card-title mb-0">{% trans 'Subset Label Distribution' %}</h5>
             </div>
             <div class="card-body">
                 <p class="text-muted">Target: {{ ml.financial_enrichment.subset.target }} ({{ ml.financial_enrichment.subset.target_type }})</p>
                 <div class="table-responsive">
                     <table class="table table-sm table-nowrap align-middle mb-0">
                         <thead class="table-light">
-                            <tr><th>Class</th><th>Count</th><th>Share</th></tr>
+                            <tr><th>{% trans 'Class' %}</th><th>{% trans 'Count' %}</th><th>{% trans 'Share' %}</th></tr>
                         </thead>
                         <tbody>
                             {% for row in ml.financial_enrichment.label_distribution %}
@@ -137,32 +140,32 @@
                         </tbody>
                     </table>
                 </div>
-                <p class="text-muted mt-3 mb-0">Subset rows: {{ ml.financial_enrichment.subset.subset_row_count }}</p>
+                <p class="text-muted mt-3 mb-0">{% blocktrans with count=ml.financial_enrichment.subset.subset_row_count %}Subset rows: {{ count }}{% endblocktrans %}</p>
             </div>
         </div>
     </div>
     <div class="col-xl-8">
         <div class="card h-100 mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Main Conclusion</h5>
-                <span class="badge bg-info-subtle text-info">Exploratory result</span>
+                <h5 class="card-title mb-0">{% trans 'Main Conclusion' %}</h5>
+                <span class="badge bg-info-subtle text-info">{% trans 'Exploratory result' %}</span>
             </div>
             <div class="card-body">
                 <p class="fs-15 mb-3">{{ ml.financial_enrichment.conclusion }}</p>
                 <div class="alert alert-info mb-0" role="alert">
-                    In this run, the procurement-only baseline produced the best F1 and ROC AUC. Adding secondary financial enrichment did not clearly improve the best model. This should not be interpreted as financial data being useless; it means that for the current heuristic strict weak label and the available OpenCorporates subset, procurement/registry-derived signals dominate the model behavior.
+                    {% trans 'In this run, the procurement-only baseline produced the best F1 and ROC AUC. Adding secondary financial enrichment did not clearly improve the best model. This should not be interpreted as financial data being useless; it means that for the current heuristic strict weak label and the available OpenCorporates subset, procurement/registry-derived signals dominate the model behavior.' %}
                 </div>
                 <div class="row g-3 mt-1">
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <p class="text-muted mb-1">Best F1</p>
+                            <p class="text-muted mb-1">{% trans 'Best F1' %}</p>
                             <h6 class="mb-1">{{ ml.financial_enrichment.subset.best_model_by_f1.experiment }}</h6>
                             <span class="text-muted">{{ ml.financial_enrichment.subset.best_model_by_f1.model }}: {{ ml.financial_enrichment.subset.best_model_by_f1.metric }}</span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <p class="text-muted mb-1">Best ROC AUC</p>
+                            <p class="text-muted mb-1">{% trans 'Best ROC AUC' %}</p>
                             <h6 class="mb-1">{{ ml.financial_enrichment.subset.best_model_by_roc_auc.experiment }}</h6>
                             <span class="text-muted">{{ ml.financial_enrichment.subset.best_model_by_roc_auc.model }}: {{ ml.financial_enrichment.subset.best_model_by_roc_auc.metric }}</span>
                         </div>
@@ -177,18 +180,18 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Metrics Comparison</h5>
+                <h5 class="card-title mb-0">{% trans 'Metrics Comparison' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">The table compares model metrics on the same financial-enrichment subset so the procurement-only and enriched feature sets are directly comparable.</p>
+                <p class="text-muted mb-3">{% trans 'The table compares model metrics on the same financial-enrichment subset so the procurement-only and enriched feature sets are directly comparable.' %}</p>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th rowspan="2">Model</th>
-                                <th colspan="5">Procurement-only baseline</th>
-                                <th colspan="5">Procurement plus financial enrichment</th>
-                                <th colspan="2">Delta</th>
+                                <th rowspan="2">{% trans 'Model' %}</th>
+                                <th colspan="5">{% trans 'Procurement-only baseline' %}</th>
+                                <th colspan="5">{% trans 'Procurement plus financial enrichment' %}</th>
+                                <th colspan="2">{% trans 'Delta' %}</th>
                             </tr>
                             <tr>
                                 <th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC AUC</th>
@@ -214,7 +217,7 @@
                                     <td>{{ row.delta_roc_auc }}</td>
                                 </tr>
                             {% empty %}
-                                <tr><td colspan="13" class="text-muted">Financial subset metrics are unavailable.</td></tr>
+                                <tr><td colspan="13" class="text-muted">{% trans 'Financial subset metrics are unavailable.' %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -228,18 +231,18 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Financial Subset Feature Importance</h5>
-                <span class="badge bg-warning-subtle text-warning">Explains heuristic labels, not external outcomes</span>
+                <h5 class="card-title mb-0">{% trans 'Financial Subset Feature Importance' %}</h5>
+                <span class="badge bg-warning-subtle text-warning">{% trans 'Explains heuristic labels, not external outcomes' %}</span>
             </div>
             <div class="card-body">
                 <div id="ml-financial-feature-importance-chart" class="apex-charts mb-4" style="min-height: 420px;"></div>
                 <div class="alert alert-light border mb-4 py-2" role="alert">
-                    Feature importance describes model behavior within this secondary financial subset and should not be read as evidence of external outcomes.
+                    {% trans 'Feature importance describes model behavior within this secondary financial subset and should not be read as evidence of external outcomes.' %}
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
-                            <tr><th>Experiment</th><th>Model</th><th>Feature</th><th>Importance</th><th>Rank</th></tr>
+                            <tr><th>{% trans 'Experiment' %}</th><th>{% trans 'Model' %}</th><th>{% trans 'Feature' %}</th><th>{% trans 'Importance' %}</th><th>{% trans 'Rank' %}</th></tr>
                         </thead>
                         <tbody>
                             {% for row in ml.financial_enrichment.feature_importance_rows %}
@@ -251,7 +254,7 @@
                                     <td>{{ row.rank }}</td>
                                 </tr>
                             {% empty %}
-                                <tr><td colspan="5" class="text-muted">Feature importance rows are unavailable.</td></tr>
+                                <tr><td colspan="5" class="text-muted">{% trans 'Feature importance rows are unavailable.' %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -265,7 +268,7 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Financial Subset Ranking Preview</h5>
+                <h5 class="card-title mb-0">{% trans 'Financial Subset Ranking Preview' %}</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -273,14 +276,14 @@
                         <thead class="table-light">
                             <tr>
                                 <th>NIPT</th>
-                                <th>Business name</th>
-                                <th>Predicted probability</th>
-                                <th>Strict label</th>
-                                <th>Latest year</th>
-                                <th>Latest revenue</th>
-                                <th>Latest profit before tax</th>
-                                <th>Revenue growth</th>
-                                <th>Profit growth</th>
+                                <th>{% trans 'Business name' %}</th>
+                                <th>{% trans 'Predicted probability' %}</th>
+                                <th>{% trans 'Strict label' %}</th>
+                                <th>{% trans 'Latest year' %}</th>
+                                <th>{% trans 'Latest revenue' %}</th>
+                                <th>{% trans 'Latest profit before tax' %}</th>
+                                <th>{% trans 'Revenue growth' %}</th>
+                                <th>{% trans 'Profit growth' %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -297,12 +300,12 @@
                                     <td>{{ row.profit_growth_latest_pct_display }}</td>
                                 </tr>
                             {% empty %}
-                                <tr><td colspan="9" class="text-muted">Ranking rows are unavailable.</td></tr>
+                                <tr><td colspan="9" class="text-muted">{% trans 'Ranking rows are unavailable.' %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-                <p class="text-muted mt-3 mb-0">This preview is sorted by the generated financial subset ranking. It does not retrain models or query the collector database.</p>
+                <p class="text-muted mt-3 mb-0">{% trans 'This preview is sorted by the generated financial subset ranking. It does not retrain models or query the collector database.' %}</p>
             </div>
         </div>
     </div>
@@ -312,13 +315,13 @@
     <div class="col-xl-7">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Financial Feature Missingness</h5>
+                <h5 class="card-title mb-0">{% trans 'Financial Feature Missingness' %}</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
-                            <tr><th>Feature</th><th>Missing count</th><th>Missing percentage</th><th>Usable</th></tr>
+                            <tr><th>{% trans 'Feature' %}</th><th>{% trans 'Missing count' %}</th><th>{% trans 'Missing percentage' %}</th><th>{% trans 'Usable' %}</th></tr>
                         </thead>
                         <tbody>
                             {% for row in ml.financial_enrichment.missingness_rows %}
@@ -329,7 +332,7 @@
                                     <td>{{ row.usable }}</td>
                                 </tr>
                             {% empty %}
-                                <tr><td colspan="4" class="text-muted">Missingness rows are unavailable.</td></tr>
+                                <tr><td colspan="4" class="text-muted">{% trans 'Missingness rows are unavailable.' %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -340,20 +343,20 @@
     <div class="col-xl-5">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Exports</h5>
+                <h5 class="card-title mb-0">{% trans 'Exports' %}</h5>
             </div>
             <div class="card-body d-grid gap-2">
                 <a href="{% url 'analytics:export_ml_financial_subset_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Financial subset ranking CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Financial subset ranking CSV' %}
                 </a>
                 <a href="{% url 'analytics:export_ml_financial_subset_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Financial subset feature importance CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Financial subset feature importance CSV' %}
                 </a>
                 <a href="{% url 'analytics:export_ml_financial_feature_missingness_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Financial feature missingness CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Financial feature missingness CSV' %}
                 </a>
                 <div class="alert alert-light border mt-2 mb-0" role="alert">
-                    The enriched dataset CSV remains available locally under <code>reports/ml/</code>. It is intentionally not exposed as a large dashboard export here.
+                    {% blocktrans %}The enriched dataset CSV remains available locally under <code>reports/ml/</code>. It is intentionally not exposed as a large dashboard export here.{% endblocktrans %}
                 </div>
             </div>
         </div>

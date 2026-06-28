@@ -1,17 +1,19 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}ML Exports | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'ML Exports' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
-{% include 'analytics/ml/partials/page_header.html' with title='ML Exports' subtitle='Download existing generated ML outputs without retraining models from the dashboard.' crumb='Exports' %}
+{% trans 'ML Exports' as page_title %}
+{% trans 'Download existing generated ML outputs without retraining models from the dashboard.' as page_subtitle %}
+{% trans 'Exports' as page_crumb %}
+{% include 'analytics/ml/partials/page_header.html' with title=page_title subtitle=page_subtitle crumb=page_crumb %}
 {% include 'analytics/ml/partials/output_warnings.html' %}
 
 <div class="row mb-4">
     <div class="col-12">
         <div class="alert alert-info mb-0" role="alert">
-            Export links serve existing files from <code>reports/ml/</code>. Generated files are local analysis artifacts for thesis review and remain ignored by Git.
-            These exports document exploratory ML behavior; they do not train models or validate real-world outcomes from the dashboard.
+            {% blocktrans %}Export links serve existing files from <code>reports/ml/</code>. Generated files are local analysis artifacts for thesis review and remain ignored by Git. These exports document exploratory ML behavior; they do not train models or validate real-world outcomes from the dashboard.{% endblocktrans %}
         </div>
     </div>
 </div>
@@ -20,11 +22,11 @@
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Dataset / Preparation</h5>
+                <h5 class="card-title mb-0">{% trans 'Dataset / Preparation' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted">Dataset and preparation files are generated locally by <code>build_ml_dataset</code>.</p>
-                <p class="text-muted mb-3">Use these files to document the feature matrix, missingness, and modelling dataset construction.</p>
+                <p class="text-muted">{% blocktrans %}Dataset and preparation files are generated locally by <code>build_ml_dataset</code>.{% endblocktrans %}</p>
+                <p class="text-muted mb-3">{% trans 'Use these files to document the feature matrix, missingness, and modelling dataset construction.' %}</p>
                 <div class="d-flex flex-wrap gap-2">
                     <span class="badge bg-light text-body">ml_dataset.csv</span>
                     <span class="badge bg-light text-body">ml_dataset_summary.json</span>
@@ -37,29 +39,29 @@
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Classification</h5>
+                <h5 class="card-title mb-0">{% trans 'Classification' %}</h5>
             </div>
             <div class="card-body d-grid gap-2">
-                <p class="text-muted mb-1">Reduced-feature outputs are the more cautious classification artifacts because direct label-defining fields are excluded as much as possible.</p>
+                <p class="text-muted mb-1">{% trans 'Reduced-feature outputs are the more cautious classification artifacts because direct label-defining fields are excluded as much as possible.' %}</p>
                 <a href="{% url 'analytics:export_ml_reduced_feature_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Reduced-feature ranking CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Reduced-feature ranking CSV' %}
                 </a>
-                <p class="text-muted mb-0">Metrics JSON files remain available locally under <code>reports/ml/</code>.</p>
+                <p class="text-muted mb-0">{% blocktrans %}Metrics JSON files remain available locally under <code>reports/ml/</code>.{% endblocktrans %}</p>
             </div>
         </div>
     </div>
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Anomaly Detection</h5>
+                <h5 class="card-title mb-0">{% trans 'Anomaly Detection' %}</h5>
             </div>
             <div class="card-body d-grid gap-2">
-                <p class="text-muted mb-1">Anomaly exports rank statistically unusual procurement profiles for human review and source verification.</p>
+                <p class="text-muted mb-1">{% trans 'Anomaly exports rank statistically unusual procurement profiles for human review and source verification.' %}</p>
                 <a href="{% url 'analytics:export_ml_anomaly_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Isolation Forest ranking CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Isolation Forest ranking CSV' %}
                 </a>
                 <a href="{% url 'analytics:export_ml_lof_anomaly_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> LOF ranking CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'LOF ranking CSV' %}
                 </a>
             </div>
         </div>
@@ -73,12 +75,12 @@
                 <h5 class="card-title mb-0">PCA</h5>
             </div>
             <div class="card-body d-grid gap-2">
-                <p class="text-muted mb-1">PCA exports support dimensionality-reduction visualization of procurement profiles. PCA is not a risk model.</p>
+                <p class="text-muted mb-1">{% trans 'PCA exports support dimensionality-reduction visualization of procurement profiles. PCA is not a risk model.' %}</p>
                 <a href="{% url 'analytics:export_ml_pca_2d_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> PCA 2D CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'PCA 2D CSV' %}
                 </a>
                 <a href="{% url 'analytics:export_ml_pca_3d_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> PCA 3D CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'PCA 3D CSV' %}
                 </a>
             </div>
         </div>
@@ -86,12 +88,12 @@
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Clustering</h5>
+                <h5 class="card-title mb-0">{% trans 'Clustering' %}</h5>
             </div>
             <div class="card-body d-grid gap-2">
-                <p class="text-muted mb-1">Cluster exports summarize descriptive procurement-profile segments, not legal or administrative classifications.</p>
+                <p class="text-muted mb-1">{% trans 'Cluster exports summarize descriptive procurement-profile segments, not legal or administrative classifications.' %}</p>
                 <a href="{% url 'analytics:export_ml_cluster_summary_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Cluster summary CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Cluster summary CSV' %}
                 </a>
             </div>
         </div>
@@ -99,12 +101,12 @@
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Feature Importance</h5>
+                <h5 class="card-title mb-0">{% trans 'Feature Importance' %}</h5>
             </div>
             <div class="card-body d-grid gap-2">
-                <p class="text-muted mb-1">Feature importance explains heuristic-label model behavior and should be interpreted cautiously.</p>
+                <p class="text-muted mb-1">{% trans 'Feature importance explains heuristic-label model behavior and should be interpreted cautiously.' %}</p>
                 <a href="{% url 'analytics:export_ml_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Feature importance CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Feature importance CSV' %}
                 </a>
             </div>
         </div>
@@ -115,21 +117,21 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Benchmark Suite</h5>
+                <h5 class="card-title mb-0">{% trans 'Benchmark Suite' %}</h5>
             </div>
             <div class="card-body d-grid gap-2">
-                <p class="text-muted mb-1">Benchmark exports are generated separately with <code>manage.py run_ml_benchmark</code> and summarize repeated cross-validation stability.</p>
+                <p class="text-muted mb-1">{% blocktrans %}Benchmark exports are generated separately with <code>manage.py run_ml_benchmark</code> and summarize repeated cross-validation stability.{% endblocktrans %}</p>
                 <a href="{% url 'analytics:export_ml_benchmark_model_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Benchmark model ranking CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Benchmark model ranking CSV' %}
                 </a>
                 <a href="{% url 'analytics:export_ml_benchmark_cv_metrics_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Benchmark CV metrics CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Benchmark CV metrics CSV' %}
                 </a>
                 <a href="{% url 'analytics:export_ml_benchmark_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Benchmark feature importance CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Benchmark feature importance CSV' %}
                 </a>
                 <a href="{% url 'analytics:ml_benchmark' %}" class="btn btn-soft-secondary mt-2">
-                    <i class="ri-bar-chart-grouped-line align-bottom me-1"></i> Open Benchmark Suite
+                    <i class="ri-bar-chart-grouped-line align-bottom me-1"></i> {% trans 'Open Benchmark Suite' %}
                 </a>
             </div>
         </div>
@@ -140,20 +142,20 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Financial Enrichment Experiment</h5>
+                <h5 class="card-title mb-0">{% trans 'Financial Enrichment Experiment' %}</h5>
             </div>
             <div class="card-body d-grid gap-2">
-                <p class="text-muted mb-1">These outputs compare a procurement-only baseline with procurement plus secondary OpenCorporates financial features on the covered subset.</p>
+                <p class="text-muted mb-1">{% trans 'These outputs compare a procurement-only baseline with procurement plus secondary OpenCorporates financial features on the covered subset.' %}</p>
                 <a href="{% url 'analytics:export_ml_financial_subset_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Financial subset ranking CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Financial subset ranking CSV' %}
                 </a>
                 <a href="{% url 'analytics:export_ml_financial_subset_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Financial subset feature importance CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Financial subset feature importance CSV' %}
                 </a>
                 <a href="{% url 'analytics:export_ml_financial_feature_missingness_csv' %}" class="btn btn-sm btn-soft-primary text-start">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Financial feature missingness CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Financial feature missingness CSV' %}
                 </a>
-                <p class="text-muted mb-0">Use these files to document coverage, model comparison, feature importance, and ranking previews for the financial subset experiment.</p>
+                <p class="text-muted mb-0">{% trans 'Use these files to document coverage, model comparison, feature importance, and ranking previews for the financial subset experiment.' %}</p>
             </div>
         </div>
     </div>
@@ -163,10 +165,10 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Documentation / Model Card</h5>
+                <h5 class="card-title mb-0">{% trans 'Documentation / Model Card' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">Documentation outputs are generated local files and are read by the model card page.</p>
+                <p class="text-muted mb-3">{% trans 'Documentation outputs are generated local files and are read by the model card page.' %}</p>
                 <div class="d-flex flex-wrap gap-2">
                     <span class="badge bg-light text-body">ml_model_card.json</span>
                     <span class="badge bg-light text-body">ml_limitations.md</span>
@@ -174,7 +176,7 @@
                     <span class="badge bg-light text-body">ml_pca_summary.json</span>
                 </div>
                 <a href="{% url 'analytics:ml_model_card' %}" class="btn btn-soft-secondary mt-3">
-                    <i class="ri-file-list-3-line align-bottom me-1"></i> Open Model Card &amp; Limitations
+                    <i class="ri-file-list-3-line align-bottom me-1"></i> {% trans 'Open Model Card & Limitations' %}
                 </a>
             </div>
         </div>

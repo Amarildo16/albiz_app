@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Risk Overview | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'Risk Overview' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -26,13 +26,13 @@
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <div>
-                <h4 class="mb-sm-0">Risk Overview</h4>
-                <p class="text-muted mb-0 mt-1">Procurement anomaly indicators computed from joined APP and QKB company features.</p>
+                <h4 class="mb-sm-0">{% trans 'Risk Overview' %}</h4>
+                <p class="text-muted mb-0 mt-1">{% trans 'Procurement anomaly indicators computed from joined APP and QKB company features.' %}</p>
             </div>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Risk Overview</li>
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+                    <li class="breadcrumb-item active">{% trans 'Risk Overview' %}</li>
                 </ol>
             </div>
         </div>
@@ -43,7 +43,7 @@
 <div class="row">
     <div class="col-12">
         <div class="alert alert-warning" role="alert">
-            Collector database is not reachable: {{ collector_error }}
+            {% blocktrans with error=collector_error %}Collector database is not reachable: {{ error }}{% endblocktrans %}
         </div>
     </div>
 </div>
@@ -54,7 +54,7 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-animate">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Total joined companies</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Total joined companies' %}</p>
                 <div class="d-flex align-items-end justify-content-between mt-4">
                     <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ overview.total_joined_companies_display }}</h4>
@@ -73,11 +73,11 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-animate">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Companies with indicators</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Companies with indicators' %}</p>
                 <div class="d-flex align-items-end justify-content-between mt-4">
                     <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ overview.companies_with_indicators_display }}</h4>
-                        <span class="text-muted">At least one indicator</span>
+                        <span class="text-muted">{% trans 'At least one indicator' %}</span>
                     </div>
                     <div class="avatar-sm flex-shrink-0">
                         <span class="avatar-title bg-warning-subtle rounded fs-3">
@@ -92,11 +92,11 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-animate">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Companies without indicators</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Companies without indicators' %}</p>
                 <div class="d-flex align-items-end justify-content-between mt-4">
                     <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ overview.companies_without_indicators_display }}</h4>
-                        <span class="text-muted">No computed indicators</span>
+                        <span class="text-muted">{% trans 'No computed indicators' %}</span>
                     </div>
                     <div class="avatar-sm flex-shrink-0">
                         <span class="avatar-title bg-success-subtle rounded fs-3">
@@ -111,11 +111,11 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-animate">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Indicator coverage</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Indicator coverage' %}</p>
                 <div class="d-flex align-items-end justify-content-between mt-4">
                     <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ overview.indicator_coverage_display }}</h4>
-                        <span class="text-muted">Companies with indicators / joined companies</span>
+                        <span class="text-muted">{% trans 'Companies with indicators / joined companies' %}</span>
                     </div>
                     <div class="avatar-sm flex-shrink-0">
                         <span class="avatar-title bg-info-subtle rounded fs-3">
@@ -132,13 +132,13 @@
     <div class="col-xl-7">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Risk Indicator Frequency</h5>
+                <h5 class="card-title mb-0">{% trans 'Risk Indicator Frequency' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">Frequency of analytical procurement anomaly indicators across joined APP-QKB companies.</p>
+                <p class="text-muted mb-3">{% trans 'Frequency of analytical procurement anomaly indicators across joined APP-QKB companies.' %}</p>
                 <div id="risk-indicator-frequency-chart" class="apex-charts" style="min-height: 360px;"></div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    Risk indicators are analytical signals for prioritizing review; they are not evidence for legal or administrative conclusions.
+                    {% trans 'Risk indicators are analytical signals for prioritizing review; they are not evidence for legal or administrative conclusions.' %}
                 </div>
             </div>
         </div>
@@ -146,13 +146,13 @@
     <div class="col-xl-5">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Risk Indicator Count Distribution</h5>
+                <h5 class="card-title mb-0">{% trans 'Risk Indicator Count Distribution' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">Companies grouped by the number of computed analytical indicators.</p>
+                <p class="text-muted mb-3">{% trans 'Companies grouped by the number of computed analytical indicators.' %}</p>
                 <div id="risk-indicator-count-chart" class="apex-charts" style="min-height: 300px;"></div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    Indicator counts summarize how many heuristic signals are present for each company, not the severity of any legal finding.
+                    {% trans 'Indicator counts summarize how many heuristic signals are present for each company, not the severity of any legal finding.' %}
                 </div>
             </div>
         </div>
@@ -163,16 +163,16 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Risk Indicator Concentration by City</h5>
+                <h5 class="card-title mb-0">{% trans 'Risk Indicator Concentration by City' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">This heatmap shows where the most frequent procurement anomaly indicators appear among top joined-company cities.</p>
+                <p class="text-muted mb-3">{% trans 'This heatmap shows where the most frequent procurement anomaly indicators appear among top joined-company cities.' %}</p>
                 <div class="table-responsive">
                     <table class="table table-sm table-bordered align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>City</th>
-                                <th class="text-end">Joined companies</th>
+                                <th>{% trans 'City' %}</th>
+                                <th class="text-end">{% trans 'Joined companies' %}</th>
                                 {% for indicator in overview.risk_indicator_heatmap.columns %}
                                     <th class="text-center">{{ indicator.label }}</th>
                                 {% endfor %}
@@ -191,13 +191,13 @@
                                     {% endfor %}
                                 </tr>
                             {% empty %}
-                                <tr><td colspan="8" class="text-muted text-center py-4">No indicator concentration data available.</td></tr>
+                                <tr><td colspan="8" class="text-muted text-center py-4">{% trans 'No indicator concentration data available.' %}</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    Higher cell intensity means more companies in that city meet the indicator condition. This is an exploratory distribution, not an accusation.
+                    {% trans 'Higher cell intensity means more companies in that city meet the indicator condition. This is an exploratory distribution, not an accusation.' %}
                 </div>
             </div>
         </div>
@@ -208,17 +208,17 @@
     <div class="col-xl-5">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Indicator Distribution</h5>
+                <h5 class="card-title mb-0">{% trans 'Indicator Distribution' %}</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Indicator</th>
-                                <th>Level</th>
-                                <th class="text-end">Companies</th>
-                                <th class="text-end">Share</th>
+                                <th>{% trans 'Indicator' %}</th>
+                                <th>{% trans 'Level' %}</th>
+                                <th class="text-end">{% trans 'Companies' %}</th>
+                                <th class="text-end">{% trans 'Share' %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -227,11 +227,11 @@
                                     <td>{{ indicator.label }}</td>
                                     <td>
                                         {% if indicator.level == 'danger' %}
-                                            <span class="badge bg-danger-subtle text-danger">High</span>
+                                            <span class="badge bg-danger-subtle text-danger">{% trans 'High' %}</span>
                                         {% elif indicator.level == 'warning' %}
-                                            <span class="badge bg-warning-subtle text-warning">Medium</span>
+                                            <span class="badge bg-warning-subtle text-warning">{% trans 'Medium' %}</span>
                                         {% else %}
-                                            <span class="badge bg-info-subtle text-info">Informational</span>
+                                            <span class="badge bg-info-subtle text-info">{% trans 'Informational' %}</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-end">{{ indicator.count }}</td>
@@ -242,7 +242,7 @@
                     </table>
                 </div>
                 <p class="text-muted mb-0 mt-3">
-                    {{ overview.zero_budget_winner_companies_display }} companies have zero budget with winner value.
+                    {% blocktrans with count=overview.zero_budget_winner_companies_display %}{{ count }} companies have zero budget with winner value.{% endblocktrans %}
                 </p>
             </div>
         </div>
@@ -251,7 +251,7 @@
     <div class="col-xl-7">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Top Companies By Risk Indicator Count</h5>
+                <h5 class="card-title mb-0">{% trans 'Top Companies By Risk Indicator Count' %}</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -259,11 +259,11 @@
                         <thead class="table-light">
                             <tr>
                                 <th>NIPT</th>
-                                <th>Business name</th>
-                                <th>Legal form</th>
-                                <th>City</th>
-                                <th class="text-end">Count</th>
-                                <th>Indicators</th>
+                                <th>{% trans 'Business name' %}</th>
+                                <th>{% trans 'Legal form' %}</th>
+                                <th>{% trans 'City' %}</th>
+                                <th class="text-end">{% trans 'Count' %}</th>
+                                <th>{% trans 'Indicators' %}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -289,12 +289,12 @@
                                         </div>
                                     </td>
                                     <td class="text-end">
-                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">View</a>
+                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">{% trans 'View' %}</a>
                                     </td>
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">No companies with indicators found.</td>
+                                    <td colspan="7" class="text-center text-muted py-4">{% trans 'No companies with indicators found.' %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -309,7 +309,7 @@
     <div class="col-xl-6">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Top Companies By Extreme Winner/Budget</h5>
+                <h5 class="card-title mb-0">{% trans 'Top Companies By Extreme Winner/Budget' %}</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -317,10 +317,10 @@
                         <thead class="table-light">
                             <tr>
                                 <th>NIPT</th>
-                                <th>Business name</th>
-                                <th class="text-end">Avg ratio</th>
-                                <th class="text-end">Active procurements</th>
-                                <th class="text-end">Active winner value</th>
+                                <th>{% trans 'Business name' %}</th>
+                                <th class="text-end">{% trans 'Avg ratio' %}</th>
+                                <th class="text-end">{% trans 'Active procurements' %}</th>
+                                <th class="text-end">{% trans 'Active winner value' %}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -333,12 +333,12 @@
                                     <td class="text-end">{{ company.active_procurement_count_display }}</td>
                                     <td class="text-end">{{ company.active_winner_value_display }}</td>
                                     <td class="text-end">
-                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">View</a>
+                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">{% trans 'View' %}</a>
                                     </td>
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">No winner/budget ratios found.</td>
+                                    <td colspan="6" class="text-center text-muted py-4">{% trans 'No winner/budget ratios found.' %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -351,7 +351,7 @@
     <div class="col-xl-6">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Top Companies By Active Winner Value</h5>
+                <h5 class="card-title mb-0">{% trans 'Top Companies By Active Winner Value' %}</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -359,10 +359,10 @@
                         <thead class="table-light">
                             <tr>
                                 <th>NIPT</th>
-                                <th>Business name</th>
-                                <th class="text-end">Active winner value</th>
-                                <th class="text-end">Active procurements</th>
-                                <th class="text-end">Indicator count</th>
+                                <th>{% trans 'Business name' %}</th>
+                                <th class="text-end">{% trans 'Active winner value' %}</th>
+                                <th class="text-end">{% trans 'Active procurements' %}</th>
+                                <th class="text-end">{% trans 'Indicator count' %}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -375,12 +375,12 @@
                                     <td class="text-end">{{ company.active_procurement_count_display }}</td>
                                     <td class="text-end">{{ company.risk_indicator_count }}</td>
                                     <td class="text-end">
-                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">View</a>
+                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">{% trans 'View' %}</a>
                                     </td>
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">No active winner values found.</td>
+                                    <td colspan="6" class="text-center text-muted py-4">{% trans 'No active winner values found.' %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -395,7 +395,7 @@
     <div class="col-xl-6">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Top Companies By Active Procurement Count</h5>
+                <h5 class="card-title mb-0">{% trans 'Top Companies By Active Procurement Count' %}</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -403,9 +403,9 @@
                         <thead class="table-light">
                             <tr>
                                 <th>NIPT</th>
-                                <th>Business name</th>
-                                <th class="text-end">Active procurements</th>
-                                <th class="text-end">Indicator count</th>
+                                <th>{% trans 'Business name' %}</th>
+                                <th class="text-end">{% trans 'Active procurements' %}</th>
+                                <th class="text-end">{% trans 'Indicator count' %}</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -417,12 +417,12 @@
                                     <td class="text-end">{{ company.active_procurement_count_display }}</td>
                                     <td class="text-end">{{ company.risk_indicator_count }}</td>
                                     <td class="text-end">
-                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">View</a>
+                                        <a href="{{ company.detail_url }}" class="btn btn-sm btn-soft-primary">{% trans 'View' %}</a>
                                     </td>
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">No active procurement counts found.</td>
+                                    <td colspan="5" class="text-center text-muted py-4">{% trans 'No active procurement counts found.' %}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

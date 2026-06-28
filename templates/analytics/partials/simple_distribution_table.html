@@ -1,7 +1,8 @@
+{% load i18n %}
 <div class="table-responsive">
     <table class="table table-sm table-hover align-middle mb-0">
         <thead class="table-light">
-            <tr><th>Value</th><th>Count</th><th>Share</th></tr>
+            <tr><th>{% trans 'Value' %}</th><th>{% trans 'Count' %}</th><th>{% trans 'Share' %}</th></tr>
         </thead>
         <tbody>
             {% for item in distribution.items %}

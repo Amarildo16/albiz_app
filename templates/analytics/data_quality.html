@@ -1,20 +1,20 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Data Quality & Coverage | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'Data Quality & Coverage' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <div>
-                <h4 class="mb-sm-0">Data Quality &amp; Coverage</h4>
-                <p class="text-muted mb-0 mt-1">Completeness and join coverage for the APP-QKB analytical dataset.</p>
+                <h4 class="mb-sm-0">{% trans 'Data Quality & Coverage' %}</h4>
+                <p class="text-muted mb-0 mt-1">{% trans 'Completeness and join coverage for the APP-QKB analytical dataset.' %}</p>
             </div>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Data Quality</li>
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+                    <li class="breadcrumb-item active">{% trans 'Data Quality' %}</li>
                 </ol>
             </div>
         </div>
@@ -25,7 +25,7 @@
 <div class="row">
     <div class="col-12">
         <div class="alert alert-warning" role="alert">
-            Collector database is not reachable: {{ collector_error }}
+            {% blocktrans with error=collector_error %}Collector database is not reachable: {{ error }}{% endblocktrans %}
         </div>
     </div>
 </div>
@@ -39,31 +39,31 @@
                 <div class="row g-3">
                     <div class="col-lg-3 col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-2">APP coverage</h6>
-                            <p class="text-muted mb-0">APP coverage describes procurement source rows and distinct winner companies derived from APP data.</p>
+                            <h6 class="mb-2">{% trans 'APP coverage' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'APP coverage describes procurement source rows and distinct winner companies derived from APP data.' %}</p>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-2">QKB coverage</h6>
-                            <p class="text-muted mb-0">QKB coverage describes the registry backbone used for company identity, legal form, status, city, and registration fields.</p>
+                            <h6 class="mb-2">{% trans 'QKB coverage' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'QKB coverage describes the registry backbone used for company identity, legal form, status, city, and registration fields.' %}</p>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-2">Joined coverage</h6>
-                            <p class="text-muted mb-0">Joined APP-QKB companies are APP winner companies matched to QKB subjects by exact normalized NIPT.</p>
+                            <h6 class="mb-2">{% trans 'Joined coverage' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'Joined APP-QKB companies are APP winner companies matched to QKB subjects by exact normalized NIPT.' %}</p>
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-2">Financial coverage</h6>
-                            <p class="text-muted mb-0">OpenCorporates financial coverage is a secondary subset and is summarized in Registry &amp; Enrichment.</p>
+                            <h6 class="mb-2">{% trans 'Financial coverage' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'OpenCorporates financial coverage is a secondary subset and is summarized in Registry & Enrichment.' %}</p>
                         </div>
                     </div>
                 </div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    Missingness matters because absent identifiers, amounts, dates, or registry fields can affect joins, feature engineering, and downstream interpretation.
+                    {% trans 'Missingness matters because absent identifiers, amounts, dates, or registry fields can affect joins, feature engineering, and downstream interpretation.' %}
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-animate">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Normalized APP rows</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Normalized APP rows' %}</p>
                 <div class="d-flex align-items-end justify-content-between mt-4">
                     <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ report.counts.normalized_app_rows.display }}</h4>
@@ -93,7 +93,7 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-animate">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Normalized QKB rows</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Normalized QKB rows' %}</p>
                 <div class="d-flex align-items-end justify-content-between mt-4">
                     <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ report.counts.normalized_qkb_rows.display }}</h4>
@@ -112,7 +112,7 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-animate">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">APP winner companies</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'APP winner companies' %}</p>
                 <div class="d-flex align-items-end justify-content-between mt-4">
                     <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ report.counts.app_winner_companies.display }}</h4>
@@ -131,7 +131,7 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-animate">
             <div class="card-body">
-                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Joined APP-QKB companies</p>
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">{% trans 'Joined APP-QKB companies' %}</p>
                 <div class="d-flex align-items-end justify-content-between mt-4">
                     <div>
                         <h4 class="fs-22 fw-semibold ff-secondary mb-1">{{ report.counts.joined_companies.display }}</h4>
@@ -173,13 +173,13 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">APP-QKB Coverage Snapshot</h5>
+                <h5 class="card-title mb-0">{% trans 'APP-QKB Coverage Snapshot' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">This chart summarizes the main source and feature-table counts used to interpret dataset coverage.</p>
+                <p class="text-muted mb-3">{% trans 'This chart summarizes the main source and feature-table counts used to interpret dataset coverage.' %}</p>
                 <div id="data-quality-coverage-chart" class="apex-charts" style="min-height: 300px;"></div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    Joined companies are APP winner companies matched to QKB registry subjects by exact normalized NIPT.
+                    {% trans 'Joined companies are APP winner companies matched to QKB registry subjects by exact normalized NIPT.' %}
                 </div>
             </div>
         </div>
@@ -187,13 +187,13 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Key Field Completeness</h5>
+                <h5 class="card-title mb-0">{% trans 'Key Field Completeness' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">Completeness rates show whether selected source fields are present after normalization.</p>
+                <p class="text-muted mb-3">{% trans 'Completeness rates show whether selected source fields are present after normalization.' %}</p>
                 <div id="data-quality-completeness-chart" class="apex-charts" style="min-height: 340px;"></div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    Missing values reflect source availability and normalization rules; they are not automatically data errors.
+                    {% trans 'Missing values reflect source availability and normalization rules; they are not automatically data errors.' %}
                 </div>
             </div>
         </div>
@@ -204,7 +204,7 @@
     <div class="col-xl-6">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">APP Completeness</h5>
+                <h5 class="card-title mb-0">{% trans 'APP Completeness' %}</h5>
             </div>
             <div class="card-body">
                 {% for metric in report.app_completeness %}
@@ -216,7 +216,7 @@
                         <div class="progress progress-sm">
                             <div class="progress-bar {% if metric.available %}bg-success{% else %}bg-secondary{% endif %}" role="progressbar" style="width: {{ metric.percent_for_bar }}%;" aria-valuenow="{{ metric.percent_for_bar }}" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        <small class="text-muted">{{ metric.present_count_display }} of {{ metric.total_count_display }} rows</small>
+                        <small class="text-muted">{% blocktrans with present=metric.present_count_display total=metric.total_count_display %}{{ present }} of {{ total }} rows{% endblocktrans %}</small>
                     </div>
                 {% endfor %}
             </div>
@@ -226,7 +226,7 @@
     <div class="col-xl-6">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">QKB Completeness</h5>
+                <h5 class="card-title mb-0">{% trans 'QKB Completeness' %}</h5>
             </div>
             <div class="card-body">
                 {% for metric in report.qkb_completeness %}
@@ -238,7 +238,7 @@
                         <div class="progress progress-sm">
                             <div class="progress-bar {% if metric.available %}bg-info{% else %}bg-secondary{% endif %}" role="progressbar" style="width: {{ metric.percent_for_bar }}%;" aria-valuenow="{{ metric.percent_for_bar }}" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        <small class="text-muted">{{ metric.present_count_display }} of {{ metric.total_count_display }} rows</small>
+                        <small class="text-muted">{% blocktrans with present=metric.present_count_display total=metric.total_count_display %}{{ present }} of {{ total }} rows{% endblocktrans %}</small>
                     </div>
                 {% endfor %}
             </div>
@@ -250,11 +250,11 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header d-flex align-items-center justify-content-between gap-2">
-                <h5 class="card-title mb-0">Legal Form Distribution Chart</h5>
+                <h5 class="card-title mb-0">{% trans 'Legal Form Distribution Chart' %}</h5>
                 <span class="badge bg-light text-muted">{{ report.legal_form_distribution.source_table }}</span>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">This chart highlights the most common legal forms available in the registry coverage layer.</p>
+                <p class="text-muted mb-3">{% trans 'This chart highlights the most common legal forms available in the registry coverage layer.' %}</p>
                 <div id="data-quality-legal-form-chart" class="apex-charts" style="min-height: 300px;"></div>
             </div>
         </div>
@@ -262,11 +262,11 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header d-flex align-items-center justify-content-between gap-2">
-                <h5 class="card-title mb-0">Subject Status Distribution Chart</h5>
+                <h5 class="card-title mb-0">{% trans 'Subject Status Distribution Chart' %}</h5>
                 <span class="badge bg-light text-muted">{{ report.status_distribution.source_table }}</span>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">Status distribution is shown as data availability context, not as an administrative conclusion.</p>
+                <p class="text-muted mb-3">{% trans 'Status distribution is shown as data availability context, not as an administrative conclusion.' %}</p>
                 <div id="data-quality-status-chart" class="apex-charts" style="min-height: 260px;"></div>
             </div>
         </div>
@@ -277,7 +277,7 @@
     <div class="col-xl-6">
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between gap-2">
-                <h5 class="card-title mb-0">Legal Form Distribution</h5>
+                <h5 class="card-title mb-0">{% trans 'Legal Form Distribution' %}</h5>
                 <span class="badge bg-light text-muted">{{ report.legal_form_distribution.source_table }}</span>
             </div>
             <div class="card-body">
@@ -285,9 +285,9 @@
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Legal form</th>
-                                <th class="text-end">Companies</th>
-                                <th class="text-end">Share</th>
+                                <th>{% trans 'Legal form' %}</th>
+                                <th class="text-end">{% trans 'Companies' %}</th>
+                                <th class="text-end">{% trans 'Share' %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -312,7 +312,7 @@
     <div class="col-xl-6">
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between gap-2">
-                <h5 class="card-title mb-0">Subject Status Distribution</h5>
+                <h5 class="card-title mb-0">{% trans 'Subject Status Distribution' %}</h5>
                 <span class="badge bg-light text-muted">{{ report.status_distribution.source_table }}</span>
             </div>
             <div class="card-body">
@@ -320,9 +320,9 @@
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>Status</th>
-                                <th class="text-end">Companies</th>
-                                <th class="text-end">Share</th>
+                                <th>{% trans 'Status' %}</th>
+                                <th class="text-end">{% trans 'Companies' %}</th>
+                                <th class="text-end">{% trans 'Share' %}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -349,16 +349,16 @@
     <div class="col-xl-7">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Dataset Interpretation</h5>
+                <h5 class="card-title mb-0">{% trans 'Dataset Interpretation' %}</h5>
             </div>
             <div class="card-body">
                 <ul class="text-muted mb-0">
-                    <li>APP winner companies are distinct procurement winner identifiers derived from APP data.</li>
-                    <li>Joined companies are APP winner companies that matched QKB subjects by exact normalized NIPT.</li>
-                    <li>The joined dataset is smaller than the full QKB registry layer because it only contains QKB companies that also appear as APP winner companies.</li>
-                    <li>OpenCorporates financial enrichment is a secondary subset and should be interpreted as data availability for exploratory analysis.</li>
-                    <li>Coverage values are based on the current local database state and may change after pipeline reruns.</li>
-                    <li>Missing values should be interpreted in relation to source availability and normalization rules.</li>
+                    <li>{% trans 'APP winner companies are distinct procurement winner identifiers derived from APP data.' %}</li>
+                    <li>{% trans 'Joined companies are APP winner companies that matched QKB subjects by exact normalized NIPT.' %}</li>
+                    <li>{% trans 'The joined dataset is smaller than the full QKB registry layer because it only contains QKB companies that also appear as APP winner companies.' %}</li>
+                    <li>{% trans 'OpenCorporates financial enrichment is a secondary subset and should be interpreted as data availability for exploratory analysis.' %}</li>
+                    <li>{% trans 'Coverage values are based on the current local database state and may change after pipeline reruns.' %}</li>
+                    <li>{% trans 'Missing values should be interpreted in relation to source availability and normalization rules.' %}</li>
                 </ul>
             </div>
         </div>
@@ -367,13 +367,13 @@
     <div class="col-xl-5">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Known Limitations</h5>
+                <h5 class="card-title mb-0">{% trans 'Known Limitations' %}</h5>
             </div>
             <div class="card-body">
                 <div class="d-flex flex-column gap-2">
                     {% for note in report.limitations %}
                         <div class="alert alert-light border mb-0 py-2" role="alert">
-                            <span class="badge bg-warning-subtle text-warning me-2">Limitation</span>{{ note }}
+                            <span class="badge bg-warning-subtle text-warning me-2">{% trans 'Limitation' %}</span>{{ note }}
                         </div>
                     {% endfor %}
                 </div>
@@ -386,7 +386,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Collector Table Availability</h5>
+                <h5 class="card-title mb-0">{% trans 'Collector Table Availability' %}</h5>
             </div>
             <div class="card-body">
                 <div class="d-flex flex-wrap gap-2">

@@ -1,17 +1,17 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Companies | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'Companies' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Companies</h4>
+            <h4 class="mb-sm-0">{% trans 'Companies' %}</h4>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Companies</li>
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+                    <li class="breadcrumb-item active">{% trans 'Companies' %}</li>
                 </ol>
             </div>
         </div>
@@ -34,11 +34,11 @@
             <div class="card-header border-0 pb-0">
                 <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
                     <div>
-                        <h5 class="card-title mb-1">Joined Company Features</h5>
-                        <p class="text-muted mb-0">Server-side search, filters, sorting, and pagination from the collector database.</p>
+                        <h5 class="card-title mb-1">{% trans 'Joined Company Features' %}</h5>
+                        <p class="text-muted mb-0">{% trans 'Server-side search, filters, sorting, and pagination from the collector database.' %}</p>
                     </div>
                     <button type="button" class="btn btn-light btn-sm" id="companies-reset-filters">
-                        <i class="ri-refresh-line align-bottom me-1"></i> Reset
+                        <i class="ri-refresh-line align-bottom me-1"></i> {% trans 'Reset' %}
                     </button>
                 </div>
             </div>
@@ -46,54 +46,54 @@
             <div class="card-body">
                 <div class="row g-2 mb-3">
                     <div class="col-xl-3 col-md-6">
-                        <label class="form-label" for="company-search">Search</label>
-                        <input type="search" class="form-control form-control-sm" id="company-search" data-company-filter="search" placeholder="NIPT or business name">
+                        <label class="form-label" for="company-search">{% trans 'Search' %}</label>
+                        <input type="search" class="form-control form-control-sm" id="company-search" data-company-filter="search" placeholder="{% trans 'NIPT or business name' %}">
                     </div>
                     <div class="col-xl-2 col-md-6">
-                        <label class="form-label" for="legal-form-filter">Legal form</label>
+                        <label class="form-label" for="legal-form-filter">{% trans 'Legal form' %}</label>
                         <select class="form-select form-select-sm" id="legal-form-filter" data-company-filter="legal_form">
-                            <option value="">All legal forms</option>
+                            <option value="">{% trans 'All legal forms' %}</option>
                             {% for option in legal_forms %}
                                 <option value="{{ option }}">{{ option }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-xl-2 col-md-6">
-                        <label class="form-label" for="status-filter">Status</label>
+                        <label class="form-label" for="status-filter">{% trans 'Status' %}</label>
                         <select class="form-select form-select-sm" id="status-filter" data-company-filter="subject_status">
-                            <option value="">All statuses</option>
+                            <option value="">{% trans 'All statuses' %}</option>
                             {% for option in statuses %}
                                 <option value="{{ option }}">{{ option }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-xl-2 col-md-6">
-                        <label class="form-label" for="city-filter">City</label>
-                        <input type="text" class="form-control form-control-sm" id="city-filter" data-company-filter="city" placeholder="City">
+                        <label class="form-label" for="city-filter">{% trans 'City' %}</label>
+                        <input type="text" class="form-control form-control-sm" id="city-filter" data-company-filter="city" placeholder="{% trans 'City' %}">
                     </div>
                     <div class="col-xl-1 col-md-4">
-                        <label class="form-label" for="red-flags-filter">QKB flags</label>
+                        <label class="form-label" for="red-flags-filter">{% trans 'QKB flags' %}</label>
                         <select class="form-select form-select-sm" id="red-flags-filter" data-company-filter="has_red_flags">
-                            <option value="">All</option>
-                            <option value="true">QKB flags</option>
-                            <option value="false">No flags</option>
+                            <option value="">{% trans 'All' %}</option>
+                            <option value="true">{% trans 'QKB flags' %}</option>
+                            <option value="false">{% trans 'No flags' %}</option>
                         </select>
                     </div>
                     <div class="col-xl-2 col-md-4">
-                        <label class="form-label" for="risk-indicator-filter">Risk indicator</label>
+                        <label class="form-label" for="risk-indicator-filter">{% trans 'Risk indicator' %}</label>
                         <select class="form-select form-select-sm" id="risk-indicator-filter" data-company-filter="risk_indicator">
-                            <option value="">All indicators</option>
+                            <option value="">{% trans 'All indicators' %}</option>
                             {% for value, label in risk_indicator_options %}
                                 <option value="{{ value }}">{{ label }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-xl-1 col-md-4">
-                        <label class="form-label" for="min-procurements-filter">Min proc.</label>
+                        <label class="form-label" for="min-procurements-filter">{% trans 'Min proc.' %}</label>
                         <input type="number" min="0" class="form-control form-control-sm" id="min-procurements-filter" data-company-filter="min_active_procurement_count">
                     </div>
                     <div class="col-xl-1 col-md-4">
-                        <label class="form-label" for="max-procurements-filter">Max proc.</label>
+                        <label class="form-label" for="max-procurements-filter">{% trans 'Max proc.' %}</label>
                         <input type="number" min="0" class="form-control form-control-sm" id="max-procurements-filter" data-company-filter="max_active_procurement_count">
                     </div>
                 </div>
@@ -105,22 +105,22 @@
                         <thead class="table-light">
                             <tr>
                                 <th data-column-index="0">NIPT</th>
-                                <th data-column-index="1">Business name</th>
-                                <th data-column-index="2">Legal form</th>
-                                <th data-column-index="3">Status</th>
-                                <th data-column-index="4">City</th>
-                                <th data-column-index="5" class="text-end">Reg. year</th>
-                                <th data-column-index="6" class="text-end">Procurements</th>
-                                <th data-column-index="7" class="text-end">Winner value</th>
-                                <th data-column-index="8" class="text-end">Winner/Budget</th>
-                                <th data-column-index="9">QKB flags</th>
-                                <th data-column-index="10" data-orderable="false">Risk indicators</th>
-                                <th data-column-index="11" data-orderable="false">Actions</th>
+                                <th data-column-index="1">{% trans 'Business name' %}</th>
+                                <th data-column-index="2">{% trans 'Legal form' %}</th>
+                                <th data-column-index="3">{% trans 'Status' %}</th>
+                                <th data-column-index="4">{% trans 'City' %}</th>
+                                <th data-column-index="5" class="text-end">{% trans 'Reg. year' %}</th>
+                                <th data-column-index="6" class="text-end">{% trans 'Procurements' %}</th>
+                                <th data-column-index="7" class="text-end">{% trans 'Winner value' %}</th>
+                                <th data-column-index="8" class="text-end">{% trans 'Winner/Budget' %}</th>
+                                <th data-column-index="9">{% trans 'QKB flags' %}</th>
+                                <th data-column-index="10" data-orderable="false">{% trans 'Risk indicators' %}</th>
+                                <th data-column-index="11" data-orderable="false">{% trans 'Actions' %}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="12" class="text-center text-muted py-4">Loading companies...</td>
+                                <td colspan="12" class="text-center text-muted py-4">{% trans 'Loading companies...' %}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -128,7 +128,7 @@
 
                 <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mt-3" id="companies-fallback-controls">
                     <div class="d-flex align-items-center gap-2">
-                        <label class="text-muted mb-0" for="companies-page-length">Rows</label>
+                        <label class="text-muted mb-0" for="companies-page-length">{% trans 'Rows' %}</label>
                         <select class="form-select form-select-sm w-auto" id="companies-page-length">
                             <option value="10">10</option>
                             <option value="25" selected>25</option>
@@ -136,10 +136,10 @@
                             <option value="100">100</option>
                         </select>
                     </div>
-                    <div class="text-muted" id="companies-table-info">Showing 0 rows</div>
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Companies pagination">
-                        <button type="button" class="btn btn-light" id="companies-prev-page">Previous</button>
-                        <button type="button" class="btn btn-light" id="companies-next-page">Next</button>
+                    <div class="text-muted" id="companies-table-info">{% trans 'Showing 0 rows' %}</div>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="{% trans 'Companies pagination' %}">
+                        <button type="button" class="btn btn-light" id="companies-prev-page">{% trans 'Previous' %}</button>
+                        <button type="button" class="btn btn-light" id="companies-next-page">{% trans 'Next' %}</button>
                     </div>
                 </div>
             </div>

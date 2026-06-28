@@ -1,24 +1,27 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}ML Classification Models | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'ML Classification Models' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
-{% include 'analytics/ml/partials/page_header.html' with title='Classification Models' subtitle='Weak-label replication and reduced-feature strict-label experiments for exploratory ML audit.' crumb='Classification' %}
+{% trans 'Classification Models' as page_title %}
+{% trans 'Weak-label replication and reduced-feature strict-label experiments for exploratory ML audit.' as page_subtitle %}
+{% trans 'Classification' as page_crumb %}
+{% include 'analytics/ml/partials/page_header.html' with title=page_title subtitle=page_subtitle crumb=page_crumb %}
 {% include 'analytics/ml/partials/output_warnings.html' %}
 
 <div class="row g-4 mb-4">
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 class="card-title mb-0">Broad Weak Label Distribution</h5>
-                <span class="badge bg-warning-subtle text-warning">Heuristic</span>
+                <h5 class="card-title mb-0">{% trans 'Broad Weak Label Distribution' %}</h5>
+                <span class="badge bg-warning-subtle text-warning">{% trans 'Heuristic' %}</span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm table-nowrap align-middle mb-0">
                         <thead class="table-light">
-                            <tr><th>Label</th><th>Count</th><th>Share</th></tr>
+                            <tr><th>{% trans 'Label' %}</th><th>{% trans 'Count' %}</th><th>{% trans 'Share' %}</th></tr>
                         </thead>
                         <tbody>
                             {% for row in ml.full_target_distribution %}
@@ -35,14 +38,14 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 class="card-title mb-0">Strict Weak Label Distribution</h5>
-                <span class="badge bg-info-subtle text-info">Conservative</span>
+                <h5 class="card-title mb-0">{% trans 'Strict Weak Label Distribution' %}</h5>
+                <span class="badge bg-info-subtle text-info">{% trans 'Conservative' %}</span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm table-nowrap align-middle mb-0">
                         <thead class="table-light">
-                            <tr><th>Label</th><th>Count</th><th>Share</th></tr>
+                            <tr><th>{% trans 'Label' %}</th><th>{% trans 'Count' %}</th><th>{% trans 'Share' %}</th></tr>
                         </thead>
                         <tbody>
                             {% for row in ml.strict_target_distribution %}
@@ -63,22 +66,22 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Full-Feature Weak-Label Replication Metrics</h5>
-                <span class="badge bg-warning-subtle text-warning">Heuristic consistency check, not real-world validation</span>
+                <h5 class="card-title mb-0">{% trans 'Full-Feature Weak-Label Replication Metrics' %}</h5>
+                <span class="badge bg-warning-subtle text-warning">{% trans 'Heuristic consistency check, not real-world validation' %}</span>
             </div>
             <div class="card-body">
                 <div class="alert alert-warning" role="alert">
-                    Full-feature metrics measure agreement with constructed heuristic weak labels. High scores are expected when label-defining signals appear in the feature matrix.
+                    {% trans 'Full-feature metrics measure agreement with constructed heuristic weak labels. High scores are expected when label-defining signals appear in the feature matrix.' %}
                 </div>
                 <p class="text-muted">{{ ml.full_interpretation|default:'Full-feature weak-label replication metrics.' }}</p>
                 <div id="ml-full-model-comparison-chart" class="mb-4"></div>
                 <div class="alert alert-light border mb-4 py-2" role="alert">
-                    High full-feature weak-label metrics may reflect circularity because some features are close to the heuristic label definition.
+                    {% trans 'High full-feature weak-label metrics may reflect circularity because some features are close to the heuristic label definition.' %}
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
-                            <tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC AUC</th></tr>
+                            <tr><th>{% trans 'Model' %}</th><th>{% trans 'Accuracy' %}</th><th>{% trans 'Precision' %}</th><th>{% trans 'Recall' %}</th><th>F1</th><th>ROC AUC</th></tr>
                         </thead>
                         <tbody>
                             {% for row in ml.full_metrics %}
@@ -105,19 +108,19 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Reduced-Feature Strict-Label Metrics</h5>
-                <span class="badge bg-info-subtle text-info">More cautious exploratory experiment; still heuristic</span>
+                <h5 class="card-title mb-0">{% trans 'Reduced-Feature Strict-Label Metrics' %}</h5>
+                <span class="badge bg-info-subtle text-info">{% trans 'More cautious exploratory experiment; still heuristic' %}</span>
             </div>
             <div class="card-body">
                 <p class="text-muted">{{ ml.reduced_interpretation|default:'Reduced feature experiment excludes direct label-defining fields as much as possible.' }}</p>
                 <div id="ml-model-comparison-chart" class="mb-4"></div>
                 <div class="alert alert-light border mb-4 py-2" role="alert">
-                    The reduced-feature strict-label model is more cautious, but it still evaluates heuristic labels rather than external outcome labels.
+                    {% trans 'The reduced-feature strict-label model is more cautious, but it still evaluates heuristic labels rather than external outcome labels.' %}
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
-                            <tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th><th>ROC AUC</th></tr>
+                            <tr><th>{% trans 'Model' %}</th><th>{% trans 'Accuracy' %}</th><th>{% trans 'Precision' %}</th><th>{% trans 'Recall' %}</th><th>F1</th><th>ROC AUC</th></tr>
                         </thead>
                         <tbody>
                             {% for row in ml.reduced_metrics %}
@@ -144,7 +147,7 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Best Reduced-Feature Confusion Matrix</h5>
+                <h5 class="card-title mb-0">{% trans 'Best Reduced-Feature Confusion Matrix' %}</h5>
                 <span class="badge bg-info-subtle text-info">{{ ml.reduced_confusion_matrix.model }}</span>
             </div>
             <div class="card-body">
@@ -154,8 +157,8 @@
                             <thead class="table-light">
                                 <tr>
                                     <th></th>
-                                    <th>Predicted 0</th>
-                                    <th>Predicted 1</th>
+                                    <th>{% trans 'Predicted 0' %}</th>
+                                    <th>{% trans 'Predicted 1' %}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -177,9 +180,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <p class="text-muted mt-3 mb-0">This matrix evaluates the best reduced-feature model against the heuristic strict weak label, not external outcome labels.</p>
+                    <p class="text-muted mt-3 mb-0">{% trans 'This matrix evaluates the best reduced-feature model against the heuristic strict weak label, not external outcome labels.' %}</p>
                 {% else %}
-                    <p class="text-muted mb-0">Confusion matrix data is unavailable in the generated metrics.</p>
+                    <p class="text-muted mb-0">{% trans 'Confusion matrix data is unavailable in the generated metrics.' %}</p>
                 {% endif %}
             </div>
         </div>
@@ -190,21 +193,21 @@
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Shuffled-Label Sanity Check</h5>
+                <h5 class="card-title mb-0">{% trans 'Shuffled-Label Sanity Check' %}</h5>
                 {% if ml.shuffled_check.sanity_passed %}
-                    <span class="badge bg-success-subtle text-success">Pipeline sanity check passed</span>
+                    <span class="badge bg-success-subtle text-success">{% trans 'Pipeline sanity check passed' %}</span>
                 {% else %}
-                    <span class="badge bg-warning-subtle text-warning">Review needed</span>
+                    <span class="badge bg-warning-subtle text-warning">{% trans 'Review needed' %}</span>
                 {% endif %}
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm mb-3">
                         <tbody>
-                            <tr><th>Model</th><td>{{ ml.shuffled_check.model }}</td></tr>
+                            <tr><th>{% trans 'Model' %}</th><td>{{ ml.shuffled_check.model }}</td></tr>
                             <tr><th>ROC AUC</th><td>{{ ml.shuffled_check.roc_auc }}</td></tr>
                             <tr><th>F1</th><td>{{ ml.shuffled_check.f1 }}</td></tr>
-                            <tr><th>Accuracy</th><td>{{ ml.shuffled_check.accuracy }}</td></tr>
+                            <tr><th>{% trans 'Accuracy' %}</th><td>{{ ml.shuffled_check.accuracy }}</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -215,20 +218,20 @@
     <div class="col-xl-8">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Leakage / Circularity Audit</h5>
+                <h5 class="card-title mb-0">{% trans 'Leakage / Circularity Audit' %}</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="border rounded p-3 h-100">
-                            <p class="text-muted mb-1">Target</p>
+                            <p class="text-muted mb-1">{% trans 'Target' %}</p>
                             <h6 class="mb-1">{{ ml.leakage_audit.target_name }}</h6>
                             <span class="badge bg-warning-subtle text-warning">{{ ml.leakage_audit.target_type }}</span>
                         </div>
                     </div>
                     <div class="col-md-8">
                         <div class="border rounded p-3 h-100">
-                            <p class="text-muted mb-1">Recommendation</p>
+                            <p class="text-muted mb-1">{% trans 'Recommendation' %}</p>
                             <p class="mb-0">{{ ml.leakage_audit.recommendation|default:'N/A' }}</p>
                         </div>
                     </div>
@@ -237,7 +240,7 @@
                     <div class="alert alert-warning mt-3 mb-0" role="alert">{{ ml.leakage_audit.warning }}</div>
                 {% endif %}
                 <div class="mt-3">
-                    <p class="fw-medium mb-2">Likely label-defining or circular features</p>
+                    <p class="fw-medium mb-2">{% trans 'Likely label-defining or circular features' %}</p>
                     <div class="d-flex flex-wrap gap-2">
                         {% for feature in ml.leakage_audit.features %}
                             <span class="badge bg-light text-body">{{ feature }}</span>

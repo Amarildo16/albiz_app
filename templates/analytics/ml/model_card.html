@@ -1,47 +1,50 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}ML Model Card | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'ML Model Card' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
-{% include 'analytics/ml/partials/page_header.html' with title='Model Card & Limitations' subtitle='Model audit notes, intended use, limitations, and interpretation guidance.' crumb='Model Card' %}
+{% trans 'Model Card & Limitations' as page_title %}
+{% trans 'Model audit notes, intended use, limitations, and interpretation guidance.' as page_subtitle %}
+{% trans 'Model Card' as page_crumb %}
+{% include 'analytics/ml/partials/page_header.html' with title=page_title subtitle=page_subtitle crumb=page_crumb %}
 {% include 'analytics/ml/partials/output_warnings.html' %}
 
 <div class="row mb-4">
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Methodological Framing</h5>
+                <h5 class="card-title mb-0">{% trans 'Methodological Framing' %}</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-xl-3 col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <span class="badge bg-primary-subtle text-primary mb-2">Intended use</span>
-                            <p class="text-muted mb-0">Support exploratory analysis, thesis documentation, audit review, and prioritization of records for human interpretation.</p>
+                            <span class="badge bg-primary-subtle text-primary mb-2">{% trans 'Intended use' %}</span>
+                            <p class="text-muted mb-0">{% trans 'Support exploratory analysis, thesis documentation, audit review, and prioritization of records for human interpretation.' %}</p>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <span class="badge bg-danger-subtle text-danger mb-2">Not intended use</span>
-                            <p class="text-muted mb-0">Do not use these outputs for automated decisions, legal conclusions, or administrative classification of companies.</p>
+                            <span class="badge bg-danger-subtle text-danger mb-2">{% trans 'Not intended use' %}</span>
+                            <p class="text-muted mb-0">{% trans 'Do not use these outputs for automated decisions, legal conclusions, or administrative classification of companies.' %}</p>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <span class="badge bg-warning-subtle text-warning mb-2">Weak-label limitation</span>
-                            <p class="text-muted mb-0">Targets are heuristic weak labels derived from analytical indicators; they are not official ground-truth event labels.</p>
+                            <span class="badge bg-warning-subtle text-warning mb-2">{% trans 'Weak-label limitation' %}</span>
+                            <p class="text-muted mb-0">{% trans 'Targets are heuristic weak labels derived from analytical indicators; they are not official ground-truth event labels.' %}</p>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <span class="badge bg-info-subtle text-info mb-2">Model interpretation</span>
-                            <p class="text-muted mb-0">Reduced-feature results are more cautious than full-feature replication, but all ML outputs remain exploratory.</p>
+                            <span class="badge bg-info-subtle text-info mb-2">{% trans 'Model interpretation' %}</span>
+                            <p class="text-muted mb-0">{% trans 'Reduced-feature results are more cautious than full-feature replication, but all ML outputs remain exploratory.' %}</p>
                         </div>
                     </div>
                 </div>
                 <div class="alert alert-light border mb-0 mt-3" role="alert">
-                    Indicators and model outputs should support analysis, not automated decisions. Anomaly rankings identify statistically unusual procurement profiles and require source verification.
+                    {% trans 'Indicators and model outputs should support analysis, not automated decisions. Anomaly rankings identify statistically unusual procurement profiles and require source verification.' %}
                 </div>
             </div>
         </div>
@@ -52,15 +55,15 @@
     <div class="col-xl-4">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Dataset Summary</h5>
+                <h5 class="card-title mb-0">{% trans 'Dataset Summary' %}</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm mb-0">
                         <tbody>
-                            <tr><th>Dataset</th><td>{{ ml.model_card.dataset_name|default:'N/A' }}</td></tr>
-                            <tr><th>Rows</th><td>{{ ml.model_card.row_count|default:'N/A' }}</td></tr>
-                            <tr><th>Features</th><td>{{ ml.model_card.feature_count|default:'N/A' }}</td></tr>
+                            <tr><th>{% trans 'Dataset' %}</th><td>{{ ml.model_card.dataset_name|default:'N/A' }}</td></tr>
+                            <tr><th>{% trans 'Rows' %}</th><td>{{ ml.model_card.row_count|default:'N/A' }}</td></tr>
+                            <tr><th>{% trans 'Features' %}</th><td>{{ ml.model_card.feature_count|default:'N/A' }}</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -70,25 +73,25 @@
     <div class="col-xl-8">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Target Definitions</h5>
+                <h5 class="card-title mb-0">{% trans 'Target Definitions' %}</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <span class="badge bg-warning-subtle text-warning mb-2">Broad weak label</span>
+                            <span class="badge bg-warning-subtle text-warning mb-2">{% trans 'Broad weak label' %}</span>
                             <p class="text-muted mb-0">{{ ml.model_card.target_definitions.weak_risk_label|default:'Heuristic weak label derived from analytical indicators.' }}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <span class="badge bg-info-subtle text-info mb-2">Strict weak label</span>
+                            <span class="badge bg-info-subtle text-info mb-2">{% trans 'Strict weak label' %}</span>
                             <p class="text-muted mb-0">{{ ml.model_card.target_definitions.strict_weak_risk_label|default:'Conservative heuristic weak label.' }}</p>
                         </div>
                     </div>
                 </div>
                 <div class="alert alert-warning mt-3 mb-0" role="alert">
-                    Weak labels are heuristic analytical labels. Model outputs are exploratory and require human review.
+                    {% trans 'Weak labels are heuristic analytical labels. Model outputs are exploratory and require human review.' %}
                 </div>
             </div>
         </div>
@@ -99,17 +102,17 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Financial Enrichment Limitation</h5>
+                <h5 class="card-title mb-0">{% trans 'Financial Enrichment Limitation' %}</h5>
                 <a href="{% url 'analytics:ml_financial_enrichment' %}" class="btn btn-sm btn-soft-primary">
-                    Open Experiment
+                    {% trans 'Open Experiment' %}
                 </a>
             </div>
             <div class="card-body">
                 <p class="text-muted mb-2">
-                    The financial enrichment experiment uses the OpenCorporates financial subset as secondary exploratory data. Coverage is limited to {{ ml.financial_enrichment.summary.companies_with_financial_enrichment }} joined companies ({{ ml.financial_enrichment.summary.coverage_percentage }}).
+                    {% blocktrans with count=ml.financial_enrichment.summary.companies_with_financial_enrichment pct=ml.financial_enrichment.summary.coverage_percentage %}The financial enrichment experiment uses the OpenCorporates financial subset as secondary exploratory data. Coverage is limited to {{ count }} joined companies ({{ pct }}).{% endblocktrans %}
                 </p>
                 <div class="alert alert-info mb-0" role="alert">
-                    In this run, secondary financial enrichment did not clearly improve the best procurement-only baseline. These results should be interpreted as heuristic-label model behavior, not external validation.
+                    {% trans 'In this run, secondary financial enrichment did not clearly improve the best procurement-only baseline. These results should be interpreted as heuristic-label model behavior, not external validation.' %}
                 </div>
             </div>
         </div>
@@ -120,7 +123,7 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Intended Use</h5>
+                <h5 class="card-title mb-0">{% trans 'Intended Use' %}</h5>
             </div>
             <div class="card-body">
                 <ul class="text-muted mb-0">
@@ -136,7 +139,7 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Not Intended Use</h5>
+                <h5 class="card-title mb-0">{% trans 'Not Intended Use' %}</h5>
             </div>
             <div class="card-body">
                 <ul class="text-muted mb-0">
@@ -155,7 +158,7 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Limitations</h5>
+                <h5 class="card-title mb-0">{% trans 'Limitations' %}</h5>
             </div>
             <div class="card-body">
                 <ul class="text-muted mb-0">
@@ -171,7 +174,7 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Ethical Cautions</h5>
+                <h5 class="card-title mb-0">{% trans 'Ethical Cautions' %}</h5>
             </div>
             <div class="card-body">
                 <ul class="text-muted mb-0">
@@ -190,7 +193,7 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Leakage / Circularity Notes</h5>
+                <h5 class="card-title mb-0">{% trans 'Leakage / Circularity Notes' %}</h5>
             </div>
             <div class="card-body">
                 {% if ml.leakage_audit.warning %}
@@ -210,7 +213,7 @@
     <div class="col-xl-6">
         <div class="card h-100 mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Interpretation Guidance</h5>
+                <h5 class="card-title mb-0">{% trans 'Interpretation Guidance' %}</h5>
             </div>
             <div class="card-body">
                 <ul class="text-muted mb-0">
@@ -229,7 +232,7 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
-                <h5 class="card-title mb-0">Limitations File</h5>
+                <h5 class="card-title mb-0">{% trans 'Limitations File' %}</h5>
             </div>
             <div class="card-body">
                 {% for section in ml.limitations_sections %}

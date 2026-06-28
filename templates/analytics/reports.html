@@ -1,20 +1,20 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Reports & Export Center | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'Reports & Export Center' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <div>
-                <h4 class="mb-sm-0">Reports &amp; Export Center</h4>
-                <p class="text-muted mb-0 mt-1">Download thesis-friendly CSV summaries from the joined APP-QKB analytical dataset.</p>
+                <h4 class="mb-sm-0">{% trans 'Reports & Export Center' %}</h4>
+                <p class="text-muted mb-0 mt-1">{% trans 'Download thesis-friendly CSV summaries from the joined APP-QKB analytical dataset.' %}</p>
             </div>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Reports</li>
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+                    <li class="breadcrumb-item active">{% trans 'Reports' %}</li>
                 </ol>
             </div>
         </div>
@@ -24,8 +24,7 @@
 <div class="row">
     <div class="col-12">
         <div class="alert alert-info" role="alert">
-            Exports are read-only and based on the current local collector database. Files are grouped for procurement and analytical risk indicators,
-            data quality, registry enrichment, exploratory ML, and secondary financial enrichment. They contain analytical signals, not legal determinations.
+            {% blocktrans %}Exports are read-only and based on the current local collector database. Files are grouped for procurement and analytical risk indicators, data quality, registry enrichment, exploratory ML, and secondary financial enrichment. They contain analytical signals, not legal determinations.{% endblocktrans %}
         </div>
     </div>
 </div>
@@ -34,29 +33,29 @@
     <div class="col-xl-4">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-warning-subtle text-warning">Risk indicators</span>
-                <h5 class="card-title mb-0">Risk Indicator Reports</h5>
+                <span class="badge bg-warning-subtle text-warning">{% trans 'Risk indicators' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Risk Indicator Reports' %}</h5>
             </div>
             <div class="card-body d-grid gap-3">
                 <div class="border rounded p-3">
-                    <h6 class="mb-1">Risk summary CSV</h6>
-                    <p class="text-muted mb-3">High-level joined dataset counts and indicator coverage.</p>
+                    <h6 class="mb-1">{% trans 'Risk summary CSV' %}</h6>
+                    <p class="text-muted mb-3">{% trans 'High-level joined dataset counts and indicator coverage.' %}</p>
                     <a href="{% url 'analytics:export_risk_summary_csv' %}" class="btn btn-sm btn-soft-primary">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Download CSV' %}
                     </a>
                 </div>
                 <div class="border rounded p-3">
-                    <h6 class="mb-1">Indicator distribution CSV</h6>
-                    <p class="text-muted mb-3">Counts and percentages for each analytical indicator.</p>
+                    <h6 class="mb-1">{% trans 'Indicator distribution CSV' %}</h6>
+                    <p class="text-muted mb-3">{% trans 'Counts and percentages for each analytical indicator.' %}</p>
                     <a href="{% url 'analytics:export_indicator_distribution_csv' %}" class="btn btn-sm btn-soft-primary">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Download CSV' %}
                     </a>
                 </div>
                 <div class="border rounded p-3">
-                    <h6 class="mb-1">Top indicator-count companies CSV</h6>
-                    <p class="text-muted mb-3">Top companies ranked by analytical risk indicator count, limited to 100 rows.</p>
+                    <h6 class="mb-1">{% trans 'Top indicator-count companies CSV' %}</h6>
+                    <p class="text-muted mb-3">{% trans 'Top companies ranked by analytical risk indicator count, limited to 100 rows.' %}</p>
                     <a href="{% url 'analytics:export_top_risk_companies_csv' %}" class="btn btn-sm btn-soft-primary">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Download CSV' %}
                     </a>
                 </div>
             </div>
@@ -66,22 +65,22 @@
     <div class="col-xl-4">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-info-subtle text-info">Rankings</span>
-                <h5 class="card-title mb-0">Company Ranking Exports</h5>
+                <span class="badge bg-info-subtle text-info">{% trans 'Rankings' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Company Ranking Exports' %}</h5>
             </div>
             <div class="card-body d-grid gap-3">
                 <div class="border rounded p-3">
-                    <h6 class="mb-1">Top winner value companies CSV</h6>
-                    <p class="text-muted mb-3">Top companies ranked by active winner value, limited to 100 rows.</p>
+                    <h6 class="mb-1">{% trans 'Top winner value companies CSV' %}</h6>
+                    <p class="text-muted mb-3">{% trans 'Top companies ranked by active winner value, limited to 100 rows.' %}</p>
                     <a href="{% url 'analytics:export_top_winner_value_companies_csv' %}" class="btn btn-sm btn-soft-info">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Download CSV' %}
                     </a>
                 </div>
                 <div class="border rounded p-3">
-                    <h6 class="mb-1">Top procurement count companies CSV</h6>
-                    <p class="text-muted mb-3">Top companies ranked by active procurement count, limited to 100 rows.</p>
+                    <h6 class="mb-1">{% trans 'Top procurement count companies CSV' %}</h6>
+                    <p class="text-muted mb-3">{% trans 'Top companies ranked by active procurement count, limited to 100 rows.' %}</p>
                     <a href="{% url 'analytics:export_top_procurement_count_companies_csv' %}" class="btn btn-sm btn-soft-info">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Download CSV' %}
                     </a>
                 </div>
             </div>
@@ -91,15 +90,15 @@
     <div class="col-xl-4">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-success-subtle text-success">Coverage</span>
-                <h5 class="card-title mb-0">Data Quality Exports</h5>
+                <span class="badge bg-success-subtle text-success">{% trans 'Coverage' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Data Quality Exports' %}</h5>
             </div>
             <div class="card-body d-grid gap-3">
                 <div class="border rounded p-3">
-                    <h6 class="mb-1">Data quality summary CSV</h6>
-                    <p class="text-muted mb-3">Source counts, exact NIPT match coverage, and completeness metrics.</p>
+                    <h6 class="mb-1">{% trans 'Data quality summary CSV' %}</h6>
+                    <p class="text-muted mb-3">{% trans 'Source counts, exact NIPT match coverage, and completeness metrics.' %}</p>
                     <a href="{% url 'analytics:export_data_quality_summary_csv' %}" class="btn btn-sm btn-soft-success">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Download CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Download CSV' %}
                     </a>
                 </div>
             </div>
@@ -111,13 +110,13 @@
     <div class="col-xl-6">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-secondary-subtle text-secondary">Registry</span>
-                <h5 class="card-title mb-0">Registry &amp; Enrichment Exports</h5>
+                <span class="badge bg-secondary-subtle text-secondary">{% trans 'Registry' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Registry & Enrichment Exports' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">Compact QKB registry coverage, OpenCorporates overlap, name-comparison, and financial-year availability summary.</p>
+                <p class="text-muted mb-3">{% trans 'Compact QKB registry coverage, OpenCorporates overlap, name-comparison, and financial-year availability summary.' %}</p>
                 <a href="{% url 'analytics:export_registry_enrichment_summary_csv' %}" class="btn btn-sm btn-soft-secondary">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Registry enrichment summary CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Registry enrichment summary CSV' %}
                 </a>
             </div>
         </div>
@@ -125,20 +124,20 @@
     <div class="col-xl-6">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-info-subtle text-info">Financial subset</span>
-                <h5 class="card-title mb-0">Financial Enrichment Exports</h5>
+                <span class="badge bg-info-subtle text-info">{% trans 'Financial subset' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Financial Enrichment Exports' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">Generated ML files for the secondary OpenCorporates financial subset experiment. Use these for exploratory comparison with the procurement-only baseline.</p>
+                <p class="text-muted mb-3">{% trans 'Generated ML files for the secondary OpenCorporates financial subset experiment. Use these for exploratory comparison with the procurement-only baseline.' %}</p>
                 <div class="d-flex flex-wrap gap-2">
                     <a href="{% url 'analytics:export_ml_financial_subset_ranking_csv' %}" class="btn btn-sm btn-soft-info">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Ranking CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Ranking CSV' %}
                     </a>
                     <a href="{% url 'analytics:export_ml_financial_subset_feature_importance_csv' %}" class="btn btn-sm btn-soft-info">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Feature importance CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Feature importance CSV' %}
                     </a>
                     <a href="{% url 'analytics:export_ml_financial_feature_missingness_csv' %}" class="btn btn-sm btn-soft-info">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Missingness CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Missingness CSV' %}
                     </a>
                 </div>
             </div>
@@ -150,26 +149,26 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-primary-subtle text-primary">Exploratory ML</span>
-                <h5 class="card-title mb-0">ML Output Exports</h5>
+                <span class="badge bg-primary-subtle text-primary">{% trans 'Exploratory ML' %}</span>
+                <h5 class="card-title mb-0">{% trans 'ML Output Exports' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">These exports serve existing generated files from <code>reports/ml/</code>. They are local analysis artifacts for heuristic-label and anomaly-review workflows and remain ignored by Git.</p>
+                <p class="text-muted mb-3">{% blocktrans %}These exports serve existing generated files from <code>reports/ml/</code>. They are local analysis artifacts for heuristic-label and anomaly-review workflows and remain ignored by Git.{% endblocktrans %}</p>
                 <div class="d-flex flex-wrap gap-2">
                     <a href="{% url 'analytics:ml_exports' %}" class="btn btn-soft-primary">
-                        <i class="ri-brain-line align-bottom me-1"></i> ML Export Center
+                        <i class="ri-brain-line align-bottom me-1"></i> {% trans 'ML Export Center' %}
                     </a>
                     <a href="{% url 'analytics:export_ml_anomaly_ranking_csv' %}" class="btn btn-sm btn-soft-secondary">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Anomaly ranking CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Anomaly ranking CSV' %}
                     </a>
                     <a href="{% url 'analytics:export_ml_feature_importance_csv' %}" class="btn btn-sm btn-soft-secondary">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Feature importance CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Feature importance CSV' %}
                     </a>
                     <a href="{% url 'analytics:export_ml_cluster_summary_csv' %}" class="btn btn-sm btn-soft-secondary">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Cluster summary CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Cluster summary CSV' %}
                     </a>
                     <a href="{% url 'analytics:export_ml_reduced_feature_ranking_csv' %}" class="btn btn-sm btn-soft-secondary">
-                        <i class="ri-download-2-line align-bottom me-1"></i> Reduced-feature ranking CSV
+                        <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Reduced-feature ranking CSV' %}
                     </a>
                 </div>
             </div>
@@ -181,17 +180,17 @@
     <div class="col-xl-8">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Export Notes</h5>
+                <h5 class="card-title mb-0">{% trans 'Export Notes' %}</h5>
             </div>
             <div class="card-body">
                 <ul class="text-muted mb-0">
-                    <li>Exports are designed for thesis writing, appendix tables, and review workflows.</li>
-                    <li>Procurement/risk exports summarize analytical risk indicators, not confirmed outcomes.</li>
-                    <li>Registry/enrichment exports document QKB coverage and secondary OpenCorporates availability.</li>
-                    <li>ML exports document heuristic-label experiments, anomaly rankings, PCA projections, clustering, and model-card limitations.</li>
-                    <li>Ranking exports are intentionally limited to the top 100 rows and do not expose raw source tables.</li>
-                    <li>Company detail URLs are relative dashboard links for follow-up review inside Albiz.</li>
-                    <li>CSV files reflect the current local collector database and may change after pipeline reruns.</li>
+                    <li>{% trans 'Exports are designed for thesis writing, appendix tables, and review workflows.' %}</li>
+                    <li>{% trans 'Procurement/risk exports summarize analytical risk indicators, not confirmed outcomes.' %}</li>
+                    <li>{% trans 'Registry/enrichment exports document QKB coverage and secondary OpenCorporates availability.' %}</li>
+                    <li>{% trans 'ML exports document heuristic-label experiments, anomaly rankings, PCA projections, clustering, and model-card limitations.' %}</li>
+                    <li>{% trans 'Ranking exports are intentionally limited to the top 100 rows and do not expose raw source tables.' %}</li>
+                    <li>{% trans 'Company detail URLs are relative dashboard links for follow-up review inside Albiz.' %}</li>
+                    <li>{% trans 'CSV files reflect the current local collector database and may change after pipeline reruns.' %}</li>
                 </ul>
             </div>
         </div>
@@ -199,20 +198,20 @@
     <div class="col-xl-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Related Pages</h5>
+                <h5 class="card-title mb-0">{% trans 'Related Pages' %}</h5>
             </div>
             <div class="card-body d-grid gap-2">
                 <a href="{% url 'analytics:risk_overview' %}" class="btn btn-soft-warning text-start">
-                    <i class="ri-alert-line align-bottom me-1"></i> Risk Overview
+                    <i class="ri-alert-line align-bottom me-1"></i> {% trans 'Risk Overview' %}
                 </a>
                 <a href="{% url 'analytics:data_quality' %}" class="btn btn-soft-success text-start">
-                    <i class="ri-shield-check-line align-bottom me-1"></i> Data Quality
+                    <i class="ri-shield-check-line align-bottom me-1"></i> {% trans 'Data Quality' %}
                 </a>
                 <a href="{% url 'analytics:methodology' %}" class="btn btn-soft-secondary text-start">
-                    <i class="ri-file-list-3-line align-bottom me-1"></i> Methodology
+                    <i class="ri-file-list-3-line align-bottom me-1"></i> {% trans 'Methodology' %}
                 </a>
                 <a href="{% url 'analytics:ml_exports' %}" class="btn btn-soft-primary text-start">
-                    <i class="ri-brain-line align-bottom me-1"></i> ML Exports
+                    <i class="ri-brain-line align-bottom me-1"></i> {% trans 'ML Exports' %}
                 </a>
             </div>
         </div>

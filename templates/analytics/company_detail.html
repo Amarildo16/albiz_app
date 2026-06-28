@@ -1,18 +1,18 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}{% if company %}{{ company.company_nipt }}{% else %}Company{% endif %} | Albiz Analytics{% endblock %}
+{% block title %}{% if company %}{{ company.company_nipt }}{% else %}{% trans 'Company' %}{% endif %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0">Company Detail</h4>
+            <h4 class="mb-sm-0">{% trans 'Company Detail' %}</h4>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'analytics:companies' %}">Companies</a></li>
-                    <li class="breadcrumb-item active">{% if company %}{{ company.company_nipt }}{% else %}Unavailable{% endif %}</li>
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:companies' %}">{% trans 'Companies' %}</a></li>
+                    <li class="breadcrumb-item active">{% if company %}{{ company.company_nipt }}{% else %}{% trans 'Unavailable' %}{% endif %}</li>
                 </ol>
             </div>
         </div>
@@ -23,7 +23,7 @@
 <div class="row">
     <div class="col-12">
         <div class="alert alert-warning" role="alert">
-            Collector database is not reachable: {{ collector_error }}
+            {% blocktrans with error=collector_error %}Collector database is not reachable: {{ error }}{% endblocktrans %}
         </div>
     </div>
 </div>
@@ -41,14 +41,14 @@
                     </div>
                     <div class="d-flex flex-column align-items-end gap-2">
                         {% if financial_enrichment.available %}
-                            <span class="badge bg-primary-subtle text-primary">Financial subset available</span>
+                            <span class="badge bg-primary-subtle text-primary">{% trans 'Financial subset available' %}</span>
                         {% endif %}
                         {% if company.has_red_flags %}
-                            <span class="badge bg-danger-subtle text-danger">QKB flag</span>
+                            <span class="badge bg-danger-subtle text-danger">{% trans 'QKB flag' %}</span>
                         {% elif company.has_red_flags == False %}
-                            <span class="badge bg-success-subtle text-success">No QKB flag</span>
+                            <span class="badge bg-success-subtle text-success">{% trans 'No QKB flag' %}</span>
                         {% else %}
-                            <span class="badge bg-secondary-subtle text-secondary">Unknown QKB flag</span>
+                            <span class="badge bg-secondary-subtle text-secondary">{% trans 'Unknown QKB flag' %}</span>
                         {% endif %}
                     </div>
                 </div>
@@ -56,11 +56,11 @@
                     <table class="table table-sm table-borderless mb-0">
                         <tbody>
                             <tr><th>NIPT</th><td>{{ company.company_nipt }}</td></tr>
-                            <tr><th>Legal form</th><td>{{ company.legal_form|default:"-" }}</td></tr>
-                            <tr><th>Status</th><td>{{ company.subject_status|default:"-" }}</td></tr>
-                            <tr><th>City</th><td>{{ company.city|default:"-" }}</td></tr>
-                            <tr><th>Registration date</th><td>{{ company.registration_date|default:"-" }}</td></tr>
-                            <tr><th>Registration year</th><td>{{ company.registration_year|default:"-" }}</td></tr>
+                            <tr><th>{% trans 'Legal form' %}</th><td>{{ company.legal_form|default:"-" }}</td></tr>
+                            <tr><th>{% trans 'Status' %}</th><td>{{ company.subject_status|default:"-" }}</td></tr>
+                            <tr><th>{% trans 'City' %}</th><td>{{ company.city|default:"-" }}</td></tr>
+                            <tr><th>{% trans 'Registration date' %}</th><td>{{ company.registration_date|default:"-" }}</td></tr>
+                            <tr><th>{% trans 'Registration year' %}</th><td>{{ company.registration_year|default:"-" }}</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -69,7 +69,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Risk Indicators</h5>
+                <h5 class="card-title mb-0">{% trans 'Risk Indicators' %}</h5>
             </div>
             <div class="card-body">
                 {% if risk_indicators %}
@@ -85,9 +85,9 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <span class="badge bg-secondary-subtle text-secondary">No indicators</span>
+                    <span class="badge bg-secondary-subtle text-secondary">{% trans 'No indicators' %}</span>
                 {% endif %}
-                <p class="text-muted mt-3 mb-0">Indicators are analytical procurement signals, not allegations or legal conclusions.</p>
+                <p class="text-muted mt-3 mb-0">{% trans 'Indicators are analytical procurement signals, not allegations or legal conclusions.' %}</p>
             </div>
         </div>
     </div>
@@ -97,16 +97,16 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Procurement Timeline</h5>
+                        <h5 class="card-title mb-0">{% trans 'Procurement Timeline' %}</h5>
                     </div>
                     <div class="card-body">
                         <table class="table table-sm mb-0">
                             <tbody>
-                                <tr><th>First procurement date</th><td>{{ company.first_procurement_date|default:"-" }}</td></tr>
-                                <tr><th>First procurement year</th><td>{{ company.first_procurement_year|default:"-" }}</td></tr>
-                                <tr><th>Last procurement date</th><td>{{ company.last_procurement_date|default:"-" }}</td></tr>
-                                <tr><th>Last procurement year</th><td>{{ company.last_procurement_year|default:"-" }}</td></tr>
-                                <tr><th>Company age at first procurement</th><td>{{ company.company_age_days_at_first_procurement|default:"-" }}{% if company.company_age_days_at_first_procurement %} days{% endif %}</td></tr>
+                                <tr><th>{% trans 'First procurement date' %}</th><td>{{ company.first_procurement_date|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'First procurement year' %}</th><td>{{ company.first_procurement_year|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Last procurement date' %}</th><td>{{ company.last_procurement_date|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Last procurement year' %}</th><td>{{ company.last_procurement_year|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Company age at first procurement' %}</th><td>{{ company.company_age_days_at_first_procurement|default:"-" }}{% if company.company_age_days_at_first_procurement %} {% trans 'days' %}{% endif %}</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -116,16 +116,16 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Procurement Counts</h5>
+                        <h5 class="card-title mb-0">{% trans 'Procurement Counts' %}</h5>
                     </div>
                     <div class="card-body">
                         <table class="table table-sm mb-0">
                             <tbody>
-                                <tr><th>Active procurement count</th><td>{{ company.active_procurement_count }}</td></tr>
-                                <tr><th>Cancelled count</th><td>{{ company.cancelled_procurement_count }}</td></tr>
-                                <tr><th>Cancelled rate</th><td>{{ company.cancelled_procurement_rate|floatformat:2 }}</td></tr>
-                                <tr><th>Suspended count</th><td>{{ company.suspended_procurement_count }}</td></tr>
-                                <tr><th>Suspended rate</th><td>{{ company.suspended_procurement_rate|floatformat:2 }}</td></tr>
+                                <tr><th>{% trans 'Active procurement count' %}</th><td>{{ company.active_procurement_count }}</td></tr>
+                                <tr><th>{% trans 'Cancelled count' %}</th><td>{{ company.cancelled_procurement_count }}</td></tr>
+                                <tr><th>{% trans 'Cancelled rate' %}</th><td>{{ company.cancelled_procurement_rate|floatformat:2 }}</td></tr>
+                                <tr><th>{% trans 'Suspended count' %}</th><td>{{ company.suspended_procurement_count }}</td></tr>
+                                <tr><th>{% trans 'Suspended rate' %}</th><td>{{ company.suspended_procurement_rate|floatformat:2 }}</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -135,29 +135,29 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Value Metrics</h5>
+                <h5 class="card-title mb-0">{% trans 'Value Metrics' %}</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
                         <table class="table table-sm mb-0">
                             <tbody>
-                                <tr><th>Total winner value</th><td>{{ company.total_winner_value_amount|default:"-" }}</td></tr>
-                                <tr><th>Active winner value</th><td>{{ company.active_total_winner_value_amount|default:"-" }}</td></tr>
-                                <tr><th>Displayed winner value</th><td>{{ winner_value|default:"-" }}</td></tr>
-                                <tr><th>Total budget value</th><td>{{ company.total_budget_limit_amount|default:"-" }}</td></tr>
-                                <tr><th>Active budget value</th><td>{{ company.active_total_budget_limit_amount|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Total winner value' %}</th><td>{{ company.total_winner_value_amount|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Active winner value' %}</th><td>{{ company.active_total_winner_value_amount|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Displayed winner value' %}</th><td>{{ winner_value|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Total budget value' %}</th><td>{{ company.total_budget_limit_amount|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Active budget value' %}</th><td>{{ company.active_total_budget_limit_amount|default:"-" }}</td></tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="col-md-6">
                         <table class="table table-sm mb-0">
                             <tbody>
-                                <tr><th>Winner/Budget avg</th><td>{{ company.safe_winner_to_budget_ratio_avg|default:"-" }}</td></tr>
-                                <tr><th>Winner/Budget min</th><td>{{ company.safe_winner_to_budget_ratio_min|default:"-" }}</td></tr>
-                                <tr><th>Winner/Budget max</th><td>{{ company.safe_winner_to_budget_ratio_max|default:"-" }}</td></tr>
-                                <tr><th>Zero budget with winner value count</th><td>{{ company.zero_budget_with_winner_value_count }}</td></tr>
-                                <tr><th>Zero budget with winner value rate</th><td>{{ company.zero_budget_with_winner_value_rate|floatformat:2 }}</td></tr>
+                                <tr><th>{% trans 'Winner/Budget avg' %}</th><td>{{ company.safe_winner_to_budget_ratio_avg|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Winner/Budget min' %}</th><td>{{ company.safe_winner_to_budget_ratio_min|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Winner/Budget max' %}</th><td>{{ company.safe_winner_to_budget_ratio_max|default:"-" }}</td></tr>
+                                <tr><th>{% trans 'Zero budget with winner value count' %}</th><td>{{ company.zero_budget_with_winner_value_count }}</td></tr>
+                                <tr><th>{% trans 'Zero budget with winner value rate' %}</th><td>{{ company.zero_budget_with_winner_value_rate|floatformat:2 }}</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -167,25 +167,25 @@
 
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Diversity Metrics</h5>
+                <h5 class="card-title mb-0">{% trans 'Diversity Metrics' %}</h5>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded">
-                            <p class="text-muted mb-1">Contracting authorities</p>
+                            <p class="text-muted mb-1">{% trans 'Contracting authorities' %}</p>
                             <h4 class="mb-0">{{ company.distinct_contracting_authority_count }}</h4>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded">
-                            <p class="text-muted mb-1">Procedure types</p>
+                            <p class="text-muted mb-1">{% trans 'Procedure types' %}</p>
                             <h4 class="mb-0">{{ company.distinct_procedure_type_count }}</h4>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded">
-                            <p class="text-muted mb-1">Contract types</p>
+                            <p class="text-muted mb-1">{% trans 'Contract types' %}</p>
                             <h4 class="mb-0">{{ company.distinct_contract_type_count }}</h4>
                         </div>
                     </div>
@@ -200,52 +200,52 @@
         <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div>
-                    <h5 class="card-title mb-0">Secondary Financial Enrichment</h5>
-                    <p class="text-muted mb-0 mt-1">OpenCorporates financial subset for this company, when available.</p>
+                    <h5 class="card-title mb-0">{% trans 'Secondary Financial Enrichment' %}</h5>
+                    <p class="text-muted mb-0 mt-1">{% trans 'OpenCorporates financial subset for this company, when available.' %}</p>
                 </div>
                 <a href="{% url 'analytics:company_financials_csv' company.company_nipt %}" class="btn btn-sm btn-soft-primary">
-                    <i class="ri-download-2-line align-bottom me-1"></i> Export financial enrichment CSV
+                    <i class="ri-download-2-line align-bottom me-1"></i> {% trans 'Export financial enrichment CSV' %}
                 </a>
             </div>
             <div class="card-body">
                 {% if financial_enrichment.available %}
                     <div class="alert alert-warning" role="alert">
-                        These values come from the OpenCorporates financial subset, a secondary exploratory enrichment source. Validate values against official filings where required.
+                        {% trans 'These values come from the OpenCorporates financial subset, a secondary exploratory enrichment source. Validate values against official filings where required.' %}
                     </div>
                     <div class="row g-3 mb-4">
                         <div class="col-xl-2 col-md-4">
                             <div class="border rounded p-3 h-100">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Financial years</p>
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">{% trans 'Financial years' %}</p>
                                 <h5 class="mb-0">{{ financial_enrichment.row_count_display }}</h5>
                             </div>
                         </div>
                         <div class="col-xl-2 col-md-4">
                             <div class="border rounded p-3 h-100">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Latest year</p>
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">{% trans 'Latest year' %}</p>
                                 <h5 class="mb-0">{{ financial_enrichment.latest_year_display }}</h5>
                             </div>
                         </div>
                         <div class="col-xl-2 col-md-4">
                             <div class="border rounded p-3 h-100">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Latest revenue</p>
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">{% trans 'Latest revenue' %}</p>
                                 <h5 class="mb-0">{{ financial_enrichment.latest_revenue_amount_display }}</h5>
                             </div>
                         </div>
                         <div class="col-xl-2 col-md-4">
                             <div class="border rounded p-3 h-100">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Latest profit before tax</p>
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">{% trans 'Latest profit before tax' %}</p>
                                 <h5 class="mb-0">{{ financial_enrichment.latest_profit_before_tax_amount_display }}</h5>
                             </div>
                         </div>
                         <div class="col-xl-2 col-md-4">
                             <div class="border rounded p-3 h-100">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Revenue growth</p>
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">{% trans 'Revenue growth' %}</p>
                                 <h5 class="mb-0">{{ financial_enrichment.revenue_growth_latest_pct_display }}</h5>
                             </div>
                         </div>
                         <div class="col-xl-2 col-md-4">
                             <div class="border rounded p-3 h-100">
-                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Profit growth</p>
+                                <p class="text-uppercase fw-medium text-muted text-truncate mb-1">{% trans 'Profit growth' %}</p>
                                 <h5 class="mb-0">{{ financial_enrichment.profit_growth_latest_pct_display }}</h5>
                             </div>
                         </div>
@@ -255,15 +255,15 @@
                         <div class="col-xl-7">
                             <div class="border rounded p-3 h-100">
                                 <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                                    <h6 class="mb-0">Financial Year Trend</h6>
-                                    <span class="badge bg-secondary-subtle text-secondary">Exploratory financial data</span>
+                                    <h6 class="mb-0">{% trans 'Financial Year Trend' %}</h6>
+                                    <span class="badge bg-secondary-subtle text-secondary">{% trans 'Exploratory financial data' %}</span>
                                 </div>
                                 <div id="company-financials-chart-warning" class="alert alert-warning d-none" role="alert">
-                                    The financial enrichment chart could not render because the chart library is unavailable.
+                                    {% trans 'The financial enrichment chart could not render because the chart library is unavailable.' %}
                                 </div>
                                 <div id="company-financials-chart" style="min-height: 340px;"></div>
                                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                                    This trend is shown for exploratory context only and does not represent a complete or authoritative financial statement panel.
+                                    {% trans 'This trend is shown for exploratory context only and does not represent a complete or authoritative financial statement panel.' %}
                                 </div>
                             </div>
                         </div>
@@ -272,9 +272,9 @@
                                 <table class="table table-sm table-hover align-middle mb-0">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Year</th>
-                                            <th class="text-end">Revenue amount</th>
-                                            <th class="text-end">Profit before tax amount</th>
+                                            <th>{% trans 'Year' %}</th>
+                                            <th class="text-end">{% trans 'Revenue amount' %}</th>
+                                            <th class="text-end">{% trans 'Profit before tax amount' %}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -285,7 +285,7 @@
                                                 <td class="text-end">{{ row.profit_before_tax_amount_display }}</td>
                                             </tr>
                                         {% empty %}
-                                            <tr><td colspan="3" class="text-muted">No financial rows available.</td></tr>
+                                            <tr><td colspan="3" class="text-muted">{% trans 'No financial rows available.' %}</td></tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
@@ -297,13 +297,13 @@
                         {% for field in financial_enrichment.numeric_fields_available %}
                             <code>{{ field }}</code>{% if not forloop.last %}, {% endif %}
                         {% empty %}
-                            <span>N/A</span>
+                            <span>{% trans 'N/A' %}</span>
                         {% endfor %}
                     </p>
                 {% else %}
                     <div class="border rounded p-4 text-center bg-light">
-                        <h6 class="mb-1">No secondary financial-year enrichment found</h6>
-                        <p class="text-muted mb-0">No OpenCorporates financial-year enrichment was found for this company in the current local dataset.</p>
+                        <h6 class="mb-1">{% trans 'No secondary financial-year enrichment found' %}</h6>
+                        <p class="text-muted mb-0">{% trans 'No OpenCorporates financial-year enrichment was found for this company in the current local dataset.' %}</p>
                     </div>
                 {% endif %}
             </div>

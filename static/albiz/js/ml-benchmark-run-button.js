@@ -36,6 +36,19 @@
     }
 
     function messageTitle(icon) {
+        var form = byId('ml-benchmark-run-form');
+        if (form) {
+            if (icon === 'success') {
+                return form.getAttribute('data-success-title') || 'Benchmark suite refreshed';
+            }
+            if (icon === 'error') {
+                return form.getAttribute('data-error-title') || 'Benchmark run failed';
+            }
+            if (icon === 'warning') {
+                return form.getAttribute('data-warning-title') || 'Benchmark run not started';
+            }
+            return form.getAttribute('data-info-title') || 'Benchmark suite';
+        }
         if (icon === 'success') {
             return 'Benchmark suite refreshed';
         }
@@ -62,7 +75,7 @@
             title: messageTitle(icon),
             text: message.text || '',
             icon: icon,
-            confirmButtonText: 'OK'
+            confirmButtonText: (byId('ml-benchmark-run-form') || {}).getAttribute ? (byId('ml-benchmark-run-form').getAttribute('data-ok-button') || 'OK') : 'OK'
         });
     }
 
@@ -72,15 +85,15 @@
             return;
         }
         button.disabled = true;
-        button.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> Running benchmark suite...';
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span> ' + (form.getAttribute('data-running-label') || 'Running benchmark suite...');
     }
 
     function submitWithLoading(form) {
         setRunningState(form);
         if (hasSwal()) {
             window.Swal.fire({
-                title: 'Running benchmark suite',
-                text: 'Please wait while repeated cross-validation benchmarks are generated.',
+                title: form.getAttribute('data-loading-title') || 'Running benchmark suite',
+                text: form.getAttribute('data-loading-text') || 'Please wait while repeated cross-validation benchmarks are generated.',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 didOpen: function () {
@@ -115,8 +128,8 @@
                 text: text,
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, run benchmark',
-                cancelButtonText: 'Cancel',
+                confirmButtonText: form.getAttribute('data-confirm-button') || 'Yes, run benchmark',
+                cancelButtonText: form.getAttribute('data-cancel-button') || 'Cancel',
                 reverseButtons: true
             }).then(function (result) {
                 if (result.isConfirmed) {

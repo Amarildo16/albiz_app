@@ -1,11 +1,12 @@
-{% load static %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
 <!doctype html>
-<html lang="en" data-layout="vertical" data-topbar="light" data-bs-theme="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
+<html lang="{{ CURRENT_LANGUAGE|default:'en' }}" data-layout="vertical" data-topbar="light" data-bs-theme="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-preloader="disable">
 <head>
     <meta charset="utf-8">
     <title>{% block title %}Albiz{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Albiz analytics dashboard">
+    <meta name="description" content="{% trans 'Albiz analytics dashboard' %}">
 
     <script src="{% static 'velzon/js/layout.js' %}"></script>
     <link href="{% static 'velzon/libs/simplebar/dist/simplebar.min.css' %}" rel="stylesheet" type="text/css">
@@ -31,11 +32,46 @@
         </div>
     </div>
 
-    <button type="button" class="btn btn-danger btn-icon" id="back-to-top" onclick="topFunction()" aria-label="Back to top">
+    <button type="button" class="btn btn-danger btn-icon" id="back-to-top" onclick="topFunction()" aria-label="{% trans 'Back to top' %}">
         <i class="ri-arrow-up-line"></i>
     </button>
 
     {% include 'layouts/partials/modals.html' %}
+
+    {% trans 'QKB flag' as i18n_qkb_flag %}
+    {% trans 'No QKB flag' as i18n_no_qkb_flag %}
+    {% trans 'Unknown' as i18n_unknown %}
+    {% trans 'No indicators' as i18n_no_indicators %}
+    {% trans 'View' as i18n_view %}
+    {% trans 'Unable to load companies from the collector database.' as i18n_unable_companies %}
+    {% trans 'Unable to load companies from the collector database:' as i18n_unable_companies_prefix %}
+    {% trans 'Loading companies...' as i18n_loading_companies %}
+    {% trans 'No companies found.' as i18n_no_companies_found %}
+    {% trans 'Showing {first} to {last} of {total} rows' as i18n_showing_rows %}
+    {% trans 'Chart library is unavailable. The table below remains available.' as i18n_chart_unavailable %}
+    {% trans 'No chart data available' as i18n_no_chart_data %}
+    {% trans 'Financial year' as i18n_financial_year %}
+    {% trans 'Revenue amount' as i18n_revenue_amount %}
+    {% trans 'Profit before tax' as i18n_profit_before_tax %}
+    <script>
+        window.AlbizI18n = {
+            qkbFlag: "{{ i18n_qkb_flag|escapejs }}",
+            noQkbFlag: "{{ i18n_no_qkb_flag|escapejs }}",
+            unknown: "{{ i18n_unknown|escapejs }}",
+            noIndicators: "{{ i18n_no_indicators|escapejs }}",
+            view: "{{ i18n_view|escapejs }}",
+            unableLoadCompanies: "{{ i18n_unable_companies|escapejs }}",
+            unableLoadCompaniesPrefix: "{{ i18n_unable_companies_prefix|escapejs }}",
+            loadingCompanies: "{{ i18n_loading_companies|escapejs }}",
+            noCompaniesFound: "{{ i18n_no_companies_found|escapejs }}",
+            showingRows: "{{ i18n_showing_rows|escapejs }}",
+            chartUnavailable: "{{ i18n_chart_unavailable|escapejs }}",
+            noChartData: "{{ i18n_no_chart_data|escapejs }}",
+            financialYear: "{{ i18n_financial_year|escapejs }}",
+            revenueAmount: "{{ i18n_revenue_amount|escapejs }}",
+            profitBeforeTax: "{{ i18n_profit_before_tax|escapejs }}"
+        };
+    </script>
 
     <script src="{% static 'velzon/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'velzon/libs/simplebar/dist/simplebar.min.js' %}"></script>

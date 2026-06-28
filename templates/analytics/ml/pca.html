@@ -1,10 +1,13 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}ML PCA Visualization | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'ML PCA Visualization' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
-{% include 'analytics/ml/partials/page_header.html' with title='PCA Visualization' subtitle='PCA projection and dimensionality reduction for procurement profile visualization.' crumb='PCA Visualization' %}
+{% trans 'PCA Visualization' as page_title %}
+{% trans 'PCA projection and dimensionality reduction for procurement profile visualization.' as page_subtitle %}
+{% trans 'PCA Visualization' as page_crumb %}
+{% include 'analytics/ml/partials/page_header.html' with title=page_title subtitle=page_subtitle crumb=page_crumb %}
 {% include 'analytics/ml/partials/output_warnings.html' %}
 
 <div class="row mb-4">
@@ -12,8 +15,8 @@
         <div class="card mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div>
-                    <h5 class="card-title mb-0">PCA Procurement Profile Projection</h5>
-                    <p class="text-muted mb-0 mt-1">PCA dimensionality reduction for exploratory visualization of procurement profiles.</p>
+                    <h5 class="card-title mb-0">{% trans 'PCA Procurement Profile Projection' %}</h5>
+                    <p class="text-muted mb-0 mt-1">{% trans 'PCA dimensionality reduction for exploratory visualization of procurement profiles.' %}</p>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
                     <a href="{% url 'analytics:export_ml_pca_2d_csv' %}" class="btn btn-sm btn-soft-primary">
@@ -26,7 +29,7 @@
             </div>
             <div class="card-body">
                 <div class="alert alert-warning" role="alert">
-                    PCA visualizes structure in the feature space. It does not define risk by itself and should not be interpreted as evidence for legal or administrative conclusions.
+                    {% trans 'PCA visualizes structure in the feature space. It does not define risk by itself and should not be interpreted as evidence for legal or administrative conclusions.' %}
                 </div>
                 <div class="row g-3 mb-4">
                     <div class="col-xl col-md-4 col-6">
@@ -49,13 +52,13 @@
                     </div>
                     <div class="col-xl col-md-6 col-6">
                         <div class="border rounded p-3 h-100">
-                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Cumulative 2D</p>
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">{% trans 'Cumulative 2D' %}</p>
                             <h5 class="mb-0">{{ ml.pca_summary.cumulative_2d }}</h5>
                         </div>
                     </div>
                     <div class="col-xl col-md-6 col-6">
                         <div class="border rounded p-3 h-100">
-                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">Cumulative 3D</p>
+                            <p class="text-uppercase fw-medium text-muted text-truncate mb-1">{% trans 'Cumulative 3D' %}</p>
                             <h5 class="mb-0">{{ ml.pca_summary.cumulative_3d }}</h5>
                         </div>
                     </div>
@@ -64,30 +67,30 @@
                 <div class="row g-4">
                     <div class="col-xl-4">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-3">Explained Variance</h6>
+                            <h6 class="mb-3">{% trans 'Explained Variance' %}</h6>
                             <div id="ml-pca-variance-chart"></div>
                             <p class="text-muted mb-0 mt-2">{{ ml.pca_summary.interpretation_note|default:'PCA is used for dimensionality reduction and visualization.' }}</p>
                         </div>
                     </div>
                     <div class="col-xl-8">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-3">PCA 2D Scatter</h6>
+                            <h6 class="mb-3">{% trans 'PCA 2D Scatter' %}</h6>
                             <div id="ml-pca-2d-chart"></div>
-                            <p class="text-muted mb-0 mt-2">Showing a deterministic capped sample of {{ ml.pca_2d_rows|length }} companies for browser performance. Full data remains available by CSV export.</p>
+                            <p class="text-muted mb-0 mt-2">{% blocktrans with count=ml.pca_2d_rows|length %}Showing a deterministic capped sample of {{ count }} companies for browser performance. Full data remains available by CSV export.{% endblocktrans %}</p>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="border rounded p-3">
                             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                                <h6 class="mb-0">PCA 3D Interactive Scatter</h6>
-                                <span class="badge bg-primary-subtle text-primary">Rotate, zoom, and hover</span>
+                                <h6 class="mb-0">{% trans 'PCA 3D Interactive Scatter' %}</h6>
+                                <span class="badge bg-primary-subtle text-primary">{% trans 'Rotate, zoom, and hover' %}</span>
                             </div>
                             {% if not ml.plotly_available %}
-                                <div class="alert alert-warning" role="alert">Local Plotly is not available. Add <code>static/velzon/libs/plotly/plotly.min.js</code> to enable the interactive 3D chart.</div>
+                                <div class="alert alert-warning" role="alert">{% blocktrans %}Local Plotly is not available. Add <code>static/velzon/libs/plotly/plotly.min.js</code> to enable the interactive 3D chart.{% endblocktrans %}</div>
                             {% endif %}
-                            <div id="ml-pca-3d-warning" class="alert alert-warning d-none" role="alert">Plotly did not load, so the interactive PCA 3D scatter could not render.</div>
+                            <div id="ml-pca-3d-warning" class="alert alert-warning d-none" role="alert">{% trans 'Plotly did not load, so the interactive PCA 3D scatter could not render.' %}</div>
                             <div id="ml-pca-3d-chart" style="min-height: 520px;"></div>
-                            <p class="text-muted mb-0 mt-2">Showing a deterministic capped sample of {{ ml.pca_3d_rows|length }} companies. This projection supports procurement profile visualization and human review.</p>
+                            <p class="text-muted mb-0 mt-2">{% blocktrans with count=ml.pca_3d_rows|length %}Showing a deterministic capped sample of {{ count }} companies. This projection supports procurement profile visualization and human review.{% endblocktrans %}</p>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,3642 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr "Anglisht"
+#: .\config\settings.py:153 .\templates\layouts\partials\topbar.html:49
+msgid "English"
+msgstr "Anglisht"
+
+#: .\config\settings.py:154 .\templates\layouts\partials\topbar.html:52
+msgid "Shqip"
+msgstr "Shqip"
+
+#: .\templates\analytics\companies.html:4
+#: .\templates\analytics\companies.html:10
+#: .\templates\analytics\companies.html:14
+#: .\templates\analytics\company_detail.html:14
+#: .\templates\analytics\dashboard.html:37
+#: .\templates\analytics\data_quality.html:289
+#: .\templates\analytics\data_quality.html:324
+#: .\templates\analytics\methodology.html:317
+#: .\templates\analytics\ml\clustering.html:53
+#: .\templates\analytics\registry_enrichment.html:207
+#: .\templates\analytics\risk_overview.html:220
+#: .\templates\analytics\visual_analytics.html:130
+#: .\templates\analytics\visual_analytics.html:161
+#: .\templates\analytics\visual_analytics.html:204
+#: .\templates\analytics\visual_analytics.html:241
+#: .\templates\analytics\visual_analytics.html:273
+#: .\templates\layouts\partials\sidebar.html:40
+msgid "Companies"
+msgstr "Kompanite"
+
+#: .\templates\analytics\companies.html:4
+#: .\templates\analytics\company_detail.html:4
+#: .\templates\analytics\dashboard.html:4
+#: .\templates\analytics\dashboard.html:10
+#: .\templates\analytics\data_quality.html:4
+#: .\templates\analytics\methodology.html:4
+#: .\templates\analytics\ml\anomaly.html:4
+#: .\templates\analytics\ml\benchmark.html:4
+#: .\templates\analytics\ml\classification.html:4
+#: .\templates\analytics\ml\clustering.html:4
+#: .\templates\analytics\ml\exports.html:4
+#: .\templates\analytics\ml\feature_importance.html:4
+#: .\templates\analytics\ml\financial_enrichment.html:4
+#: .\templates\analytics\ml\model_card.html:4
+#: .\templates\analytics\ml\overview.html:4 .\templates\analytics\ml\pca.html:4
+#: .\templates\analytics\registry_enrichment.html:4
+#: .\templates\analytics\reports.html:4
+#: .\templates\analytics\risk_overview.html:4
+#: .\templates\analytics\visual_analytics.html:4
+#: .\templates\layouts\partials\topbar.html:35
+msgid "Albiz Analytics"
+msgstr "Analitika Albiz"
+
+#: .\templates\analytics\companies.html:13
+#: .\templates\analytics\company_detail.html:13
+#: .\templates\analytics\dashboard.html:13
+#: .\templates\analytics\data_quality.html:16
+#: .\templates\analytics\methodology.html:16
+#: .\templates\analytics\ml\partials\page_header.html:11
+#: .\templates\analytics\registry_enrichment.html:16
+#: .\templates\analytics\reports.html:16
+#: .\templates\analytics\risk_overview.html:34
+#: .\templates\analytics\visual_analytics.html:20
+#: .\templates\layouts\partials\sidebar.html:33
+msgid "Dashboard"
+msgstr "Paneli kryesor"
+
+#: .\templates\analytics\companies.html:37
+msgid "Joined Company Features"
+msgstr "Vecorite e kompanive te bashkuara"
+
+#: .\templates\analytics\companies.html:38
+msgid ""
+"Server-side search, filters, sorting, and pagination from the collector "
+"database."
+msgstr "Kerkim, filtra, renditje dhe faqosje ne server nga baza e te dhenave e kolektorit."
+
+#: .\templates\analytics\companies.html:41
+msgid "Reset"
+msgstr "Rivendos"
+
+#: .\templates\analytics\companies.html:49
+msgid "Search"
+msgstr "Kerko"
+
+#: .\templates\analytics\companies.html:50
+msgid "NIPT or business name"
+msgstr "NIPT ose emri i subjektit"
+
+#: .\templates\analytics\companies.html:53
+#: .\templates\analytics\companies.html:109
+#: .\templates\analytics\company_detail.html:59
+#: .\templates\analytics\data_quality.html:288
+#: .\templates\analytics\risk_overview.html:263
+#: .\templates\analytics\visual_analytics.html:129
+msgid "Legal form"
+msgstr "Forma ligjore"
+
+#: .\templates\analytics\companies.html:55
+msgid "All legal forms"
+msgstr "Te gjitha format ligjore"
+
+#: .\templates\analytics\companies.html:62
+#: .\templates\analytics\companies.html:110
+#: .\templates\analytics\company_detail.html:60
+#: .\templates\analytics\data_quality.html:323
+#: .\templates\analytics\visual_analytics.html:160
+msgid "Status"
+msgstr "Statusi"
+
+#: .\templates\analytics\companies.html:64
+msgid "All statuses"
+msgstr "Te gjitha statuset"
+
+#: .\templates\analytics\companies.html:71
+#: .\templates\analytics\companies.html:72
+#: .\templates\analytics\companies.html:111
+#: .\templates\analytics\company_detail.html:61
+#: .\templates\analytics\risk_overview.html:174
+#: .\templates\analytics\risk_overview.html:264
+#: .\templates\analytics\visual_analytics.html:203
+msgid "City"
+msgstr "Qyteti"
+
+#: .\templates\analytics\companies.html:75
+#: .\templates\analytics\companies.html:78
+#: .\templates\analytics\companies.html:116
+msgid "QKB flags"
+msgstr "Flamuj QKB"
+
+#: .\templates\analytics\companies.html:77
+msgid "All"
+msgstr "Te gjitha"
+
+#: .\templates\analytics\companies.html:79
+msgid "No flags"
+msgstr "Pa flamuj"
+
+#: .\templates\analytics\companies.html:83
+msgid "Risk indicator"
+msgstr "Tregues risku"
+
+#: .\templates\analytics\companies.html:85
+msgid "All indicators"
+msgstr "Te gjithe treguesit"
+
+#: .\templates\analytics\companies.html:92
+msgid "Min proc."
+msgstr "Prok. min."
+
+#: .\templates\analytics\companies.html:96
+msgid "Max proc."
+msgstr "Prok. maks."
+
+#: .\templates\analytics\companies.html:108
+#: .\templates\analytics\ml\anomaly.html:92
+#: .\templates\analytics\ml\anomaly.html:129
+#: .\templates\analytics\ml\financial_enrichment.html:279
+#: .\templates\analytics\risk_overview.html:262
+#: .\templates\analytics\risk_overview.html:320
+#: .\templates\analytics\risk_overview.html:362
+#: .\templates\analytics\risk_overview.html:406
+#: .\templates\analytics\visual_analytics.html:314
+#: .\templates\analytics\visual_analytics.html:352
+msgid "Business name"
+msgstr "Emri i subjektit"
+
+#: .\templates\analytics\companies.html:112
+msgid "Reg. year"
+msgstr "Viti reg."
+
+#: .\templates\analytics\companies.html:113
+msgid "Procurements"
+msgstr "Prokurime"
+
+#: .\templates\analytics\companies.html:114
+msgid "Winner value"
+msgstr "Vlera fituese"
+
+#: .\templates\analytics\companies.html:115
+msgid "Winner/Budget"
+msgstr "Fitues/Buxhet"
+
+#: .\templates\analytics\companies.html:117
+#: .\templates\analytics\reports.html:36
+msgid "Risk indicators"
+msgstr "Tregues risku"
+
+#: .\templates\analytics\companies.html:118
+msgid "Actions"
+msgstr "Veprime"
+
+#: .\templates\analytics\companies.html:123 .\templates\layouts\base.html:48
+msgid "Loading companies..."
+msgstr "Duke ngarkuar kompanite..."
+
+#: .\templates\analytics\companies.html:131
+#: .\templates\analytics\ml\benchmark.html:162
+#: .\templates\analytics\ml\model_card.html:65
+#: .\templates\analytics\registry_enrichment.html:323
+msgid "Rows"
+msgstr "Rreshta"
+
+#: .\templates\analytics\companies.html:139
+msgid "Showing 0 rows"
+msgstr "Duke shfaqur 0 rreshta"
+
+#: .\templates\analytics\companies.html:140
+msgid "Companies pagination"
+msgstr "Faqosja e kompanive"
+
+#: .\templates\analytics\companies.html:141
+msgid "Previous"
+msgstr "Mbrapa"
+
+#: .\templates\analytics\companies.html:142
+msgid "Next"
+msgstr "Perpara"
+
+#: .\templates\analytics\company_detail.html:4
+msgid "Company"
+msgstr "Kompani"
+
+#: .\templates\analytics\company_detail.html:10
+msgid "Company Detail"
+msgstr "Detajet e kompanise"
+
+#: .\templates\analytics\company_detail.html:15
+msgid "Unavailable"
+msgstr "E padisponueshme"
+
+#: .\templates\analytics\company_detail.html:26
+#: .\templates\analytics\dashboard.html:72
+#: .\templates\analytics\data_quality.html:28
+#: .\templates\analytics\registry_enrichment.html:28
+#: .\templates\analytics\risk_overview.html:46
+#: .\templates\analytics\visual_analytics.html:32
+#, python-format
+msgid "Collector database is not reachable: %(error)s"
+msgstr "Baza e te dhenave e kolektorit nuk arrihet: %(error)s"
+
+#: .\templates\analytics\company_detail.html:44
+msgid "Financial subset available"
+msgstr "Nenseti financiar eshte i disponueshem"
+
+#: .\templates\analytics\company_detail.html:47
+#: .\templates\layouts\base.html:41
+msgid "QKB flag"
+msgstr "Flamur QKB"
+
+#: .\templates\analytics\company_detail.html:49
+#: .\templates\layouts\base.html:42
+msgid "No QKB flag"
+msgstr "Pa flamur QKB"
+
+#: .\templates\analytics\company_detail.html:51
+msgid "Unknown QKB flag"
+msgstr "Flamur QKB i panjohur"
+
+#: .\templates\analytics\company_detail.html:62
+msgid "Registration date"
+msgstr "Data e regjistrimit"
+
+#: .\templates\analytics\company_detail.html:63
+msgid "Registration year"
+msgstr "Viti i regjistrimit"
+
+#: .\templates\analytics\company_detail.html:72
+#: .\templates\analytics\methodology.html:190
+msgid "Risk Indicators"
+msgstr "Tregues risku"
+
+#: .\templates\analytics\company_detail.html:88
+#: .\templates\layouts\base.html:44
+msgid "No indicators"
+msgstr "Pa tregues"
+
+#: .\templates\analytics\company_detail.html:90
+msgid ""
+"Indicators are analytical procurement signals, not allegations or legal "
+"conclusions."
+msgstr "Treguesit jane sinjale analitike te prokurimit, jo pretendime ose perfundime ligjore."
+
+#: .\templates\analytics\company_detail.html:100
+msgid "Procurement Timeline"
+msgstr "Afati kohor i prokurimeve"
+
+#: .\templates\analytics\company_detail.html:105
+msgid "First procurement date"
+msgstr "Data e prokurimit te pare"
+
+#: .\templates\analytics\company_detail.html:106
+msgid "First procurement year"
+msgstr "Viti i prokurimit te pare"
+
+#: .\templates\analytics\company_detail.html:107
+msgid "Last procurement date"
+msgstr "Data e prokurimit te fundit"
+
+#: .\templates\analytics\company_detail.html:108
+msgid "Last procurement year"
+msgstr "Viti i prokurimit te fundit"
+
+#: .\templates\analytics\company_detail.html:109
+msgid "Company age at first procurement"
+msgstr "Mosha e kompanise ne prokurimin e pare"
+
+#: .\templates\analytics\company_detail.html:109
+msgid "days"
+msgstr "dite"
+
+#: .\templates\analytics\company_detail.html:119
+msgid "Procurement Counts"
+msgstr "Numrat e prokurimeve"
+
+#: .\templates\analytics\company_detail.html:124
+msgid "Active procurement count"
+msgstr "Numri i prokurimeve aktive"
+
+#: .\templates\analytics\company_detail.html:125
+msgid "Cancelled count"
+msgstr "Numri i anuluar"
+
+#: .\templates\analytics\company_detail.html:126
+msgid "Cancelled rate"
+msgstr "Norma e anulimit"
+
+#: .\templates\analytics\company_detail.html:127
+msgid "Suspended count"
+msgstr "Numri i pezulluar"
+
+#: .\templates\analytics\company_detail.html:128
+msgid "Suspended rate"
+msgstr "Norma e pezullimit"
+
+#: .\templates\analytics\company_detail.html:138
+msgid "Value Metrics"
+msgstr "Metrikat e vleres"
+
+#: .\templates\analytics\company_detail.html:145
+msgid "Total winner value"
+msgstr "Vlera fituese totale"
+
+#: .\templates\analytics\company_detail.html:146
+#: .\templates\analytics\risk_overview.html:323
+#: .\templates\analytics\risk_overview.html:363
+#: .\templates\analytics\visual_analytics.html:353
+msgid "Active winner value"
+msgstr "Vlera fituese aktive"
+
+#: .\templates\analytics\company_detail.html:147
+msgid "Displayed winner value"
+msgstr "Vlera fituese e shfaqur"
+
+#: .\templates\analytics\company_detail.html:148
+msgid "Total budget value"
+msgstr "Vlera totale e buxhetit"
+
+#: .\templates\analytics\company_detail.html:149
+msgid "Active budget value"
+msgstr "Vlera aktive e buxhetit"
+
+#: .\templates\analytics\company_detail.html:156
+msgid "Winner/Budget avg"
+msgstr "Mesatarja fitues/buxhet"
+
+#: .\templates\analytics\company_detail.html:157
+msgid "Winner/Budget min"
+msgstr "Minimumi fitues/buxhet"
+
+#: .\templates\analytics\company_detail.html:158
+msgid "Winner/Budget max"
+msgstr "Maksimumi fitues/buxhet"
+
+#: .\templates\analytics\company_detail.html:159
+msgid "Zero budget with winner value count"
+msgstr "Raste me buxhet zero dhe vlere fituese"
+
+#: .\templates\analytics\company_detail.html:160
+msgid "Zero budget with winner value rate"
+msgstr "Norma e buxhetit zero me vlere fituese"
+
+#: .\templates\analytics\company_detail.html:170
+msgid "Diversity Metrics"
+msgstr "Metrikat e diversitetit"
+
+#: .\templates\analytics\company_detail.html:176
+msgid "Contracting authorities"
+msgstr "Autoritete kontraktuese"
+
+#: .\templates\analytics\company_detail.html:182
+msgid "Procedure types"
+msgstr "Lloje procedurash"
+
+#: .\templates\analytics\company_detail.html:188
+msgid "Contract types"
+msgstr "Lloje kontratash"
+
+#: .\templates\analytics\company_detail.html:203
+msgid "Secondary Financial Enrichment"
+msgstr "Pasurim financiar dytesor"
+
+#: .\templates\analytics\company_detail.html:204
+msgid "OpenCorporates financial subset for this company, when available."
+msgstr "Nenseti financiar OpenCorporates per kete kompani, kur eshte i disponueshem."
+
+#: .\templates\analytics\company_detail.html:207
+msgid "Export financial enrichment CSV"
+msgstr "Eksporto CSV te pasurimit financiar"
+
+#: .\templates\analytics\company_detail.html:213
+msgid ""
+"These values come from the OpenCorporates financial subset, a secondary "
+"exploratory enrichment source. Validate values against official filings "
+"where required."
+msgstr "Keto vlera vijne nga nenseti financiar OpenCorporates, nje burim dytesor eksplorues. Verifikojini vlerat kundrejt depozitimeve zyrtare kur kerkohet."
+
+#: .\templates\analytics\company_detail.html:218
+#: .\templates\analytics\registry_enrichment.html:292
+msgid "Financial years"
+msgstr "Vite financiare"
+
+#: .\templates\analytics\company_detail.html:224
+#: .\templates\analytics\ml\financial_enrichment.html:282
+msgid "Latest year"
+msgstr "Viti me i fundit"
+
+#: .\templates\analytics\company_detail.html:230
+#: .\templates\analytics\ml\financial_enrichment.html:283
+msgid "Latest revenue"
+msgstr "Te ardhurat me te fundit"
+
+#: .\templates\analytics\company_detail.html:236
+#: .\templates\analytics\ml\financial_enrichment.html:284
+msgid "Latest profit before tax"
+msgstr "Fitimi me i fundit para tatimit"
+
+#: .\templates\analytics\company_detail.html:242
+#: .\templates\analytics\ml\financial_enrichment.html:285
+msgid "Revenue growth"
+msgstr "Rritja e te ardhurave"
+
+#: .\templates\analytics\company_detail.html:248
+#: .\templates\analytics\ml\financial_enrichment.html:286
+msgid "Profit growth"
+msgstr "Rritja e fitimit"
+
+#: .\templates\analytics\company_detail.html:258
+msgid "Financial Year Trend"
+msgstr "Trendi sipas vitit financiar"
+
+#: .\templates\analytics\company_detail.html:259
+msgid "Exploratory financial data"
+msgstr "Te dhena financiare eksploruese"
+
+#: .\templates\analytics\company_detail.html:262
+msgid ""
+"The financial enrichment chart could not render because the chart library is "
+"unavailable."
+msgstr "Grafiku i pasurimit financiar nuk mund te shfaqet sepse biblioteka e grafikut nuk eshte e disponueshme."
+
+#: .\templates\analytics\company_detail.html:266
+msgid ""
+"This trend is shown for exploratory context only and does not represent a "
+"complete or authoritative financial statement panel."
+msgstr "Ky trend shfaqet vetem per kontekst eksplorues dhe nuk perfaqeson panel te plote ose autoritativ te pasqyrave financiare."
+
+#: .\templates\analytics\company_detail.html:275
+#: .\templates\analytics\registry_enrichment.html:207
+#: .\templates\analytics\registry_enrichment.html:323
+msgid "Year"
+msgstr "Viti"
+
+#: .\templates\analytics\company_detail.html:276
+#: .\templates\layouts\base.html:54
+msgid "Revenue amount"
+msgstr "Shuma e te ardhurave"
+
+#: .\templates\analytics\company_detail.html:277
+msgid "Profit before tax amount"
+msgstr "Shuma e fitimit para tatimit"
+
+#: .\templates\analytics\company_detail.html:288
+msgid "No financial rows available."
+msgstr "Nuk ka rreshta financiare te disponueshem."
+
+#: .\templates\analytics\company_detail.html:300
+msgid "N/A"
+msgstr "N/A"
+
+#: .\templates\analytics\company_detail.html:305
+msgid "No secondary financial-year enrichment found"
+msgstr "Nuk u gjet pasurim dytesor sipas viteve financiare"
+
+#: .\templates\analytics\company_detail.html:306
+msgid ""
+"No OpenCorporates financial-year enrichment was found for this company in "
+"the current local dataset."
+msgstr "Nuk u gjet pasurim financiar OpenCorporates sipas viteve per kete kompani ne datasetin lokal aktual."
+
+#: .\templates\analytics\dashboard.html:31
+msgid "Albiz analytics app is running"
+msgstr "Aplikacioni analitik Albiz po funksionon"
+
+#: .\templates\analytics\dashboard.html:32
+msgid "Dashboard shell is ready for collector database analytics."
+msgstr "Struktura e panelit eshte gati per analitiken e bazes se kolektorit."
+
+#: .\templates\analytics\dashboard.html:40
+#: .\templates\analytics\methodology.html:320
+#: .\templates\analytics\reports.html:205
+#: .\templates\analytics\risk_overview.html:4
+#: .\templates\analytics\risk_overview.html:29
+#: .\templates\analytics\risk_overview.html:35
+#: .\templates\layouts\partials\sidebar.html:46
+msgid "Risk Overview"
+msgstr "Permbledhje e treguesve te riskut"
+
+#: .\templates\analytics\dashboard.html:43
+#: .\templates\analytics\methodology.html:232
+#: .\templates\analytics\methodology.html:323
+#: .\templates\analytics\visual_analytics.html:4
+#: .\templates\analytics\visual_analytics.html:15
+#: .\templates\analytics\visual_analytics.html:21
+#: .\templates\layouts\partials\sidebar.html:52
+msgid "Visual Analytics"
+msgstr "Analitika vizuale"
+
+#: .\templates\analytics\dashboard.html:46
+#: .\templates\analytics\methodology.html:4
+#: .\templates\analytics\methodology.html:11
+#: .\templates\analytics\methodology.html:17
+#: .\templates\analytics\reports.html:211
+#: .\templates\layouts\partials\sidebar.html:58
+msgid "Methodology"
+msgstr "Metodologjia"
+
+#: .\templates\analytics\dashboard.html:49
+#: .\templates\analytics\data_quality.html:17
+#: .\templates\analytics\reports.html:208
+#: .\templates\layouts\partials\sidebar.html:64
+msgid "Data Quality"
+msgstr "Cilesia e te dhenave"
+
+#: .\templates\analytics\dashboard.html:52
+#: .\templates\analytics\reports.html:113
+msgid "Registry"
+msgstr "Regjistri"
+
+#: .\templates\analytics\dashboard.html:55
+#: .\templates\analytics\reports.html:17
+#: .\templates\layouts\partials\sidebar.html:76
+msgid "Reports"
+msgstr "Raporte"
+
+#: .\templates\analytics\dashboard.html:58
+#: .\templates\analytics\ml\partials\page_header.html:12
+#: .\templates\layouts\partials\sidebar.html:82
+msgid "ML Results"
+msgstr "Rezultatet ML"
+
+#: .\templates\analytics\dashboard.html:84
+#: .\templates\analytics\data_quality.html:115
+#: .\templates\analytics\registry_enrichment.html:168
+msgid "APP winner companies"
+msgstr "Kompani fituese APP"
+
+#: .\templates\analytics\dashboard.html:87
+#: .\templates\analytics\dashboard.html:113
+#: .\templates\analytics\dashboard.html:139
+msgid "Collector"
+msgstr "Kolektori"
+
+#: .\templates\analytics\dashboard.html:110
+msgid "QKB companies"
+msgstr "Kompani QKB"
+
+#: .\templates\analytics\dashboard.html:136
+#: .\templates\analytics\ml\financial_enrichment.html:43
+#: .\templates\analytics\risk_overview.html:175
+msgid "Joined companies"
+msgstr "Kompani te bashkuara"
+
+#: .\templates\analytics\dashboard.html:162
+msgid "QKB match rate"
+msgstr "Norma e perputhjes QKB"
+
+#: .\templates\analytics\dashboard.html:165
+msgid "Derived"
+msgstr "E nxjerre"
+
+#: .\templates\analytics\dashboard.html:171
+msgid "Joined / APP winner companies"
+msgstr "Te bashkuara / kompani fituese APP"
+
+#: .\templates\analytics\dashboard.html:189
+msgid "Data Coverage Snapshot"
+msgstr "Pamje e shkurter e mbulimit te te dhenave"
+
+#: .\templates\analytics\dashboard.html:190
+msgid ""
+"Compact view of core collector coverage and local ML dataset availability."
+msgstr "Pamje kompakte e mbulimit kryesor te kolektorit dhe disponueshmerise se datasetit lokal ML."
+
+#: .\templates\analytics\dashboard.html:192
+msgid "Read-only summary"
+msgstr "Permbledhje vetem per lexim"
+
+#: .\templates\analytics\dashboard.html:197
+msgid ""
+"This snapshot compares core collector counts with the local ML dataset size "
+"so coverage can be read before opening detailed pages."
+msgstr "Kjo pamje krahason numrat kryesore te kolektorit me madhesine e datasetit lokal ML per te lexuar mbulimin para faqeve te detajuara."
+
+#: .\templates\analytics\data_quality.html:4
+#: .\templates\analytics\data_quality.html:11
+msgid "Data Quality & Coverage"
+msgstr "Cilesia dhe mbulimi i te dhenave"
+
+#: .\templates\analytics\data_quality.html:12
+msgid "Completeness and join coverage for the APP-QKB analytical dataset."
+msgstr "Plotesia dhe mbulimi i bashkimit per datasetin analitik APP-QKB."
+
+#: .\templates\analytics\data_quality.html:42
+msgid "APP coverage"
+msgstr "Mbulimi APP"
+
+#: .\templates\analytics\data_quality.html:43
+msgid ""
+"APP coverage describes procurement source rows and distinct winner companies "
+"derived from APP data."
+msgstr "Mbulimi APP pershkruan rreshtat burimore te prokurimit dhe kompanite fituese te dallueshme te nxjerra nga te dhenat APP."
+
+#: .\templates\analytics\data_quality.html:48
+msgid "QKB coverage"
+msgstr "Mbulimi QKB"
+
+#: .\templates\analytics\data_quality.html:49
+msgid ""
+"QKB coverage describes the registry backbone used for company identity, "
+"legal form, status, city, and registration fields."
+msgstr "Mbulimi QKB pershkruan shtresen baze te regjistrit qe perdoret per identitetin, formen ligjore, statusin, qytetin dhe regjistrimin e kompanise."
+
+#: .\templates\analytics\data_quality.html:54
+msgid "Joined coverage"
+msgstr "Mbulimi i bashkuar"
+
+#: .\templates\analytics\data_quality.html:55
+msgid ""
+"Joined APP-QKB companies are APP winner companies matched to QKB subjects by "
+"exact normalized NIPT."
+msgstr "Kompanite e bashkuara APP-QKB jane kompani fituese APP te perputhura me subjekte QKB me NIPT te normalizuar te sakte."
+
+#: .\templates\analytics\data_quality.html:60
+#: .\templates\analytics\ml\overview.html:231
+msgid "Financial coverage"
+msgstr "Mbulimi financiar"
+
+#: .\templates\analytics\data_quality.html:61
+msgid ""
+"OpenCorporates financial coverage is a secondary subset and is summarized in "
+"Registry & Enrichment."
+msgstr "Mbulimi financiar OpenCorporates eshte nje nenset dytesor dhe permbledhet te Regjistri dhe Pasurimi."
+
+#: .\templates\analytics\data_quality.html:66
+msgid ""
+"Missingness matters because absent identifiers, amounts, dates, or registry "
+"fields can affect joins, feature engineering, and downstream interpretation."
+msgstr "Mungesat kane rendesi sepse identifikuesit, shumat, datat ose fushat e regjistrit qe mungojne mund te ndikojne ne bashkime, inxhinierimin e vecorive dhe interpretimin pasues."
+
+#: .\templates\analytics\data_quality.html:77
+msgid "Normalized APP rows"
+msgstr "Rreshta APP te normalizuar"
+
+#: .\templates\analytics\data_quality.html:96
+#: .\templates\analytics\registry_enrichment.html:166
+msgid "Normalized QKB rows"
+msgstr "Rreshta QKB te normalizuar"
+
+#: .\templates\analytics\data_quality.html:134
+#: .\templates\analytics\methodology.html:262
+msgid "Joined APP-QKB companies"
+msgstr "Kompani te bashkuara APP-QKB"
+
+#: .\templates\analytics\data_quality.html:176
+msgid "APP-QKB Coverage Snapshot"
+msgstr "Pamje e mbulimit APP-QKB"
+
+#: .\templates\analytics\data_quality.html:179
+msgid ""
+"This chart summarizes the main source and feature-table counts used to "
+"interpret dataset coverage."
+msgstr "Ky grafik permbledh numrat kryesore te burimeve dhe tabelave te vecorive qe perdoren per te interpretuar mbulimin e datasetit."
+
+#: .\templates\analytics\data_quality.html:182
+msgid ""
+"Joined companies are APP winner companies matched to QKB registry subjects "
+"by exact normalized NIPT."
+msgstr "Kompanite e bashkuara jane kompani fituese APP te perputhura me subjekte QKB me NIPT te normalizuar te sakte."
+
+#: .\templates\analytics\data_quality.html:190
+msgid "Key Field Completeness"
+msgstr "Plotesia e fushave kryesore"
+
+#: .\templates\analytics\data_quality.html:193
+msgid ""
+"Completeness rates show whether selected source fields are present after "
+"normalization."
+msgstr "Normat e plotesise tregojne nese fushat e zgjedhura burimore jane te pranishme pas normalizimit."
+
+#: .\templates\analytics\data_quality.html:196
+msgid ""
+"Missing values reflect source availability and normalization rules; they are "
+"not automatically data errors."
+msgstr "Vlerat qe mungojne reflektojne disponueshmerine e burimit dhe rregullat e normalizimit; ato nuk jane automatikisht gabime te te dhenave."
+
+#: .\templates\analytics\data_quality.html:207
+msgid "APP Completeness"
+msgstr "Plotesia APP"
+
+#: .\templates\analytics\data_quality.html:219
+#: .\templates\analytics\data_quality.html:241
+#, python-format
+msgid "%(present)s of %(total)s rows"
+msgstr "%(present)s nga %(total)s rreshta"
+
+#: .\templates\analytics\data_quality.html:229
+msgid "QKB Completeness"
+msgstr "Plotesia QKB"
+
+#: .\templates\analytics\data_quality.html:253
+msgid "Legal Form Distribution Chart"
+msgstr "Grafiku i shperndarjes se formes ligjore"
+
+#: .\templates\analytics\data_quality.html:257
+msgid ""
+"This chart highlights the most common legal forms available in the registry "
+"coverage layer."
+msgstr "Ky grafik thekson format ligjore me te zakonshme ne shtresen e mbulimit te regjistrit."
+
+#: .\templates\analytics\data_quality.html:265
+msgid "Subject Status Distribution Chart"
+msgstr "Grafiku i shperndarjes se statusit te subjektit"
+
+#: .\templates\analytics\data_quality.html:269
+msgid ""
+"Status distribution is shown as data availability context, not as an "
+"administrative conclusion."
+msgstr "Shperndarja e statusit shfaqet si kontekst i disponueshmerise se te dhenave, jo si perfundim administrativ."
+
+#: .\templates\analytics\data_quality.html:280
+#: .\templates\analytics\registry_enrichment.html:174
+#: .\templates\analytics\visual_analytics.html:121
+msgid "Legal Form Distribution"
+msgstr "Shperndarja e formes ligjore"
+
+#: .\templates\analytics\data_quality.html:290
+#: .\templates\analytics\data_quality.html:325
+#: .\templates\analytics\ml\classification.html:24
+#: .\templates\analytics\ml\classification.html:48
+#: .\templates\analytics\ml\clustering.html:53
+#: .\templates\analytics\ml\financial_enrichment.html:132
+#: .\templates\analytics\partials\simple_distribution_table.html:5
+#: .\templates\analytics\registry_enrichment.html:207
+#: .\templates\analytics\risk_overview.html:221
+#: .\templates\analytics\visual_analytics.html:131
+#: .\templates\analytics\visual_analytics.html:162
+#: .\templates\analytics\visual_analytics.html:205
+#: .\templates\analytics\visual_analytics.html:242
+#: .\templates\analytics\visual_analytics.html:274
+msgid "Share"
+msgstr "Pjesa"
+
+#: .\templates\analytics\data_quality.html:315
+#: .\templates\analytics\visual_analytics.html:152
+msgid "Subject Status Distribution"
+msgstr "Shperndarja e statusit te subjektit"
+
+#: .\templates\analytics\data_quality.html:352
+msgid "Dataset Interpretation"
+msgstr "Interpretimi i datasetit"
+
+#: .\templates\analytics\data_quality.html:356
+msgid ""
+"APP winner companies are distinct procurement winner identifiers derived "
+"from APP data."
+msgstr "Kompanite fituese APP jane identifikues te dallueshem te fituesve te prokurimit te nxjerre nga te dhenat APP."
+
+#: .\templates\analytics\data_quality.html:357
+msgid ""
+"Joined companies are APP winner companies that matched QKB subjects by exact "
+"normalized NIPT."
+msgstr "Kompanite e bashkuara jane kompani fituese APP qe u perputhen me subjekte QKB me NIPT te normalizuar te sakte."
+
+#: .\templates\analytics\data_quality.html:358
+msgid ""
+"The joined dataset is smaller than the full QKB registry layer because it "
+"only contains QKB companies that also appear as APP winner companies."
+msgstr "Dataseti i bashkuar eshte me i vogel se shtresa e plote e regjistrit QKB sepse permban vetem kompani QKB qe shfaqen edhe si kompani fituese APP."
+
+#: .\templates\analytics\data_quality.html:359
+msgid ""
+"OpenCorporates financial enrichment is a secondary subset and should be "
+"interpreted as data availability for exploratory analysis."
+msgstr "Pasurimi financiar OpenCorporates eshte nje nenset dytesor dhe duhet interpretuar si disponueshmeri te dhenash per analize eksploruese."
+
+#: .\templates\analytics\data_quality.html:360
+msgid ""
+"Coverage values are based on the current local database state and may change "
+"after pipeline reruns."
+msgstr "Vlerat e mbulimit bazohen ne gjendjen aktuale te bazes lokale dhe mund te ndryshojne pas riekzekutimeve te pipeline-it."
+
+#: .\templates\analytics\data_quality.html:361
+msgid ""
+"Missing values should be interpreted in relation to source availability and "
+"normalization rules."
+msgstr "Vlerat qe mungojne duhet te interpretohen ne raport me disponueshmerine e burimit dhe rregullat e normalizimit."
+
+#: .\templates\analytics\data_quality.html:370
+msgid "Known Limitations"
+msgstr "Kufizime te njohura"
+
+#: .\templates\analytics\data_quality.html:376
+msgid "Limitation"
+msgstr "Kufizim"
+
+#: .\templates\analytics\data_quality.html:389
+msgid "Collector Table Availability"
+msgstr "Disponueshmeria e tabelave te kolektorit"
+
+#: .\templates\analytics\methodology.html:12
+msgid ""
+"Data notes for the Albiz analytical dashboard and joined APP-QKB dataset."
+msgstr "Shenime te te dhenave per panelin analitik Albiz dhe datasetin e bashkuar APP-QKB."
+
+#: .\templates\analytics\methodology.html:28
+#: .\templates\analytics\methodology.html:57
+msgid "Core"
+msgstr "Berthame"
+
+#: .\templates\analytics\methodology.html:29
+#: .\templates\analytics\ml\overview.html:13
+#: .\templates\layouts\partials\sidebar.html:87
+msgid "Overview"
+msgstr "Permbledhje"
+
+#: .\templates\analytics\methodology.html:33
+msgid ""
+"Albiz is an academic analytical platform for exploring Albanian APP "
+"procurement data, QKB registry coverage, analytical risk indicators, and "
+"exploratory ML outputs. It separates collection and analysis into two "
+"independent components so the dashboard can remain a read-only "
+"interpretation layer."
+msgstr "Albiz eshte nje platforme analitike akademike per eksplorimin e te dhenave shqiptare te prokurimit APP, mbulimit te regjistrit QKB, treguesve analitike te riskut dhe rezultateve eksploruese ML. Ajo ndan mbledhjen dhe analizen ne dy komponente te pavarura qe paneli te mbetet nje shtrese interpretimi vetem per lexim."
+
+#: .\templates\analytics\methodology.html:39
+msgid ""
+"Scraper, ETL, feature materialization, profiling, and audit-oriented data "
+"pipeline."
+msgstr "Scraper, ETL, materializim vecorish, profilizim dhe pipeline te dhenash i orientuar drejt auditimit."
+
+#: .\templates\analytics\methodology.html:45
+msgid ""
+"Django analytics and dashboard layer with read-only access to the collector "
+"database."
+msgstr "Shtrese analitike dhe panel Django me akses vetem per lexim ne bazen e te dhenave te kolektorit."
+
+#: .\templates\analytics\methodology.html:50
+msgid ""
+"The integration contract between the two components is the database. The "
+"dashboard reads materialized collector tables and does not manage collector "
+"schema."
+msgstr "Kontrata e integrimit midis dy komponenteve eshte baza e te dhenave. Paneli lexon tabelat e materializuara te kolektorit dhe nuk menaxhon skemen e tij."
+
+#: .\templates\analytics\methodology.html:58
+msgid "Data Sources"
+msgstr "Burimet e te dhenave"
+
+#: .\templates\analytics\methodology.html:64
+msgid "APP procurement exports"
+msgstr "Eksporte prokurimi APP"
+
+#: .\templates\analytics\methodology.html:65
+msgid ""
+"Public procurement records are used to identify winner companies and "
+"procurement activity patterns."
+msgstr "Regjistrat publike te prokurimit perdoren per te identifikuar kompanite fituese dhe modelet e aktivitetit te prokurimit."
+
+#: .\templates\analytics\methodology.html:70
+msgid "QKB registry lookup data"
+msgstr "Te dhena kerkimi te regjistrit QKB"
+
+#: .\templates\analytics\methodology.html:71
+msgid ""
+"Business registry search and lookup data provide company-level registry "
+"attributes for joined subjects."
+msgstr "Te dhenat e kerkimit ne regjistrin e biznesit japin atribute regjistri ne nivel kompanie per subjektet e bashkuara."
+
+#: .\templates\analytics\methodology.html:77
+msgid "Experimental"
+msgstr "Eksperimentale"
+
+#: .\templates\analytics\methodology.html:78
+msgid "QKB historical discovery"
+msgstr "Zbulim historik QKB"
+
+#: .\templates\analytics\methodology.html:80
+msgid ""
+"Historical extract and document discovery are exploratory in the current "
+"version and are not yet fully batch-extracted."
+msgstr "Ekstraktet historike dhe zbulimi i dokumenteve jane eksploruese ne versionin aktual dhe ende nuk jane nxjerre plotesisht ne grup."
+
+#: .\templates\analytics\methodology.html:86
+msgid "Secondary"
+msgstr "Dytesore"
+
+#: .\templates\analytics\methodology.html:89
+msgid ""
+"OpenCorporates is treated only as secondary exploratory enrichment, not as "
+"the QKB registry backbone or complete financial coverage."
+msgstr "OpenCorporates trajtohet vetem si pasurim dytesor eksplorues, jo si shtrese baze e regjistrit QKB ose mbulim financiar i plote."
+
+#: .\templates\analytics\methodology.html:98
+msgid "Pipeline"
+msgstr "Pipeline"
+
+#: .\templates\analytics\methodology.html:99
+msgid "Data Pipeline"
+msgstr "Pipeline i te dhenave"
+
+#: .\templates\analytics\methodology.html:105
+msgid "1. Raw fetch"
+msgstr "1. Marrja bruto"
+
+#: .\templates\analytics\methodology.html:106
+msgid "Source files and responses are collected by the pipeline."
+msgstr "Skedaret burimore dhe pergjigjet mblidhen nga pipeline-i."
+
+#: .\templates\analytics\methodology.html:111
+msgid "2. Raw storage"
+msgstr "2. Ruajtja bruto"
+
+#: .\templates\analytics\methodology.html:112
+msgid "Content hashing supports reproducibility and change detection."
+msgstr "Hashimi i permbajtjes mbeshtet riprodhueshmerine dhe zbulimin e ndryshimeve."
+
+#: .\templates\analytics\methodology.html:117
+msgid "3. Normalization"
+msgstr "3. Normalizimi"
+
+#: .\templates\analytics\methodology.html:118
+msgid "Identifiers, dates, amounts, and labels are standardized for analysis."
+msgstr "Identifikuesit, datat, shumat dhe etiketat standardizohen per analize."
+
+#: .\templates\analytics\methodology.html:123
+msgid "4. Feature materialization"
+msgstr "4. Materializimi i vecorive"
+
+#: .\templates\analytics\methodology.html:124
+msgid ""
+"Company-level feature tables are built for APP, QKB, and joined records."
+msgstr "Tabelat e vecorive ne nivel kompanie ndertohen per APP, QKB dhe regjistrat e bashkuar."
+
+#: .\templates\analytics\methodology.html:129
+msgid "5. Profiling and audit"
+msgstr "5. Profilizim dhe auditim"
+
+#: .\templates\analytics\methodology.html:130
+msgid ""
+"Row counts, joins, and coverage metrics are checked after pipeline runs."
+msgstr "Numrat e rreshtave, bashkimet dhe metrikat e mbulimit kontrollohen pas ekzekutimeve te pipeline-it."
+
+#: .\templates\analytics\methodology.html:135
+msgid "6. Dashboard access"
+msgstr "6. Akses ne panel"
+
+#: .\templates\analytics\methodology.html:136
+msgid ""
+"Django reads the materialized tables through the collector database alias."
+msgstr "Django lexon tabelat e materializuara permes alias-it te bazes se kolektorit."
+
+#: .\templates\analytics\methodology.html:145
+msgid "Definitions"
+msgstr "Perkufizime"
+
+#: .\templates\analytics\methodology.html:146
+msgid "Analytical Definitions"
+msgstr "Perkufizime analitike"
+
+#: .\templates\analytics\methodology.html:152
+msgid "Procurement-based performance proxy"
+msgstr "Perafrim i performances se bazuar ne prokurime"
+
+#: .\templates\analytics\methodology.html:154
+msgid ""
+"Company performance in this dashboard means activity observed in APP "
+"procurement data, such as active procurement count, winner value, authority "
+"diversity, and active year span. It is not a full financial-performance "
+"measure."
+msgstr "Performanca e kompanise ne kete panel nenkupton aktivitetin e vezhguar ne te dhenat e prokurimit APP, si numri i prokurimeve aktive, vlera fituese, diversiteti i autoriteteve dhe shtrirja aktive ne vite. Nuk eshte mase e plote e performances financiare."
+
+#: .\templates\analytics\methodology.html:160
+msgid "Analytical risk indicators"
+msgstr "Tregues analitike te riskut"
+
+#: .\templates\analytics\methodology.html:162
+msgid ""
+"Risk indicators are heuristic analytical flags for prioritizing review. They "
+"are not evidence for legal findings or administrative determinations."
+msgstr "Treguesit e riskut jane flamuj analitike heuristike per prioritizim shqyrtimi. Ata nuk jane prove per gjetje ligjore ose vendime administrative."
+
+#: .\templates\analytics\methodology.html:172
+msgid "Core join"
+msgstr "Bashkim berthame"
+
+#: .\templates\analytics\methodology.html:173
+msgid "Exact NIPT Matching"
+msgstr "Perputhje e sakte e NIPT-it"
+
+#: .\templates\analytics\methodology.html:177
+msgid ""
+"APP winners and QKB subjects are joined only by exact normalized NIPT/NUIS. "
+"No fuzzy matching is used for the core joined dataset."
+msgstr "Fituesit APP dhe subjektet QKB bashkohen vetem me NIPT/NUIS te normalizuar te sakte. Nuk perdoret perputhje e paqarte per datasetin kryesor te bashkuar."
+
+#: .\templates\analytics\methodology.html:180
+msgid "Exact matching reduces false positive links between unrelated entities."
+msgstr "Perputhja e sakte ul lidhjet pozitive te rreme midis entiteteve te palidhura."
+
+#: .\templates\analytics\methodology.html:181
+msgid ""
+"The joined dataset contains companies that appear in both APP procurement "
+"data and QKB registry data."
+msgstr "Dataseti i bashkuar permban kompani qe shfaqen si ne te dhenat e prokurimit APP ashtu edhe ne te dhenat e regjistrit QKB."
+
+#: .\templates\analytics\methodology.html:182
+msgid ""
+"Records with missing, malformed, or inconsistent identifiers may remain "
+"unmatched."
+msgstr "Regjistrat me identifikues qe mungojne, jane te keqformuar ose jokonsistente mund te mbeten te paperputhur."
+
+#: .\templates\analytics\methodology.html:189
+#: .\templates\analytics\ml\anomaly.html:92
+#: .\templates\analytics\ml\anomaly.html:129
+#: .\templates\analytics\risk_overview.html:266
+msgid "Indicators"
+msgstr "Tregues"
+
+#: .\templates\analytics\methodology.html:194
+msgid ""
+"Risk indicators are computed analytical signals that help prioritize "
+"entities for further review. They are not legal findings or determinations."
+msgstr "Treguesit e riskut jane sinjale analitike te llogaritura qe ndihmojne ne prioritizimin e subjekteve per shqyrtim te metejshem. Ata nuk jane gjetje ose vendime ligjore."
+
+#: .\templates\analytics\methodology.html:213
+msgid "Exploratory ML Methodology"
+msgstr "Metodologji eksploruese ML"
+
+#: .\templates\analytics\methodology.html:217
+msgid ""
+"ML outputs are built from generated files under <code>reports/ml/</code> and "
+"are not trained inside page views. The models are exploratory tools for "
+"understanding heuristic labels and procurement-profile structure."
+msgstr "Rezultatet ML ndertohen nga skedare te gjeneruar nen <code>reports/ml/</code> dhe nuk trajnohen brenda pamjeve te faqeve. Modelet jane mjete eksploruese per te kuptuar etiketat heuristike dhe strukturen e profilit te prokurimit."
+
+#: .\templates\analytics\methodology.html:220
+msgid ""
+"Weak-label classification measures agreement with constructed heuristic "
+"labels, not external ground truth."
+msgstr "Klasifikimi me etiketa te dobeta mat perputhjen me etiketa heuristike te ndertuara, jo me te verteta te jashtme."
+
+#: .\templates\analytics\methodology.html:221
+msgid ""
+"The reduced-feature strict-label experiment excludes direct label-defining "
+"fields as much as possible to reduce circularity."
+msgstr "Eksperimenti me vecori te reduktuara dhe etikete strikte perjashton sa me shume fusha qe percaktojne etiketen per te ulur rrethorin."
+
+#: .\templates\analytics\methodology.html:222
+msgid ""
+"Isolation Forest and Local Outlier Factor provide statistical anomaly "
+"rankings for unusual procurement profiles."
+msgstr "Isolation Forest dhe Local Outlier Factor japin renditje statistikore anomalish per profile te pazakonta prokurimi."
+
+#: .\templates\analytics\methodology.html:223
+msgid ""
+"KMeans clustering and PCA summarize procurement-profile structure for "
+"interpretation and visualization."
+msgstr "Grupimi KMeans dhe PCA permbledhin strukturen e profilit te prokurimit per interpretim dhe vizualizim."
+
+#: .\templates\analytics\methodology.html:224
+msgid ""
+"The financial enrichment subset experiment compares procurement-only "
+"features with secondary OpenCorporates financial features where coverage "
+"exists."
+msgstr "Eksperimenti i nensetit te pasurimit financiar krahason vecorite vetem te prokurimit me vecori financiare dytesore OpenCorporates aty ku ka mbulim."
+
+#: .\templates\analytics\methodology.html:231
+msgid "Exploratory"
+msgstr "Eksploruese"
+
+#: .\templates\analytics\methodology.html:236
+msgid ""
+"Visual Analytics summarizes distributions by legal form, city, registration "
+"year, procurement activity, winner value, winner/budget ratio bands, and "
+"risk indicator distribution. These views are exploratory results based on "
+"joined APP-QKB companies."
+msgstr "Analitika vizuale permbledh shperndarjet sipas formes ligjore, qytetit, vitit te regjistrimit, aktivitetit te prokurimit, vleres fituese, brezave te raportit fitues/buxhet dhe shperndarjes se treguesve te riskut. Keto pamje jane rezultate eksploruese bazuar ne kompanite e bashkuara APP-QKB."
+
+#: .\templates\analytics\methodology.html:245
+msgid "Current profile"
+msgstr "Profili aktual"
+
+#: .\templates\analytics\methodology.html:246
+msgid "Dataset Scope"
+msgstr "Shtrirja e datasetit"
+
+#: .\templates\analytics\methodology.html:249
+msgid ""
+"Current local dataset/profile values. These may change after future pipeline "
+"reruns."
+msgstr "Vlerat aktuale lokale te datasetit/profilit. Keto mund te ndryshojne pas riekzekutimeve te ardhshme te pipeline-it."
+
+#: .\templates\analytics\methodology.html:254
+msgid "APP/procurement winner companies"
+msgstr "Kompani fituese APP/prokurimi"
+
+#: .\templates\analytics\methodology.html:259
+msgid "around 59,266"
+msgstr "rreth 59,266"
+
+#: .\templates\analytics\methodology.html:266
+msgid "QKB match rate over APP winner companies"
+msgstr "Norma e perputhjes QKB mbi kompanite fituese APP"
+
+#: .\templates\analytics\methodology.html:267
+#, python-format
+msgid "around 99.3%%"
+msgstr "rreth 99.3%%"
+
+#: .\templates\analytics\methodology.html:277
+#: .\templates\analytics\methodology.html:278
+#: .\templates\analytics\ml\model_card.html:161
+#: .\templates\analytics\registry_enrichment.html:385
+msgid "Limitations"
+msgstr "Kufizime"
+
+#: .\templates\analytics\methodology.html:282
+msgid ""
+"Public source completeness depends on source availability and publication "
+"formats."
+msgstr "Plotesia e burimeve publike varet nga disponueshmeria e burimit dhe formatet e publikimit."
+
+#: .\templates\analytics\methodology.html:283
+msgid ""
+"Exact NIPT matching may miss records with missing or incorrect identifiers."
+msgstr "Perputhja e sakte e NIPT-it mund te humbase regjistra me identifikues qe mungojne ose jane te pasakte."
+
+#: .\templates\analytics\methodology.html:284
+msgid "Some APP records have missing winner NIPT values."
+msgstr "Disa regjistra APP kane vlera NIPT fituesi qe mungojne."
+
+#: .\templates\analytics\methodology.html:285
+msgid ""
+"QKB historical documents are not fully batch-extracted in the current "
+"version."
+msgstr "Dokumentet historike QKB nuk jane nxjerre plotesisht ne grup ne versionin aktual."
+
+#: .\templates\analytics\methodology.html:286
+msgid "Scanned PDFs and OCR are not part of the core pipeline."
+msgstr "PDF-te e skanuara dhe OCR nuk jane pjese e pipeline-it kryesor."
+
+#: .\templates\analytics\methodology.html:287
+msgid ""
+"OpenCorporates financial data is incomplete, secondary, and should be "
+"validated against source filings where required."
+msgstr "Te dhenat financiare OpenCorporates jane te paplota, dytesore dhe duhet te verifikohen kundrejt depozitimeve burimore kur kerkohet."
+
+#: .\templates\analytics\methodology.html:288
+msgid "There is no official ground-truth risk label in this version."
+msgstr "Ne kete version nuk ka etikete zyrtare te vertete risku."
+
+#: .\templates\analytics\methodology.html:289
+msgid ""
+"Risk indicators and ML outputs are heuristic analytical signals that require "
+"human interpretation and future validation."
+msgstr "Treguesit e riskut dhe rezultatet ML jane sinjale analitike heuristike qe kerkojne interpretim njerezor dhe validim te ardhshem."
+
+#: .\templates\analytics\methodology.html:296
+msgid "Future work"
+msgstr "Pune e ardhshme"
+
+#: .\templates\analytics\methodology.html:297
+msgid "Future Work"
+msgstr "Pune e ardhshme"
+
+#: .\templates\analytics\methodology.html:301
+msgid "QKB historical document link extraction."
+msgstr "Nxjerrja e lidhjeve te dokumenteve historike QKB."
+
+#: .\templates\analytics\methodology.html:302
+msgid "Financial document parsing from XLSX where available."
+msgstr "Parsimi i dokumenteve financiare nga XLSX aty ku jane te disponueshme."
+
+#: .\templates\analytics\methodology.html:303
+msgid "OCR as optional future work for scanned documents."
+msgstr "OCR si pune opsionale e ardhshme per dokumentet e skanuara."
+
+#: .\templates\analytics\methodology.html:304
+msgid "More advanced statistical and ML models."
+msgstr "Modele statistikore dhe ML me te avancuara."
+
+#: .\templates\analytics\methodology.html:305
+msgid "Exportable analytical reports."
+msgstr "Raporte analitike te eksportueshme."
+
+#: .\templates\analytics\methodology.html:306
+msgid "Read-only user roles and deployment hardening."
+msgstr "Role perdoruesish vetem per lexim dhe forcim i vendosjes ne prodhim."
+
+#: .\templates\analytics\methodology.html:313
+msgid "Related Views"
+msgstr "Pamje te lidhura"
+
+#: .\templates\analytics\ml\anomaly.html:4
+msgid "ML Anomaly Detection"
+msgstr "Zbulimi ML i anomalive"
+
+#: .\templates\analytics\ml\anomaly.html:7
+#: .\templates\analytics\ml\anomaly.html:9
+#: .\templates\analytics\ml\exports.html:56
+#: .\templates\analytics\ml\overview.html:279
+#: .\templates\layouts\partials\sidebar.html:93
+msgid "Anomaly Detection"
+msgstr "Zbulimi i anomalive"
+
+#: .\templates\analytics\ml\anomaly.html:8
+msgid ""
+"Unsupervised anomaly rankings and concrete procurement-profile visualization "
+"for exploratory review."
+msgstr "Renditje anomalish pa mbikeqyrje dhe vizualizim konkret i profilit te prokurimit per shqyrtim eksplorues."
+
+#: .\templates\analytics\ml\anomaly.html:20
+msgid ""
+"Isolation Forest identifies statistically unusual company profiles in the "
+"prepared feature space. It is unsupervised and does not use official event "
+"labels as a target."
+msgstr "Isolation Forest identifikon profile kompanish statistikisht te pazakonta ne hapesiren e pergatitur te vecorive. Eshte pa mbikeqyrje dhe nuk perdor etiketa zyrtare ngjarjesh si objektiv."
+
+#: .\templates\analytics\ml\anomaly.html:30
+msgid ""
+"Local Outlier Factor highlights local-neighborhood outliers. It is useful "
+"for exploratory anomaly ranking and requires human review."
+msgstr "Local Outlier Factor thekson vlera jashte norme ne lagje lokale. Eshte i dobishem per renditje eksploruese anomalish dhe kerkon shqyrtim njerezor."
+
+#: .\templates\analytics\ml\anomaly.html:41
+msgid "3D Procurement Anomaly Cube"
+msgstr "Kubi 3D i anomalive te prokurimit"
+
+#: .\templates\analytics\ml\anomaly.html:42
+msgid ""
+"Interactive 3D view of procurement activity, procurement value, and anomaly "
+"intensity."
+msgstr "Pamje interaktive 3D e aktivitetit te prokurimit, vleres se prokurimit dhe intensitetit te anomalise."
+
+#: .\templates\analytics\ml\anomaly.html:44
+msgid "Log scaling used for readability"
+msgstr "Shkalle logaritmike per lexueshmeri"
+
+#: .\templates\analytics\ml\anomaly.html:48
+msgid ""
+"This chart highlights statistically unusual procurement profiles for "
+"exploratory review. It is not evidence for legal or administrative "
+"conclusions."
+msgstr "Ky grafik thekson profile prokurimi statistikisht te pazakonta per shqyrtim eksplorues. Nuk eshte prove per perfundime ligjore ose administrative."
+
+#: .\templates\analytics\ml\anomaly.html:53
+msgid "Axes"
+msgstr "Boshtet"
+
+#: .\templates\analytics\ml\anomaly.html:63
+#: .\templates\analytics\ml\overview.html:244
+msgid "Interpretation"
+msgstr "Interpretimi"
+
+#: .\templates\analytics\ml\anomaly.html:64
+msgid ""
+"Higher Z values indicate a more unusual procurement profile according to the "
+"anomaly model. Marker size reflects procurement-based performance score "
+"where available. Results require human review and source verification."
+msgstr "Vlerat me te larta Z tregojne profil me te pazakonte prokurimi sipas modelit te anomalise. Madhesia e shenjuesit reflekton rezultatin e performances se bazuar ne prokurim kur eshte i disponueshem. Rezultatet kerkojne shqyrtim njerezor dhe verifikim burimi."
+
+#: .\templates\analytics\ml\anomaly.html:68
+msgid ""
+"Procurement anomaly cube data is unavailable in the current generated "
+"outputs."
+msgstr "Te dhenat e kubit te anomalive te prokurimit nuk jane te disponueshme ne rezultatet aktuale te gjeneruara."
+
+#: .\templates\analytics\ml\anomaly.html:70
+#, python-format
+msgid ""
+"Showing a deterministic capped sample of %(count)s companies. Source data is "
+"merged from generated ML dataset, anomaly ranking, LOF ranking, and cluster "
+"assignment files."
+msgstr "Po shfaqet nje moster deterministe e kufizuar prej %(count)s kompanish. Te dhenat burimore bashkohen nga dataseti ML i gjeneruar, renditja e anomalive, renditja LOF dhe skedaret e caktimit te klastereve."
+
+#: .\templates\analytics\ml\anomaly.html:80
+msgid "Isolation Forest Anomaly Ranking Preview"
+msgstr "Parapamje e renditjes se anomalive Isolation Forest"
+
+#: .\templates\analytics\ml\anomaly.html:87
+msgid ""
+"The anomaly ranking identifies statistically unusual procurement profiles. "
+"It is not evidence for legal or administrative conclusions. Results require "
+"human review and source verification."
+msgstr "Renditja e anomalive identifikon profile prokurimi statistikisht te pazakonta. Nuk eshte prove per perfundime ligjore ose administrative. Rezultatet kerkojne shqyrtim njerezor dhe verifikim burimi."
+
+#: .\templates\analytics\ml\anomaly.html:92
+#: .\templates\analytics\ml\anomaly.html:129
+#: .\templates\analytics\ml\benchmark.html:375
+#: .\templates\analytics\ml\feature_importance.html:42
+#: .\templates\analytics\ml\financial_enrichment.html:245
+msgid "Rank"
+msgstr "Renditja"
+
+#: .\templates\analytics\ml\anomaly.html:92
+msgid "Anomaly score"
+msgstr "Rezultati i anomalise"
+
+#: .\templates\analytics\ml\anomaly.html:92
+#: .\templates\analytics\ml\anomaly.html:129
+msgid "Performance"
+msgstr "Performanca"
+
+#: .\templates\analytics\ml\anomaly.html:92
+msgid "Weak label"
+msgstr "Etikete e dobet"
+
+#: .\templates\analytics\ml\anomaly.html:120
+msgid "Local Outlier Factor Ranking Preview"
+msgstr "Parapamje e renditjes Local Outlier Factor"
+
+#: .\templates\analytics\ml\anomaly.html:129
+msgid "LOF score"
+msgstr "Rezultati LOF"
+
+#: .\templates\analytics\ml\anomaly.html:129
+#: .\templates\analytics\ml\financial_enrichment.html:281
+msgid "Strict label"
+msgstr "Etikete strikte"
+
+#: .\templates\analytics\ml\benchmark.html:4
+#: .\templates\analytics\ml\benchmark.html:11
+msgid "ML Benchmark Suite"
+msgstr "Suita e vleresimit krahasues ML"
+
+#: .\templates\analytics\ml\benchmark.html:12
+msgid ""
+"Repeated cross-validation benchmark for heuristic weak-label experiments."
+msgstr "Vleresim krahasues me validim te kryqezuar te perseritur per eksperimente me etiketa te dobeta heuristike."
+
+#: .\templates\analytics\ml\benchmark.html:13
+#: .\templates\layouts\partials\sidebar.html:108
+msgid "Benchmark"
+msgstr "Vleresim krahasues"
+
+#: .\templates\analytics\ml\benchmark.html:22
+msgid "Benchmark Suite Status"
+msgstr "Statusi i suites se vleresimit"
+
+#: .\templates\analytics\ml\benchmark.html:23
+msgid "Generated benchmark outputs read by this page."
+msgstr "Rezultatet e gjeneruara te vleresimit lexohen nga kjo faqe."
+
+#: .\templates\analytics\ml\benchmark.html:26
+msgid "Benchmark outputs available"
+msgstr "Rezultatet e vleresimit jane te disponueshme"
+
+#: .\templates\analytics\ml\benchmark.html:28
+msgid "Benchmark outputs incomplete"
+msgstr "Rezultatet e vleresimit jane jo te plota"
+
+#: .\templates\analytics\ml\benchmark.html:35
+msgid "Benchmark files"
+msgstr "Skedare vleresimi"
+
+#: .\templates\analytics\ml\benchmark.html:41
+#: .\templates\analytics\ml\overview.html:41
+msgid "Missing files"
+msgstr "Skedare qe mungojne"
+
+#: .\templates\analytics\ml\benchmark.html:47
+msgid "Summary updated"
+msgstr "Permbledhja u perditesua"
+
+#: .\templates\analytics\ml\benchmark.html:53
+msgid "Web benchmark run"
+msgstr "Ekzekutim web i vleresimit"
+
+#: .\templates\analytics\ml\benchmark.html:55
+#: .\templates\analytics\ml\overview.html:55
+msgid "Enabled"
+msgstr "Aktivizuar"
+
+#: .\templates\analytics\ml\benchmark.html:57
+#: .\templates\analytics\ml\overview.html:57
+msgid "Disabled"
+msgstr "Caktivizuar"
+
+#: .\templates\analytics\ml\benchmark.html:60
+#: .\templates\analytics\ml\overview.html:60
+msgid "Running"
+msgstr "Ne ekzekutim"
+
+#: .\templates\analytics\ml\benchmark.html:67
+msgid ""
+"This benchmark is heavier than the normal ML refresh. It runs repeated cross-"
+"validation and may take several minutes. No database writes or migrations "
+"are performed."
+msgstr "Ky vleresim eshte me i rende se rifreskimi normal ML. Ai ekzekuton validim te kryqezuar te perseritur dhe mund te zgjase disa minuta. Nuk kryhen shkrime ne baze te dhenash ose migrime."
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Run benchmark suite?"
+msgstr "Te ekzekutohet suita e vleresimit?"
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Refresh benchmark suite?"
+msgstr "Te rifreskohet suita e vleresimit?"
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid ""
+"This will run repeated cross-validation benchmarks and may take several "
+"minutes. Existing benchmark outputs will be refreshed."
+msgstr "Kjo do te ekzekutoje vleresime me validim te kryqezuar te perseritur dhe mund te zgjase disa minuta. Rezultatet ekzistuese te vleresimit do te rifreskohen."
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Yes, run benchmark"
+msgstr "Po, ekzekuto vleresimin"
+
+#: .\templates\analytics\ml\benchmark.html:70
+#: .\templates\analytics\ml\overview.html:70
+msgid "Cancel"
+msgstr "Anulo"
+
+#: .\templates\analytics\ml\benchmark.html:70
+#: .\templates\analytics\ml\overview.html:70
+msgid "OK"
+msgstr "OK"
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Running benchmark suite"
+msgstr "Suita e vleresimit po ekzekutohet"
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Please wait while repeated cross-validation benchmarks are generated."
+msgstr "Ju lutemi prisni derisa te gjenerohen vleresimet me validim te kryqezuar te perseritur."
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Running benchmark suite..."
+msgstr "Suita e vleresimit po ekzekutohet..."
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Benchmark suite refreshed"
+msgstr "Suita e vleresimit u rifreskua"
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Benchmark run failed"
+msgstr "Ekzekutimi i vleresimit deshtoi"
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Benchmark run not started"
+msgstr "Ekzekutimi i vleresimit nuk nisi"
+
+#: .\templates\analytics\ml\benchmark.html:70
+msgid "Benchmark suite"
+msgstr "Suita e vleresimit"
+
+#: .\templates\analytics\ml\benchmark.html:74
+msgid "Run Benchmark Suite"
+msgstr "Ekzekuto suiten e vleresimit"
+
+#: .\templates\analytics\ml\benchmark.html:74
+msgid "Refresh Benchmark Suite"
+msgstr "Rifresko suiten e vleresimit"
+
+#: .\templates\analytics\ml\benchmark.html:77
+msgid ""
+"Web benchmark runs are disabled in this environment. Run <code>manage.py "
+"run_ml_benchmark</code> from the terminal or enable "
+"<code>ENABLE_WEB_ML_BENCHMARK_RUN</code>."
+msgstr "Ekzekutimet web te vleresimit jane te caktivizuara ne kete mjedis. Ekzekutoni <code>manage.py run_ml_benchmark</code> nga terminali ose aktivizoni <code>ENABLE_WEB_ML_BENCHMARK_RUN</code>."
+
+#: .\templates\analytics\ml\benchmark.html:79
+msgid "Benchmark suite is already running. Please wait for it to finish."
+msgstr "Suita e vleresimit tashme po ekzekutohet. Ju lutemi prisni derisa te perfundoje."
+
+#: .\templates\analytics\ml\benchmark.html:92
+msgid "Benchmark outputs are not available yet"
+msgstr "Rezultatet e vleresimit nuk jane ende te disponueshme"
+
+#: .\templates\analytics\ml\benchmark.html:95
+msgid ""
+"Benchmarks are intentionally separate from the web refresh workflow because "
+"repeated cross-validation can take longer than the standard ML analysis."
+msgstr "Vleresimet jane qellimisht te ndara nga rrjedha e rifreskimit web sepse validimi i kryqezuar i perseritur mund te zgjase me shume se analiza standarde ML."
+
+#: .\templates\analytics\ml\benchmark.html:106
+msgid ""
+"The benchmark target is a heuristic strict weak label. Repeated cross-"
+"validation improves stability compared with a single split, but this remains "
+"exploratory ML evaluation and not real-world validation."
+msgstr "Objektivi i vleresimit eshte nje etikete e dobet strikte heuristike. Validimi i kryqezuar i perseritur permireson qendrueshmerine krahasuar me nje ndarje te vetme, por kjo mbetet vleresim eksplorues ML dhe jo validim ne boten reale."
+
+#: .\templates\analytics\ml\benchmark.html:115
+msgid "Validation"
+msgstr "Validimi"
+
+#: .\templates\analytics\ml\benchmark.html:124
+#: .\templates\analytics\ml\financial_enrichment.html:161
+msgid "Best F1"
+msgstr "F1 me i mire"
+
+#: .\templates\analytics\ml\benchmark.html:133
+#: .\templates\analytics\ml\financial_enrichment.html:168
+msgid "Best ROC AUC"
+msgstr "ROC AUC me i mire"
+
+#: .\templates\analytics\ml\benchmark.html:142
+msgid "Best PR AUC"
+msgstr "PR AUC me i mire"
+
+#: .\templates\analytics\ml\benchmark.html:163
+#: .\templates\analytics\ml\model_card.html:66
+#: .\templates\analytics\ml\overview.html:156
+msgid "Features"
+msgstr "Vecori"
+
+#: .\templates\analytics\ml\benchmark.html:171
+msgid "No label distribution available."
+msgstr "Nuk ka shperndarje etiketash te disponueshme."
+
+#: .\templates\analytics\ml\benchmark.html:179
+msgid "No benchmark datasets are available yet."
+msgstr "Nuk ka ende datasete vleresimi te disponueshme."
+
+#: .\templates\analytics\ml\benchmark.html:188
+msgid "Mean F1 Comparison"
+msgstr "Krahasimi i F1 mesatar"
+
+#: .\templates\analytics\ml\benchmark.html:191
+msgid ""
+"Mean F1 across repeated stratified folds. Higher values indicate stronger "
+"agreement with the heuristic label."
+msgstr "F1 mesatar ne ndarje te shtresuara te perseritura. Vlera me te larta tregojne perputhje me te forte me etiketen heuristike."
+
+#: .\templates\analytics\ml\benchmark.html:199
+msgid "Mean ROC AUC Comparison"
+msgstr "Krahasimi i ROC AUC mesatar"
+
+#: .\templates\analytics\ml\benchmark.html:202
+msgid ""
+"Mean ROC AUC across repeated folds, shown as a heuristic-label benchmark "
+"metric."
+msgstr "ROC AUC mesatar ne ndarje te perseritura, shfaqur si metrike vleresimi per etikete heuristike."
+
+#: .\templates\analytics\ml\benchmark.html:213
+msgid "Mean PR AUC Comparison"
+msgstr "Krahasimi i PR AUC mesatar"
+
+#: .\templates\analytics\ml\benchmark.html:216
+msgid ""
+"Average precision is useful when classes are imbalanced because it focuses "
+"on precision-recall behavior."
+msgstr "Precizioni mesatar eshte i dobishem kur klasat jane te pabalancuara sepse fokusohet ne sjelljen precision-rikujtim."
+
+#: .\templates\analytics\ml\benchmark.html:224
+msgid "F1 Stability"
+msgstr "Qendrueshmeria F1"
+
+#: .\templates\analytics\ml\benchmark.html:227
+msgid "Lower standard deviation suggests more stable fold-to-fold behavior."
+msgstr "Devijimi standard me i ulet sugjeron sjellje me te qendrueshme midis ndarjeve."
+
+#: .\templates\analytics\ml\benchmark.html:238
+msgid "Model Ranking"
+msgstr "Renditja e modeleve"
+
+#: .\templates\analytics\ml\benchmark.html:248
+#: .\templates\analytics\ml\benchmark.html:375
+#: .\templates\analytics\ml\model_card.html:64
+msgid "Dataset"
+msgstr "Dataseti"
+
+#: .\templates\analytics\ml\benchmark.html:249
+#: .\templates\analytics\ml\benchmark.html:375
+#: .\templates\analytics\ml\feature_importance.html:42
+#: .\templates\analytics\ml\financial_enrichment.html:245
+msgid "Experiment"
+msgstr "Eksperimenti"
+
+#: .\templates\analytics\ml\benchmark.html:250
+#: .\templates\analytics\ml\benchmark.html:291
+#: .\templates\analytics\ml\benchmark.html:375
+#: .\templates\analytics\ml\classification.html:84
+#: .\templates\analytics\ml\classification.html:123
+#: .\templates\analytics\ml\classification.html:207
+#: .\templates\analytics\ml\feature_importance.html:42
+#: .\templates\analytics\ml\financial_enrichment.html:191
+#: .\templates\analytics\ml\financial_enrichment.html:245
+msgid "Model"
+msgstr "Modeli"
+
+#: .\templates\analytics\ml\benchmark.html:251
+msgid "F1 mean/std"
+msgstr "F1 mes/std"
+
+#: .\templates\analytics\ml\benchmark.html:252
+msgid "ROC AUC mean/std"
+msgstr "ROC AUC mes/std"
+
+#: .\templates\analytics\ml\benchmark.html:253
+msgid "PR AUC mean/std"
+msgstr "PR AUC mes/std"
+
+#: .\templates\analytics\ml\benchmark.html:254
+msgid "Balanced accuracy"
+msgstr "Saktesia e balancuar"
+
+#: .\templates\analytics\ml\benchmark.html:269
+msgid "Benchmark ranking is unavailable."
+msgstr "Renditja e vleresimit nuk eshte e disponueshme."
+
+#: .\templates\analytics\ml\benchmark.html:283
+msgid "Financial Subset Comparison"
+msgstr "Krahasimi i nensetit financiar"
+
+#: .\templates\analytics\ml\benchmark.html:292
+msgid "Baseline F1"
+msgstr "F1 baze"
+
+#: .\templates\analytics\ml\benchmark.html:293
+msgid "Enriched F1"
+msgstr "F1 i pasuruar"
+
+#: .\templates\analytics\ml\benchmark.html:294
+msgid "Delta F1"
+msgstr "Delta F1"
+
+#: .\templates\analytics\ml\benchmark.html:295
+msgid "Baseline PR AUC"
+msgstr "PR AUC baze"
+
+#: .\templates\analytics\ml\benchmark.html:296
+msgid "Enriched PR AUC"
+msgstr "PR AUC i pasuruar"
+
+#: .\templates\analytics\ml\benchmark.html:297
+msgid "Delta PR AUC"
+msgstr "Delta PR AUC"
+
+#: .\templates\analytics\ml\benchmark.html:312
+msgid "Financial subset comparison is unavailable."
+msgstr "Krahasimi i nensetit financiar nuk eshte i disponueshem."
+
+#: .\templates\analytics\ml\benchmark.html:323
+msgid "Best Model Confusion Matrix"
+msgstr "Matrica e konfuzionit per modelin me te mire"
+
+#: .\templates\analytics\ml\benchmark.html:331
+#: .\templates\analytics\ml\classification.html:160
+msgid "Predicted 0"
+msgstr "Parashikuar 0"
+
+#: .\templates\analytics\ml\benchmark.html:331
+#: .\templates\analytics\ml\classification.html:161
+msgid "Predicted 1"
+msgstr "Parashikuar 1"
+
+#: .\templates\analytics\ml\benchmark.html:353
+msgid "Confusion matrix output is unavailable."
+msgstr "Rezultati i matrices se konfuzionit nuk eshte i disponueshem."
+
+#: .\templates\analytics\ml\benchmark.html:364
+msgid "Benchmark Feature Importance"
+msgstr "Rendesia e vecorive ne vleresim"
+
+#: .\templates\analytics\ml\benchmark.html:370
+msgid ""
+"Feature importance is exported only for models with direct importance "
+"attributes. HistGradientBoosting importance is not fabricated."
+msgstr "Rendesia e vecorive eksportohet vetem per modelet me atribute direkte rendesie. Rendesia per HistGradientBoosting nuk fabrikohet."
+
+#: .\templates\analytics\ml\benchmark.html:375
+#: .\templates\analytics\ml\feature_importance.html:42
+#: .\templates\analytics\ml\financial_enrichment.html:245
+#: .\templates\analytics\ml\financial_enrichment.html:324
+msgid "Feature"
+msgstr "Vecoria"
+
+#: .\templates\analytics\ml\benchmark.html:375
+#: .\templates\analytics\ml\feature_importance.html:42
+#: .\templates\analytics\ml\financial_enrichment.html:245
+msgid "Importance"
+msgstr "Rendesia"
+
+#: .\templates\analytics\ml\benchmark.html:388
+msgid "Benchmark feature importance is unavailable."
+msgstr "Rendesia e vecorive te vleresimit nuk eshte e disponueshme."
+
+#: .\templates\analytics\ml\benchmark.html:402
+msgid "Notes and Limitations"
+msgstr "Shenime dhe kufizime"
+
+#: .\templates\analytics\ml\benchmark.html:404
+msgid "CV metrics CSV"
+msgstr "CSV metrikash CV"
+
+#: .\templates\analytics\ml\benchmark.html:423
+msgid "Benchmark notes are unavailable."
+msgstr "Shenimet e vleresimit nuk jane te disponueshme."
+
+#: .\templates\analytics\ml\classification.html:4
+msgid "ML Classification Models"
+msgstr "Modelet e klasifikimit ML"
+
+#: .\templates\analytics\ml\classification.html:7
+#: .\templates\analytics\ml\overview.html:278
+msgid "Classification Models"
+msgstr "Modelet e klasifikimit"
+
+#: .\templates\analytics\ml\classification.html:8
+msgid ""
+"Weak-label replication and reduced-feature strict-label experiments for "
+"exploratory ML audit."
+msgstr "Eksperimente riprodhimi te etiketave te dobeta dhe eksperimente me vecori te reduktuara per audit eksplorues ML."
+
+#: .\templates\analytics\ml\classification.html:9
+#: .\templates\analytics\ml\exports.html:42
+#: .\templates\layouts\partials\sidebar.html:90
+msgid "Classification"
+msgstr "Klasifikimi"
+
+#: .\templates\analytics\ml\classification.html:17
+msgid "Broad Weak Label Distribution"
+msgstr "Shperndarja e etiketave te dobeta te gjera"
+
+#: .\templates\analytics\ml\classification.html:18
+msgid "Heuristic"
+msgstr "Heuristike"
+
+#: .\templates\analytics\ml\classification.html:24
+#: .\templates\analytics\ml\classification.html:48
+msgid "Label"
+msgstr "Etiketa"
+
+#: .\templates\analytics\ml\classification.html:24
+#: .\templates\analytics\ml\classification.html:48
+#: .\templates\analytics\ml\financial_enrichment.html:132
+#: .\templates\analytics\partials\simple_distribution_table.html:5
+#: .\templates\analytics\risk_overview.html:265
+#: .\templates\analytics\visual_analytics.html:315
+msgid "Count"
+msgstr "Numri"
+
+#: .\templates\analytics\ml\classification.html:41
+msgid "Strict Weak Label Distribution"
+msgstr "Shperndarja e etiketave te dobeta strikte"
+
+#: .\templates\analytics\ml\classification.html:42
+msgid "Conservative"
+msgstr "Konservatore"
+
+#: .\templates\analytics\ml\classification.html:69
+msgid "Full-Feature Weak-Label Replication Metrics"
+msgstr "Metrikat e riprodhimit te etiketave te dobeta me te gjitha vecorite"
+
+#: .\templates\analytics\ml\classification.html:70
+msgid "Heuristic consistency check, not real-world validation"
+msgstr "Kontroll konsistence heuristike, jo validim ne boten reale"
+
+#: .\templates\analytics\ml\classification.html:74
+msgid ""
+"Full-feature metrics measure agreement with constructed heuristic weak "
+"labels. High scores are expected when label-defining signals appear in the "
+"feature matrix."
+msgstr "Metrikat me te gjitha vecorite matin perputhjen me etiketat e dobeta heuristike te ndertuara. Rezultatet e larta priten kur sinjalet qe percaktojne etiketen shfaqen ne matricen e vecorive."
+
+#: .\templates\analytics\ml\classification.html:79
+msgid ""
+"High full-feature weak-label metrics may reflect circularity because some "
+"features are close to the heuristic label definition."
+msgstr "Metrikat e larta me te gjitha vecorite mund te reflektojne rrethori sepse disa vecori jane afer perkufizimit heuristik te etiketes."
+
+#: .\templates\analytics\ml\classification.html:84
+#: .\templates\analytics\ml\classification.html:123
+#: .\templates\analytics\ml\classification.html:210
+msgid "Accuracy"
+msgstr "Saktesia"
+
+#: .\templates\analytics\ml\classification.html:84
+#: .\templates\analytics\ml\classification.html:123
+msgid "Precision"
+msgstr "Precizioni"
+
+#: .\templates\analytics\ml\classification.html:84
+#: .\templates\analytics\ml\classification.html:123
+msgid "Recall"
+msgstr "Rikujtimi"
+
+#: .\templates\analytics\ml\classification.html:111
+msgid "Reduced-Feature Strict-Label Metrics"
+msgstr "Metrikat me vecori te reduktuara dhe etikete strikte"
+
+#: .\templates\analytics\ml\classification.html:112
+msgid "More cautious exploratory experiment; still heuristic"
+msgstr "Eksperiment eksplorues me i kujdesshem; ende heuristik"
+
+#: .\templates\analytics\ml\classification.html:118
+msgid ""
+"The reduced-feature strict-label model is more cautious, but it still "
+"evaluates heuristic labels rather than external outcome labels."
+msgstr "Modeli me vecori te reduktuara dhe etikete strikte eshte me i kujdesshem, por ende vlereson etiketa heuristike dhe jo etiketa rezultatesh te jashtme."
+
+#: .\templates\analytics\ml\classification.html:150
+msgid "Best Reduced-Feature Confusion Matrix"
+msgstr "Matrica me e mire e konfuzionit me vecori te reduktuara"
+
+#: .\templates\analytics\ml\classification.html:183
+msgid ""
+"This matrix evaluates the best reduced-feature model against the heuristic "
+"strict weak label, not external outcome labels."
+msgstr "Kjo matrice vlereson modelin me te mire me vecori te reduktuara kundrejt etiketes se dobet strikte heuristike, jo kundrejt etiketave te jashtme."
+
+#: .\templates\analytics\ml\classification.html:185
+msgid "Confusion matrix data is unavailable in the generated metrics."
+msgstr "Te dhenat e matrices se konfuzionit nuk jane te disponueshme ne metrikat e gjeneruara."
+
+#: .\templates\analytics\ml\classification.html:196
+msgid "Shuffled-Label Sanity Check"
+msgstr "Kontrolli i arsyes me etiketa te perziera"
+
+#: .\templates\analytics\ml\classification.html:198
+msgid "Pipeline sanity check passed"
+msgstr "Kontrolli i arsyes se pipeline-it kaloi"
+
+#: .\templates\analytics\ml\classification.html:200
+msgid "Review needed"
+msgstr "Nevojitet shqyrtim"
+
+#: .\templates\analytics\ml\classification.html:221
+msgid "Leakage / Circularity Audit"
+msgstr "Auditim i rrjedhjes / rrethorise"
+
+#: .\templates\analytics\ml\classification.html:227
+msgid "Target"
+msgstr "Objektivi"
+
+#: .\templates\analytics\ml\classification.html:234
+msgid "Recommendation"
+msgstr "Rekomandimi"
+
+#: .\templates\analytics\ml\classification.html:243
+msgid "Likely label-defining or circular features"
+msgstr "Vecori qe ka gjasa te percaktojne etiketen ose te jene rrethore"
+
+#: .\templates\analytics\ml\clustering.html:4
+msgid "ML Clustering"
+msgstr "Grupimi ML"
+
+#: .\templates\analytics\ml\clustering.html:7
+#: .\templates\analytics\ml\clustering.html:9
+#: .\templates\analytics\ml\exports.html:91
+#: .\templates\analytics\ml\overview.html:281
+#: .\templates\layouts\partials\sidebar.html:99
+msgid "Clustering"
+msgstr "Grupim"
+
+#: .\templates\analytics\ml\clustering.html:8
+msgid ""
+"KMeans segmentation of procurement profiles for exploratory interpretation."
+msgstr "Segmentim KMeans i profileve te prokurimit per interpretim eksplorues."
+
+#: .\templates\analytics\ml\clustering.html:17
+msgid "KMeans Framing"
+msgstr "Kornizimi i KMeans"
+
+#: .\templates\analytics\ml\clustering.html:20
+msgid ""
+"Clusters describe groups with similar procurement profiles. Cluster names "
+"are descriptive summaries, not legal or administrative classifications."
+msgstr "Klasteret pershkruajne grupe me profile te ngjashme prokurimi. Emrat e klastereve jane permbledhje pershkruese, jo klasifikime ligjore ose administrative."
+
+#: .\templates\analytics\ml\clustering.html:27
+msgid "Cluster Distribution"
+msgstr "Shperndarja e klastereve"
+
+#: .\templates\analytics\ml\clustering.html:43
+msgid "Cluster Summary"
+msgstr "Permbledhje e klastereve"
+
+#: .\templates\analytics\ml\clustering.html:47
+msgid ""
+"Cluster labels summarize procurement profile patterns and should not be "
+"overinterpreted."
+msgstr "Etiketat e klastereve permbledhin modele te profileve te prokurimit dhe nuk duhen mbiinterpretuar."
+
+#: .\templates\analytics\ml\clustering.html:53
+msgid "Cluster"
+msgstr "Klaster"
+
+#: .\templates\analytics\ml\clustering.html:53
+msgid "Mean performance"
+msgstr "Performanca mesatare"
+
+#: .\templates\analytics\ml\clustering.html:53
+msgid "Mean active count"
+msgstr "Numri aktiv mesatar"
+
+#: .\templates\analytics\ml\clustering.html:53
+msgid "Mean active winner value"
+msgstr "Vlera fituese aktive mesatare"
+
+#: .\templates\analytics\ml\clustering.html:53
+msgid "Weak label rate"
+msgstr "Norma e etiketes se dobet"
+
+#: .\templates\analytics\ml\clustering.html:53
+msgid "Strict label rate"
+msgstr "Norma e etiketes strikte"
+
+#: .\templates\analytics\ml\clustering.html:53
+msgid "Profile"
+msgstr "Profili"
+
+#: .\templates\analytics\ml\exports.html:4
+#: .\templates\analytics\ml\exports.html:7
+#: .\templates\analytics\ml\overview.html:285
+#: .\templates\analytics\reports.html:214
+msgid "ML Exports"
+msgstr "Eksportet ML"
+
+#: .\templates\analytics\ml\exports.html:8
+msgid ""
+"Download existing generated ML outputs without retraining models from the "
+"dashboard."
+msgstr "Shkarko rezultatet ekzistuese te gjeneruara ML pa ritrajnuar modele nga paneli."
+
+#: .\templates\analytics\ml\exports.html:9
+#: .\templates\analytics\ml\financial_enrichment.html:346
+#: .\templates\layouts\partials\sidebar.html:114
+msgid "Exports"
+msgstr "Eksporte"
+
+#: .\templates\analytics\ml\exports.html:16
+msgid ""
+"Export links serve existing files from <code>reports/ml/</code>. Generated "
+"files are local analysis artifacts for thesis review and remain ignored by "
+"Git. These exports document exploratory ML behavior; they do not train "
+"models or validate real-world outcomes from the dashboard."
+msgstr "Lidhjet e eksportit sherbejne skedare ekzistues nga <code>reports/ml/</code>. Skedaret e gjeneruar jane artefakte lokale analize per shqyrtim te tezes dhe mbeten te injoruar nga Git. Keto eksporte dokumentojne sjellje eksploruese ML; ato nuk trajnojne modele ose validojne rezultate ne boten reale nga paneli."
+
+#: .\templates\analytics\ml\exports.html:25
+msgid "Dataset / Preparation"
+msgstr "Dataset / Pergatitje"
+
+#: .\templates\analytics\ml\exports.html:28
+msgid ""
+"Dataset and preparation files are generated locally by "
+"<code>build_ml_dataset</code>."
+msgstr "Skedaret e datasetit dhe pergatitjes gjenerohen lokalisht nga <code>build_ml_dataset</code>."
+
+#: .\templates\analytics\ml\exports.html:29
+msgid ""
+"Use these files to document the feature matrix, missingness, and modelling "
+"dataset construction."
+msgstr "Perdorni keto skedare per te dokumentuar matricen e vecorive, mungesat dhe ndertimin e datasetit te modelimit."
+
+#: .\templates\analytics\ml\exports.html:45
+msgid ""
+"Reduced-feature outputs are the more cautious classification artifacts "
+"because direct label-defining fields are excluded as much as possible."
+msgstr "Rezultatet me vecori te reduktuara jane artefaktet me te kujdesshme te klasifikimit sepse fushat qe percaktojne direkt etiketen perjashtohen sa me shume."
+
+#: .\templates\analytics\ml\exports.html:47
+#: .\templates\analytics\reports.html:171
+msgid "Reduced-feature ranking CSV"
+msgstr "CSV e renditjes me vecori te reduktuara"
+
+#: .\templates\analytics\ml\exports.html:49
+msgid ""
+"Metrics JSON files remain available locally under <code>reports/ml/</code>."
+msgstr "Skedaret JSON te metrikave mbeten te disponueshem lokalisht nen <code>reports/ml/</code>."
+
+#: .\templates\analytics\ml\exports.html:59
+msgid ""
+"Anomaly exports rank statistically unusual procurement profiles for human "
+"review and source verification."
+msgstr "Eksportet e anomalive rendisin profile prokurimi statistikisht te pazakonta per shqyrtim njerezor dhe verifikim burimi."
+
+#: .\templates\analytics\ml\exports.html:61
+msgid "Isolation Forest ranking CSV"
+msgstr "CSV e renditjes Isolation Forest"
+
+#: .\templates\analytics\ml\exports.html:64
+msgid "LOF ranking CSV"
+msgstr "CSV e renditjes LOF"
+
+#: .\templates\analytics\ml\exports.html:78
+msgid ""
+"PCA exports support dimensionality-reduction visualization of procurement "
+"profiles. PCA is not a risk model."
+msgstr "Eksportet PCA mbeshtesin vizualizimin me reduktim dimensionaliteti te profileve te prokurimit. PCA nuk eshte model risku."
+
+#: .\templates\analytics\ml\exports.html:80
+msgid "PCA 2D CSV"
+msgstr "CSV PCA 2D"
+
+#: .\templates\analytics\ml\exports.html:83
+msgid "PCA 3D CSV"
+msgstr "CSV PCA 3D"
+
+#: .\templates\analytics\ml\exports.html:94
+msgid ""
+"Cluster exports summarize descriptive procurement-profile segments, not "
+"legal or administrative classifications."
+msgstr "Eksportet e klastereve permbledhin segmente pershkruese te profilit te prokurimit, jo klasifikime ligjore ose administrative."
+
+#: .\templates\analytics\ml\exports.html:96
+#: .\templates\analytics\reports.html:168
+msgid "Cluster summary CSV"
+msgstr "CSV e permbledhjes se klastereve"
+
+#: .\templates\analytics\ml\exports.html:104
+#: .\templates\analytics\ml\feature_importance.html:7
+#: .\templates\analytics\ml\feature_importance.html:9
+#: .\templates\analytics\ml\overview.html:282
+#: .\templates\layouts\partials\sidebar.html:102
+msgid "Feature Importance"
+msgstr "Rendesia e vecorive"
+
+#: .\templates\analytics\ml\exports.html:107
+msgid ""
+"Feature importance explains heuristic-label model behavior and should be "
+"interpreted cautiously."
+msgstr "Rendesia e vecorive shpjegon sjelljen e modelit me etikete heuristike dhe duhet interpretuar me kujdes."
+
+#: .\templates\analytics\ml\exports.html:109
+#: .\templates\analytics\reports.html:137
+#: .\templates\analytics\reports.html:165
+msgid "Feature importance CSV"
+msgstr "CSV e rendesise se vecorive"
+
+#: .\templates\analytics\ml\exports.html:120
+msgid "Benchmark Suite"
+msgstr "Suita e vleresimit krahasues"
+
+#: .\templates\analytics\ml\exports.html:123
+msgid ""
+"Benchmark exports are generated separately with <code>manage.py "
+"run_ml_benchmark</code> and summarize repeated cross-validation stability."
+msgstr "Eksportet e vleresimit gjenerohen vecmas me <code>manage.py run_ml_benchmark</code> dhe permbledhin qendrueshmerine e validimit te kryqezuar te perseritur."
+
+#: .\templates\analytics\ml\exports.html:125
+msgid "Benchmark model ranking CSV"
+msgstr "CSV e renditjes se modeleve te vleresimit"
+
+#: .\templates\analytics\ml\exports.html:128
+msgid "Benchmark CV metrics CSV"
+msgstr "CSV e metrikave CV te vleresimit"
+
+#: .\templates\analytics\ml\exports.html:131
+msgid "Benchmark feature importance CSV"
+msgstr "CSV e rendesise se vecorive ne vleresim"
+
+#: .\templates\analytics\ml\exports.html:134
+msgid "Open Benchmark Suite"
+msgstr "Hap suiten e vleresimit"
+
+#: .\templates\analytics\ml\exports.html:145
+#: .\templates\analytics\ml\financial_enrichment.html:4
+#: .\templates\analytics\ml\financial_enrichment.html:7
+#: .\templates\analytics\ml\overview.html:216
+msgid "Financial Enrichment Experiment"
+msgstr "Eksperimenti i pasurimit financiar"
+
+#: .\templates\analytics\ml\exports.html:148
+msgid ""
+"These outputs compare a procurement-only baseline with procurement plus "
+"secondary OpenCorporates financial features on the covered subset."
+msgstr "Keto rezultate krahasojne nje baze vetem me prokurim me prokurim plus vecori financiare dytesore OpenCorporates ne nensetin e mbuluar."
+
+#: .\templates\analytics\ml\exports.html:150
+#: .\templates\analytics\ml\financial_enrichment.html:350
+msgid "Financial subset ranking CSV"
+msgstr "CSV e renditjes se nensetit financiar"
+
+#: .\templates\analytics\ml\exports.html:153
+#: .\templates\analytics\ml\financial_enrichment.html:353
+msgid "Financial subset feature importance CSV"
+msgstr "CSV e rendesise se vecorive te nensetit financiar"
+
+#: .\templates\analytics\ml\exports.html:156
+#: .\templates\analytics\ml\financial_enrichment.html:356
+msgid "Financial feature missingness CSV"
+msgstr "CSV e mungesave te vecorive financiare"
+
+#: .\templates\analytics\ml\exports.html:158
+msgid ""
+"Use these files to document coverage, model comparison, feature importance, "
+"and ranking previews for the financial subset experiment."
+msgstr "Perdorni keto skedare per te dokumentuar mbulimin, krahasimin e modeleve, rendesine e vecorive dhe parapamjet e renditjes per eksperimentin e nensetit financiar."
+
+#: .\templates\analytics\ml\exports.html:168
+msgid "Documentation / Model Card"
+msgstr "Dokumentim / Karta e modelit"
+
+#: .\templates\analytics\ml\exports.html:171
+msgid ""
+"Documentation outputs are generated local files and are read by the model "
+"card page."
+msgstr "Rezultatet e dokumentimit jane skedare lokale te gjeneruar dhe lexohen nga faqja e kartes se modelit."
+
+#: .\templates\analytics\ml\exports.html:179
+msgid "Open Model Card & Limitations"
+msgstr "Hap Karten e modelit dhe kufizimet"
+
+#: .\templates\analytics\ml\feature_importance.html:4
+msgid "ML Feature Importance"
+msgstr "Rendesia e vecorive ML"
+
+#: .\templates\analytics\ml\feature_importance.html:8
+msgid ""
+"Feature importance previews for weak-label and reduced-feature strict-label "
+"experiments."
+msgstr "Parapamje te rendesise se vecorive per eksperimente me etikete te dobet dhe me vecori te reduktuara."
+
+#: .\templates\analytics\ml\feature_importance.html:17
+msgid "Feature Importance Preview"
+msgstr "Parapamje e rendesise se vecorive"
+
+#: .\templates\analytics\ml\feature_importance.html:24
+msgid ""
+"Feature importance explains heuristic labels, not external outcome labels. "
+"Full-feature importance mainly explains the constructed weak label; reduced-"
+"feature importance is more useful for cautious exploratory interpretation."
+msgstr "Rendesia e vecorive shpjegon etiketa heuristike, jo etiketa rezultatesh te jashtme. Rendesia me te gjitha vecorite shpjegon kryesisht etiketen e dobet te ndertuar; rendesia me vecori te reduktuara eshte me e dobishme per interpretim eksplorues te kujdesshem."
+
+#: .\templates\analytics\ml\feature_importance.html:28
+msgid ""
+"The chart highlights the largest absolute importances in the generated "
+"outputs; the grouped tables below retain experiment and model context."
+msgstr "Grafiku thekson rendesite absolute me te medha ne rezultatet e gjeneruara; tabelat e grupuara me poshte ruajne kontekstin e eksperimentit dhe modelit."
+
+#: .\templates\analytics\ml\feature_importance.html:37
+#, python-format
+msgid "%(count)s preview rows"
+msgstr "%(count)s rreshta parapamjeje"
+
+#: .\templates\analytics\ml\financial_enrichment.html:8
+#: .\templates\analytics\ml\overview.html:217
+msgid ""
+"Procurement-only baseline compared with procurement plus secondary "
+"OpenCorporates financial features."
+msgstr "Baza vetem me prokurim e krahasuar me prokurim plus vecori financiare dytesore OpenCorporates."
+
+#: .\templates\analytics\ml\financial_enrichment.html:9
+#: .\templates\analytics\ml\overview.html:283
+#: .\templates\layouts\partials\sidebar.html:105
+msgid "Financial Enrichment"
+msgstr "Pasurim financiar"
+
+#: .\templates\analytics\ml\financial_enrichment.html:18
+msgid "Financial enrichment outputs are incomplete"
+msgstr "Rezultatet e pasurimit financiar jane jo te plota"
+
+#: .\templates\analytics\ml\financial_enrichment.html:34
+msgid ""
+"OpenCorporates financial data is secondary exploratory enrichment. This "
+"experiment uses only companies where the financial subset exists, and the "
+"target is a heuristic strict weak label. Results describe model behavior "
+"over available generated data; they are not external validation."
+msgstr "Te dhenat financiare OpenCorporates jane pasurim dytesor eksplorues. Ky eksperiment perdor vetem kompani ku ekziston nenseti financiar, dhe objektivi eshte nje etikete e dobet strikte heuristike. Rezultatet pershkruajne sjelljen e modelit mbi te dhenat e gjeneruara te disponueshme; ato nuk jane validim i jashtem."
+
+#: .\templates\analytics\ml\financial_enrichment.html:51
+#: .\templates\analytics\reports.html:127
+msgid "Financial subset"
+msgstr "Nenset financiar"
+
+#: .\templates\analytics\ml\financial_enrichment.html:59
+#: .\templates\analytics\reports.html:93
+msgid "Coverage"
+msgstr "Mbulimi"
+
+#: .\templates\analytics\ml\financial_enrichment.html:67
+msgid "Financial rows"
+msgstr "Rreshta financiare"
+
+#: .\templates\analytics\ml\financial_enrichment.html:75
+msgid "Financial NIPTs"
+msgstr "NIPT-e financiare"
+
+#: .\templates\analytics\ml\financial_enrichment.html:83
+msgid "Year range"
+msgstr "Intervali i viteve"
+
+#: .\templates\analytics\ml\financial_enrichment.html:94
+msgid "Procurement-only vs Procurement + Financial"
+msgstr "Vetem prokurim kundrejt Prokurim + financiar"
+
+#: .\templates\analytics\ml\financial_enrichment.html:97
+msgid ""
+"Grouped comparison of F1 and ROC AUC by model for the financial subset "
+"experiment."
+msgstr "Krahasim i grupuar i F1 dhe ROC AUC sipas modelit per eksperimentin e nensetit financiar."
+
+#: .\templates\analytics\ml\financial_enrichment.html:100
+msgid ""
+"This compares a procurement-only baseline with the same subset plus "
+"secondary financial enrichment features; it is still evaluated against a "
+"heuristic strict weak label."
+msgstr "Kjo krahason nje baze vetem me prokurim me te njejtin nenset plus vecori te pasurimit financiar dytesor; ende vleresohet kundrejt nje etikete te dobet strikte heuristike."
+
+#: .\templates\analytics\ml\financial_enrichment.html:108
+msgid "Financial Coverage"
+msgstr "Mbulimi financiar"
+
+#: .\templates\analytics\ml\financial_enrichment.html:111
+msgid "Joined companies with and without secondary financial enrichment."
+msgstr "Kompani te bashkuara me dhe pa pasurim financiar dytesor."
+
+#: .\templates\analytics\ml\financial_enrichment.html:114
+msgid ""
+"The financial enrichment experiment is limited to companies with available "
+"OpenCorporates financial-year rows."
+msgstr "Eksperimenti i pasurimit financiar kufizohet te kompanite me rreshta te disponueshem OpenCorporates sipas viteve financiare."
+
+#: .\templates\analytics\ml\financial_enrichment.html:125
+msgid "Subset Label Distribution"
+msgstr "Shperndarja e etiketave ne nenset"
+
+#: .\templates\analytics\ml\financial_enrichment.html:132
+msgid "Class"
+msgstr "Klasa"
+
+#: .\templates\analytics\ml\financial_enrichment.html:143
+#, python-format
+msgid "Subset rows: %(count)s"
+msgstr "Rreshta ne nenset: %(count)s"
+
+#: .\templates\analytics\ml\financial_enrichment.html:150
+msgid "Main Conclusion"
+msgstr "Konkluzioni kryesor"
+
+#: .\templates\analytics\ml\financial_enrichment.html:151
+msgid "Exploratory result"
+msgstr "Rezultat eksplorues"
+
+#: .\templates\analytics\ml\financial_enrichment.html:156
+msgid ""
+"In this run, the procurement-only baseline produced the best F1 and ROC AUC. "
+"Adding secondary financial enrichment did not clearly improve the best "
+"model. This should not be interpreted as financial data being useless; it "
+"means that for the current heuristic strict weak label and the available "
+"OpenCorporates subset, procurement/registry-derived signals dominate the "
+"model behavior."
+msgstr "Ne kete ekzekutim, baza vetem me prokurim prodhoi F1 dhe ROC AUC me te mire. Shtimi i pasurimit financiar dytesor nuk permiresoi qarte modelin me te mire. Kjo nuk duhet interpretuar sikur te dhenat financiare jane te padobishme; do te thote se per etiketen aktuale te dobet strikte heuristike dhe nensetin e disponueshem OpenCorporates, sinjalet e nxjerra nga prokurimi/regjistri dominojne sjelljen e modelit."
+
+#: .\templates\analytics\ml\financial_enrichment.html:183
+msgid "Metrics Comparison"
+msgstr "Krahasimi i metrikave"
+
+#: .\templates\analytics\ml\financial_enrichment.html:186
+msgid ""
+"The table compares model metrics on the same financial-enrichment subset so "
+"the procurement-only and enriched feature sets are directly comparable."
+msgstr "Tabela krahason metrikat e modeleve ne te njejtin nenset pasurimi financiar, qe grupet vetem me prokurim dhe te pasuruara te jene drejtpersedrejti te krahasueshme."
+
+#: .\templates\analytics\ml\financial_enrichment.html:192
+msgid "Procurement-only baseline"
+msgstr "Baza vetem me prokurim"
+
+#: .\templates\analytics\ml\financial_enrichment.html:193
+msgid "Procurement plus financial enrichment"
+msgstr "Prokurim plus pasurim financiar"
+
+#: .\templates\analytics\ml\financial_enrichment.html:194
+msgid "Delta"
+msgstr "Delta"
+
+#: .\templates\analytics\ml\financial_enrichment.html:220
+msgid "Financial subset metrics are unavailable."
+msgstr "Metrikat e nensetit financiar nuk jane te disponueshme."
+
+#: .\templates\analytics\ml\financial_enrichment.html:234
+msgid "Financial Subset Feature Importance"
+msgstr "Rendesia e vecorive te nensetit financiar"
+
+#: .\templates\analytics\ml\financial_enrichment.html:235
+msgid "Explains heuristic labels, not external outcomes"
+msgstr "Shpjegon etiketa heuristike, jo rezultate te jashtme"
+
+#: .\templates\analytics\ml\financial_enrichment.html:240
+msgid ""
+"Feature importance describes model behavior within this secondary financial "
+"subset and should not be read as evidence of external outcomes."
+msgstr "Rendesia e vecorive pershkruan sjelljen e modelit brenda ketij nenseti financiar dytesor dhe nuk duhet lexuar si prove e rezultateve te jashtme."
+
+#: .\templates\analytics\ml\financial_enrichment.html:257
+msgid "Feature importance rows are unavailable."
+msgstr "Rreshtat e rendesise se vecorive nuk jane te disponueshem."
+
+#: .\templates\analytics\ml\financial_enrichment.html:271
+msgid "Financial Subset Ranking Preview"
+msgstr "Parapamje e renditjes se nensetit financiar"
+
+#: .\templates\analytics\ml\financial_enrichment.html:280
+msgid "Predicted probability"
+msgstr "Probabiliteti i parashikuar"
+
+#: .\templates\analytics\ml\financial_enrichment.html:303
+msgid "Ranking rows are unavailable."
+msgstr "Rreshtat e renditjes nuk jane te disponueshem."
+
+#: .\templates\analytics\ml\financial_enrichment.html:308
+msgid ""
+"This preview is sorted by the generated financial subset ranking. It does "
+"not retrain models or query the collector database."
+msgstr "Kjo parapamje renditet sipas renditjes se gjeneruar te nensetit financiar. Ajo nuk ritrajnon modele dhe nuk pyet bazen e kolektorit."
+
+#: .\templates\analytics\ml\financial_enrichment.html:318
+msgid "Financial Feature Missingness"
+msgstr "Mungesat e vecorive financiare"
+
+#: .\templates\analytics\ml\financial_enrichment.html:324
+msgid "Missing count"
+msgstr "Numri i mungesave"
+
+#: .\templates\analytics\ml\financial_enrichment.html:324
+msgid "Missing percentage"
+msgstr "Perqindja e mungesave"
+
+#: .\templates\analytics\ml\financial_enrichment.html:324
+msgid "Usable"
+msgstr "E perdorshme"
+
+#: .\templates\analytics\ml\financial_enrichment.html:335
+msgid "Missingness rows are unavailable."
+msgstr "Rreshtat e mungesave nuk jane te disponueshem."
+
+#: .\templates\analytics\ml\financial_enrichment.html:359
+msgid ""
+"The enriched dataset CSV remains available locally under <code>reports/ml/</"
+"code>. It is intentionally not exposed as a large dashboard export here."
+msgstr "CSV-ja e datasetit te pasuruar mbetet e disponueshme lokalisht nen <code>reports/ml/</code>. Ajo nuk ekspozohet qellimisht ketu si eksport i madh paneli."
+
+#: .\templates\analytics\ml\model_card.html:4
+msgid "ML Model Card"
+msgstr "Karta e modelit ML"
+
+#: .\templates\analytics\ml\model_card.html:7
+#: .\templates\analytics\ml\overview.html:284
+msgid "Model Card & Limitations"
+msgstr "Karta e modelit dhe kufizimet"
+
+#: .\templates\analytics\ml\model_card.html:8
+msgid ""
+"Model audit notes, intended use, limitations, and interpretation guidance."
+msgstr "Shenime auditimi te modelit, perdorimi i synuar, kufizimet dhe udhezime interpretimi."
+
+#: .\templates\analytics\ml\model_card.html:9
+#: .\templates\layouts\partials\sidebar.html:111
+msgid "Model Card"
+msgstr "Karta e modelit"
+
+#: .\templates\analytics\ml\model_card.html:17
+msgid "Methodological Framing"
+msgstr "Kornizimi metodologjik"
+
+#: .\templates\analytics\ml\model_card.html:23
+msgid "Intended use"
+msgstr "Perdorimi i synuar"
+
+#: .\templates\analytics\ml\model_card.html:24
+msgid ""
+"Support exploratory analysis, thesis documentation, audit review, and "
+"prioritization of records for human interpretation."
+msgstr "Mbeshtet analizen eksploruese, dokumentimin e tezes, shqyrtimin auditues dhe prioritizimin e regjistrave per interpretim njerezor."
+
+#: .\templates\analytics\ml\model_card.html:29
+msgid "Not intended use"
+msgstr "Perdorim jo i synuar"
+
+#: .\templates\analytics\ml\model_card.html:30
+msgid ""
+"Do not use these outputs for automated decisions, legal conclusions, or "
+"administrative classification of companies."
+msgstr "Mos i perdorni keto rezultate per vendime automatike, perfundime ligjore ose klasifikim administrativ te kompanive."
+
+#: .\templates\analytics\ml\model_card.html:35
+msgid "Weak-label limitation"
+msgstr "Kufizimi i etiketes se dobet"
+
+#: .\templates\analytics\ml\model_card.html:36
+msgid ""
+"Targets are heuristic weak labels derived from analytical indicators; they "
+"are not official ground-truth event labels."
+msgstr "Objektivat jane etiketa te dobeta heuristike te nxjerra nga tregues analitike; ato nuk jane etiketa zyrtare ngjarjesh me te vertete te verifikuar."
+
+#: .\templates\analytics\ml\model_card.html:41
+msgid "Model interpretation"
+msgstr "Interpretimi i modelit"
+
+#: .\templates\analytics\ml\model_card.html:42
+msgid ""
+"Reduced-feature results are more cautious than full-feature replication, but "
+"all ML outputs remain exploratory."
+msgstr "Rezultatet me vecori te reduktuara jane me te kujdesshme se riprodhimi me te gjitha vecorite, por te gjitha rezultatet ML mbeten eksploruese."
+
+#: .\templates\analytics\ml\model_card.html:47
+msgid ""
+"Indicators and model outputs should support analysis, not automated "
+"decisions. Anomaly rankings identify statistically unusual procurement "
+"profiles and require source verification."
+msgstr "Treguesit dhe rezultatet e modelit duhet te mbeshtesin analizen, jo vendime automatike. Renditjet e anomalive identifikojne profile prokurimi statistikisht te pazakonta dhe kerkojne verifikim burimi."
+
+#: .\templates\analytics\ml\model_card.html:58
+msgid "Dataset Summary"
+msgstr "Permbledhje e datasetit"
+
+#: .\templates\analytics\ml\model_card.html:76
+msgid "Target Definitions"
+msgstr "Perkufizime te objektivit"
+
+#: .\templates\analytics\ml\model_card.html:82
+msgid "Broad weak label"
+msgstr "Etikete e dobet e gjere"
+
+#: .\templates\analytics\ml\model_card.html:88
+msgid "Strict weak label"
+msgstr "Etikete e dobet strikte"
+
+#: .\templates\analytics\ml\model_card.html:94
+msgid ""
+"Weak labels are heuristic analytical labels. Model outputs are exploratory "
+"and require human review."
+msgstr "Etiketat e dobeta jane etiketa analitike heuristike. Rezultatet e modelit jane eksploruese dhe kerkojne shqyrtim njerezor."
+
+#: .\templates\analytics\ml\model_card.html:105
+msgid "Financial Enrichment Limitation"
+msgstr "Kufizimi i pasurimit financiar"
+
+#: .\templates\analytics\ml\model_card.html:107
+msgid "Open Experiment"
+msgstr "Hap eksperimentin"
+
+#: .\templates\analytics\ml\model_card.html:112
+#, python-format
+msgid ""
+"The financial enrichment experiment uses the OpenCorporates financial subset "
+"as secondary exploratory data. Coverage is limited to %(count)s joined "
+"companies (%(pct)s)."
+msgstr "Eksperimenti i pasurimit financiar perdor nensetin financiar OpenCorporates si te dhena dytesore eksploruese. Mbulimi kufizohet ne %(count)s kompani te bashkuara (%(pct)s)."
+
+#: .\templates\analytics\ml\model_card.html:115
+msgid ""
+"In this run, secondary financial enrichment did not clearly improve the best "
+"procurement-only baseline. These results should be interpreted as heuristic-"
+"label model behavior, not external validation."
+msgstr "Ne kete ekzekutim, pasurimi financiar dytesor nuk permiresoi qarte bazen me te mire vetem me prokurim. Keto rezultate duhet te interpretohen si sjellje modeli me etikete heuristike, jo si validim i jashtem."
+
+#: .\templates\analytics\ml\model_card.html:126
+msgid "Intended Use"
+msgstr "Perdorimi i synuar"
+
+#: .\templates\analytics\ml\model_card.html:142
+msgid "Not Intended Use"
+msgstr "Perdorim jo i synuar"
+
+#: .\templates\analytics\ml\model_card.html:177
+msgid "Ethical Cautions"
+msgstr "Kujdes etik"
+
+#: .\templates\analytics\ml\model_card.html:196
+msgid "Leakage / Circularity Notes"
+msgstr "Shenime per rrjedhje / rrethori"
+
+#: .\templates\analytics\ml\model_card.html:216
+msgid "Interpretation Guidance"
+msgstr "Udhezim interpretimi"
+
+#: .\templates\analytics\ml\model_card.html:235
+msgid "Limitations File"
+msgstr "Skedari i kufizimeve"
+
+#: .\templates\analytics\ml\overview.html:4
+#: .\templates\analytics\ml\overview.html:11
+msgid "ML Results & Model Audit"
+msgstr "Rezultatet ML dhe auditimi i modelit"
+
+#: .\templates\analytics\ml\overview.html:12
+msgid ""
+"Exploratory machine learning outputs for procurement-based performance and "
+"analytical risk indicators."
+msgstr "Rezultate eksploruese te mesimit makinerik per perafrimin e performances se bazuar ne prokurime dhe treguesit analitike te riskut."
+
+#: .\templates\analytics\ml\overview.html:22
+msgid "ML Results Status"
+msgstr "Statusi i rezultateve ML"
+
+#: .\templates\analytics\ml\overview.html:23
+msgid "Generated output files read by the ML dashboard pages."
+msgstr "Skedaret e gjeneruar te rezultateve lexohen nga faqet e panelit ML."
+
+#: .\templates\analytics\ml\overview.html:26
+msgid "Outputs available"
+msgstr "Rezultatet jane te disponueshme"
+
+#: .\templates\analytics\ml\overview.html:28
+msgid "Outputs incomplete"
+msgstr "Rezultatet jane jo te plota"
+
+#: .\templates\analytics\ml\overview.html:35
+msgid "Generated files"
+msgstr "Skedare te gjeneruar"
+
+#: .\templates\analytics\ml\overview.html:47
+msgid "Analysis summary updated"
+msgstr "Permbledhja e analizes u perditesua"
+
+#: .\templates\analytics\ml\overview.html:53
+msgid "Web refresh"
+msgstr "Rifreskim web"
+
+#: .\templates\analytics\ml\overview.html:67
+msgid ""
+"This may take some time. It rebuilds the local modelling dataset and reruns "
+"the exploratory ML analysis. No database writes are performed."
+msgstr "Kjo mund te zgjase. Ajo rinderton datasetin lokal te modelimit dhe riekzekuton analizen eksploruese ML. Nuk kryhen shkrime ne baze te dhenash."
+
+#: .\templates\analytics\ml\overview.html:70
+msgid "Generate ML Results?"
+msgstr "Te gjenerohen rezultatet ML?"
+
+#: .\templates\analytics\ml\overview.html:70
+msgid "Refresh ML Results?"
+msgstr "Te rifreskohen rezultatet ML?"
+
+#: .\templates\analytics\ml\overview.html:70
+msgid ""
+"This will rebuild the modelling dataset and rerun exploratory ML analysis. "
+"It may take some time. No database writes are performed."
+msgstr "Kjo do te rindertoje datasetin e modelimit dhe do te riekzekutoje analizen eksploruese ML. Mund te zgjase. Nuk kryhen shkrime ne baze te dhenash."
+
+#: .\templates\analytics\ml\overview.html:70
+msgid "Yes, run analysis"
+msgstr "Po, ekzekuto analizen"
+
+#: .\templates\analytics\ml\overview.html:70
+msgid "Running ML analysis"
+msgstr "Analiza ML po ekzekutohet"
+
+#: .\templates\analytics\ml\overview.html:70
+msgid ""
+"Please wait while the modelling dataset is rebuilt and exploratory ML "
+"outputs are regenerated."
+msgstr "Ju lutemi prisni derisa dataseti i modelimit te rindertohet dhe rezultatet eksploruese ML te rigjenerohen."
+
+#: .\templates\analytics\ml\overview.html:70
+msgid "Running ML analysis..."
+msgstr "Analiza ML po ekzekutohet..."
+
+#: .\templates\analytics\ml\overview.html:70
+msgid "ML results refreshed"
+msgstr "Rezultatet ML u rifreskuan"
+
+#: .\templates\analytics\ml\overview.html:70
+msgid "ML refresh failed"
+msgstr "Rifreskimi ML deshtoi"
+
+#: .\templates\analytics\ml\overview.html:70
+msgid "ML refresh not started"
+msgstr "Rifreskimi ML nuk nisi"
+
+#: .\templates\analytics\ml\overview.html:70
+msgid "ML results"
+msgstr "Rezultatet ML"
+
+#: .\templates\analytics\ml\overview.html:74
+msgid "Generate ML Results"
+msgstr "Gjenero rezultatet ML"
+
+#: .\templates\analytics\ml\overview.html:74
+msgid "Refresh ML Results"
+msgstr "Rifresko rezultatet ML"
+
+#: .\templates\analytics\ml\overview.html:77
+msgid ""
+"Set <code>ENABLE_WEB_ML_RUN=True</code> in a trusted local environment to "
+"enable this button."
+msgstr "Vendosni <code>ENABLE_WEB_ML_RUN=True</code> ne nje mjedis lokal te besuar per te aktivizuar kete buton."
+
+#: .\templates\analytics\ml\overview.html:79
+msgid "ML analysis is already running. Please wait for it to finish."
+msgstr "Analiza ML tashme po ekzekutohet. Ju lutemi prisni derisa te perfundoje."
+
+#: .\templates\analytics\ml\overview.html:91
+msgid "Model Framing"
+msgstr "Kornizimi i modelit"
+
+#: .\templates\analytics\ml\overview.html:97
+msgid "Weak-label replication"
+msgstr "Riprodhim i etiketes se dobet"
+
+#: .\templates\analytics\ml\overview.html:98
+msgid ""
+"Full-feature metrics measure heuristic consistency with constructed weak "
+"labels. They are not real-world validation."
+msgstr "Metrikat me te gjitha vecorite matin konsistencen heuristike me etiketat e dobeta te ndertuara. Ato nuk jane validim ne boten reale."
+
+#: .\templates\analytics\ml\overview.html:103
+msgid "Reduced-feature strict-label model"
+msgstr "Model me vecori te reduktuara dhe etikete strikte"
+
+#: .\templates\analytics\ml\overview.html:104
+msgid ""
+"The reduced-feature experiment excludes direct label-defining fields as much "
+"as possible, while still relying on heuristic labels."
+msgstr "Eksperimenti me vecori te reduktuara perjashton sa me shume fushat qe percaktojne direkt etiketen, ndersa ende mbeshtetet ne etiketa heuristike."
+
+#: .\templates\analytics\ml\overview.html:109
+msgid "Anomaly ranking"
+msgstr "Renditje anomalish"
+
+#: .\templates\analytics\ml\overview.html:110
+msgid ""
+"Isolation Forest and Local Outlier Factor identify statistically unusual "
+"procurement profiles for exploratory review."
+msgstr "Isolation Forest dhe Local Outlier Factor identifikojne profile prokurimi statistikisht te pazakonta per shqyrtim eksplorues."
+
+#: .\templates\analytics\ml\overview.html:115
+msgid "Human review required"
+msgstr "Kerkohet shqyrtim njerezor"
+
+#: .\templates\analytics\ml\overview.html:116
+msgid ""
+"Results are not evidence for legal or administrative conclusions. They "
+"require source verification and contextual review."
+msgstr "Rezultatet nuk jane prove per perfundime ligjore ose administrative. Ato kerkojne verifikim burimi dhe shqyrtim kontekstual."
+
+#: .\templates\analytics\ml\overview.html:126
+msgid "Output Files"
+msgstr "Skedaret e rezultateve"
+
+#: .\templates\analytics\ml\overview.html:138
+msgid ""
+"Generated files are local, read-only dashboard inputs and remain ignored by "
+"Git."
+msgstr "Skedaret e gjeneruar jane hyrje lokale vetem per lexim per panelin dhe mbeten te injoruar nga Git."
+
+#: .\templates\analytics\ml\overview.html:148
+msgid "Dataset rows"
+msgstr "Rreshta dataseti"
+
+#: .\templates\analytics\ml\overview.html:164
+msgid "Best reduced F1"
+msgstr "F1 me i mire i reduktuar"
+
+#: .\templates\analytics\ml\overview.html:173
+msgid "Best reduced ROC AUC"
+msgstr "ROC AUC me i mire i reduktuar"
+
+#: .\templates\analytics\ml\overview.html:185
+msgid "PCA cumulative 2D"
+msgstr "PCA kumulative 2D"
+
+#: .\templates\analytics\ml\overview.html:193
+msgid "PCA cumulative 3D"
+msgstr "PCA kumulative 3D"
+
+#: .\templates\analytics\ml\overview.html:201
+msgid "Sanity check"
+msgstr "Kontroll arsyeshmerie"
+
+#: .\templates\analytics\ml\overview.html:203
+msgid "Passed"
+msgstr "Kaloi"
+
+#: .\templates\analytics\ml\overview.html:203
+msgid "Review"
+msgstr "Shqyrtim"
+
+#: .\templates\analytics\ml\overview.html:219
+msgid "Secondary enrichment"
+msgstr "Pasurim dytesor"
+
+#: .\templates\analytics\ml\overview.html:225
+msgid "Companies covered"
+msgstr "Kompani te mbuluara"
+
+#: .\templates\analytics\ml\overview.html:237
+msgid "Best result"
+msgstr "Rezultati me i mire"
+
+#: .\templates\analytics\ml\overview.html:245
+msgid "No clear improvement in this run"
+msgstr "Pa permiresim te qarte ne kete ekzekutim"
+
+#: .\templates\analytics\ml\overview.html:250
+msgid ""
+"The current run suggests the heuristic strict weak label is mainly explained "
+"by procurement and registry-derived signals; secondary financial enrichment "
+"did not clearly improve the best model."
+msgstr "Ekzekutimi aktual sugjeron se etiketa e dobet strikte heuristike shpjegohet kryesisht nga sinjale te nxjerra nga prokurimi dhe regjistri; pasurimi financiar dytesor nuk permiresoi qarte modelin me te mire."
+
+#: .\templates\analytics\ml\overview.html:253
+msgid "Open Financial Enrichment Experiment"
+msgstr "Hap eksperimentin e pasurimit financiar"
+
+#: .\templates\analytics\ml\overview.html:264
+msgid "Reduced-Feature Model Comparison"
+msgstr "Krahasimi i modeleve me vecori te reduktuara"
+
+#: .\templates\analytics\ml\overview.html:265
+msgid "Exploratory strict-label experiment"
+msgstr "Eksperiment eksplorues me etikete strikte"
+
+#: .\templates\analytics\ml\overview.html:275
+msgid "Go To"
+msgstr "Shko te"
+
+#: .\templates\analytics\ml\overview.html:280
+#: .\templates\analytics\ml\pca.html:7 .\templates\analytics\ml\pca.html:9
+#: .\templates\layouts\partials\sidebar.html:96
+msgid "PCA Visualization"
+msgstr "Vizualizimi PCA"
+
+#: .\templates\analytics\ml\partials\output_warnings.html:26
+msgid "Generated ML outputs are incomplete"
+msgstr "Rezultatet ML te gjeneruara jane jo te plota"
+
+#: .\templates\analytics\ml\partials\output_warnings.html:27
+msgid ""
+"These pages only read files under <code>reports/ml/</code>. Run these "
+"commands from <code>albiz_app</code>, then refresh:"
+msgstr "Keto faqe lexojne vetem skedare nen <code>reports/ml/</code>. Ekzekutoni keto komanda nga <code>albiz_app</code>, pastaj rifreskoni:"
+
+#: .\templates\analytics\ml\partials\output_warnings.html:32
+msgid "Missing files:"
+msgstr "Skedare qe mungojne:"
+
+#: .\templates\analytics\ml\partials\output_warnings.html:49
+msgid "Some ML output files could not be parsed:"
+msgstr "Disa skedare rezultatesh ML nuk mund te parsisten:"
+
+#: .\templates\analytics\ml\pca.html:4
+msgid "ML PCA Visualization"
+msgstr "Vizualizimi PCA ML"
+
+#: .\templates\analytics\ml\pca.html:8
+msgid ""
+"PCA projection and dimensionality reduction for procurement profile "
+"visualization."
+msgstr "Projeksion PCA dhe reduktim dimensionaliteti per vizualizimin e profilit te prokurimit."
+
+#: .\templates\analytics\ml\pca.html:18
+msgid "PCA Procurement Profile Projection"
+msgstr "Projeksioni PCA i profilit te prokurimit"
+
+#: .\templates\analytics\ml\pca.html:19
+msgid ""
+"PCA dimensionality reduction for exploratory visualization of procurement "
+"profiles."
+msgstr "Reduktimi i dimensionalitetit PCA per vizualizim eksplorues te profileve te prokurimit."
+
+#: .\templates\analytics\ml\pca.html:32
+msgid ""
+"PCA visualizes structure in the feature space. It does not define risk by "
+"itself and should not be interpreted as evidence for legal or administrative "
+"conclusions."
+msgstr "PCA vizualizon strukturen ne hapesiren e vecorive. Nuk percakton risk ne vetvete dhe nuk duhet interpretuar si prove per perfundime ligjore ose administrative."
+
+#: .\templates\analytics\ml\pca.html:55
+msgid "Cumulative 2D"
+msgstr "Kumulative 2D"
+
+#: .\templates\analytics\ml\pca.html:61
+msgid "Cumulative 3D"
+msgstr "Kumulative 3D"
+
+#: .\templates\analytics\ml\pca.html:70
+msgid "Explained Variance"
+msgstr "Varianca e shpjeguar"
+
+#: .\templates\analytics\ml\pca.html:77
+msgid "PCA 2D Scatter"
+msgstr "Shperndarje PCA 2D"
+
+#: .\templates\analytics\ml\pca.html:79
+#, python-format
+msgid ""
+"Showing a deterministic capped sample of %(count)s companies for browser "
+"performance. Full data remains available by CSV export."
+msgstr "Po shfaqet nje moster deterministe e kufizuar prej %(count)s kompanish per performance te shfletuesit. Te dhenat e plota mbeten te disponueshme me eksport CSV."
+
+#: .\templates\analytics\ml\pca.html:85
+msgid "PCA 3D Interactive Scatter"
+msgstr "Shperndarje interaktive PCA 3D"
+
+#: .\templates\analytics\ml\pca.html:86
+msgid "Rotate, zoom, and hover"
+msgstr "Rrotullo, zmadho dhe eksploro me hover"
+
+#: .\templates\analytics\ml\pca.html:89
+msgid ""
+"Local Plotly is not available. Add <code>static/velzon/libs/plotly/"
+"plotly.min.js</code> to enable the interactive 3D chart."
+msgstr "Plotly lokal nuk eshte i disponueshem. Shtoni <code>static/velzon/libs/plotly/plotly.min.js</code> per te aktivizuar grafikun interaktiv 3D."
+
+#: .\templates\analytics\ml\pca.html:91
+msgid ""
+"Plotly did not load, so the interactive PCA 3D scatter could not render."
+msgstr "Plotly nuk u ngarkua, prandaj shperndarja interaktive PCA 3D nuk mund te shfaqej."
+
+#: .\templates\analytics\ml\pca.html:93
+#, python-format
+msgid ""
+"Showing a deterministic capped sample of %(count)s companies. This "
+"projection supports procurement profile visualization and human review."
+msgstr "Po shfaqet nje moster deterministe e kufizuar prej %(count)s kompanish. Ky projeksion mbeshtet vizualizimin e profilit te prokurimit dhe shqyrtimin njerezor."
+
+#: .\templates\analytics\partials\missingness_table.html:5
+msgid "Field"
+msgstr "Fusha"
+
+#: .\templates\analytics\partials\missingness_table.html:5
+msgid "Column"
+msgstr "Kolona"
+
+#: .\templates\analytics\partials\missingness_table.html:5
+msgid "Missing"
+msgstr "Mungojne"
+
+#: .\templates\analytics\partials\missingness_table.html:5
+msgid "Rate"
+msgstr "Norma"
+
+#: .\templates\analytics\partials\missingness_table.html:16
+msgid "No missingness metrics available."
+msgstr "Nuk ka metrika mungesash te disponueshme."
+
+#: .\templates\analytics\partials\simple_distribution_table.html:5
+msgid "Value"
+msgstr "Vlera"
+
+#: .\templates\analytics\registry_enrichment.html:4
+#: .\templates\analytics\registry_enrichment.html:11
+#: .\templates\analytics\registry_enrichment.html:17
+#: .\templates\layouts\partials\sidebar.html:70
+msgid "Registry & Enrichment"
+msgstr "Regjistri dhe pasurimi"
+
+#: .\templates\analytics\registry_enrichment.html:12
+msgid ""
+"QKB registry coverage and secondary OpenCorporates financial enrichment."
+msgstr "Mbulimi i regjistrit QKB dhe pasurimi financiar dytesor OpenCorporates."
+
+#: .\templates\analytics\registry_enrichment.html:30
+msgid ""
+"A generated audit JSON exists under <code>reports/registry/</code>, but live "
+"dashboard metrics require collector access."
+msgstr "Nje JSON auditimi i gjeneruar ekziston nen <code>reports/registry/</code>, por metrikat live te panelit kerkojne akses te kolektorit."
+
+#: .\templates\analytics\registry_enrichment.html:41
+msgid ""
+"QKB is the registry backbone for company identity and registry attributes. "
+"APP-QKB joins use exact normalized NIPT matching. OpenCorporates is treated "
+"as secondary exploratory enrichment and does not represent complete national "
+"financial coverage."
+msgstr "QKB eshte shtresa baze e regjistrit per identitetin dhe atributet e kompanive. Bashkimet APP-QKB perdorin perputhje te sakte te NIPT-it te normalizuar. OpenCorporates trajtohet si pasurim dytesor eksplorues dhe nuk perfaqeson mbulim financiar kombetar te plote."
+
+#: .\templates\analytics\registry_enrichment.html:50
+msgid "QKB company features"
+msgstr "Vecori kompanish QKB"
+
+#: .\templates\analytics\registry_enrichment.html:58
+msgid "Joined APP-QKB"
+msgstr "APP-QKB te bashkuara"
+
+#: .\templates\analytics\registry_enrichment.html:66
+msgid "APP-QKB match rate"
+msgstr "Norma e perputhjes APP-QKB"
+
+#: .\templates\analytics\registry_enrichment.html:74
+msgid "OC profiles"
+msgstr "Profile OC"
+
+#: .\templates\analytics\registry_enrichment.html:82
+msgid "OC financial NIPTs"
+msgstr "NIPT-e financiare OC"
+
+#: .\templates\analytics\registry_enrichment.html:90
+msgid "OC joined overlap"
+msgstr "Mbivendosje OC me te bashkuara"
+
+#: .\templates\analytics\registry_enrichment.html:101
+msgid "APP to QKB to OpenCorporates Coverage"
+msgstr "Mbulimi nga APP ne QKB ne OpenCorporates"
+
+#: .\templates\analytics\registry_enrichment.html:104
+msgid ""
+"Coverage narrows from procurement winner companies to exact QKB matches and "
+"the secondary financial enrichment subset."
+msgstr "Mbulimi ngushtohet nga kompanite fituese te prokurimit te perputhjet e sakta QKB dhe nenseti i pasurimit financiar dytesor."
+
+#: .\templates\analytics\registry_enrichment.html:107
+msgid ""
+"This chart shows how the dataset narrows from APP winners to QKB-matched "
+"companies and then to companies with secondary financial enrichment."
+msgstr "Ky grafik tregon si dataseti ngushtohet nga fituesit APP te kompanite e perputhura me QKB dhe pastaj te kompanite me pasurim financiar dytesor."
+
+#: .\templates\analytics\registry_enrichment.html:115
+msgid "QKB Legal Form Distribution"
+msgstr "Shperndarja e formave ligjore QKB"
+
+#: .\templates\analytics\registry_enrichment.html:120
+msgid ""
+"Legal form distribution describes the QKB registry layer and helps interpret "
+"which company types dominate the joined dataset."
+msgstr "Shperndarja e formes ligjore pershkruan shtresen e regjistrit QKB dhe ndihmon te interpretohet cilat lloje kompanish dominojne datasetin e bashkuar."
+
+#: .\templates\analytics\registry_enrichment.html:131
+msgid "Top QKB Cities"
+msgstr "Qytetet kryesore QKB"
+
+#: .\templates\analytics\registry_enrichment.html:136
+msgid ""
+"City counts reflect available registry location fields; they should be "
+"interpreted as data coverage, not economic concentration by itself."
+msgstr "Numrat sipas qytetit reflektojne fushat e disponueshme te vendndodhjes ne regjister; ato duhen interpretuar si mbulim te dhenash, jo si perqendrim ekonomik ne vetvete."
+
+#: .\templates\analytics\registry_enrichment.html:144
+msgid "Registration Year Distribution"
+msgstr "Shperndarja e vitit te regjistrimit"
+
+#: .\templates\analytics\registry_enrichment.html:149
+msgid ""
+"Registration years show registry age patterns among QKB companies in the "
+"current local dataset."
+msgstr "Vitet e regjistrimit tregojne modele moshe regjistri midis kompanive QKB ne datasetin lokal aktual."
+
+#: .\templates\analytics\registry_enrichment.html:160
+msgid "QKB Registry Coverage"
+msgstr "Mbulimi i regjistrit QKB"
+
+#: .\templates\analytics\registry_enrichment.html:167
+msgid "Distinct QKB NIPTs"
+msgstr "NIPT-e QKB te dallueshem"
+
+#: .\templates\analytics\registry_enrichment.html:169
+msgid "APP-QKB exact NIPT match rate"
+msgstr "Norma e perputhjes se sakte te NIPT-it APP-QKB"
+
+#: .\templates\analytics\registry_enrichment.html:170
+msgid "QKB share in joined dataset"
+msgstr "Pjesa QKB ne datasetin e bashkuar"
+
+#: .\templates\analytics\registry_enrichment.html:175
+msgid "No legal form distribution available."
+msgstr "Nuk ka shperndarje te formes ligjore te disponueshme."
+
+#: .\templates\analytics\registry_enrichment.html:183
+msgid "QKB Location & Status"
+msgstr "Vendndodhja dhe statusi QKB"
+
+#: .\templates\analytics\registry_enrichment.html:186
+msgid "Top Cities"
+msgstr "Qytetet kryesore"
+
+#: .\templates\analytics\registry_enrichment.html:187
+msgid "No city distribution available."
+msgstr "Nuk ka shperndarje qytetesh te disponueshme."
+
+#: .\templates\analytics\registry_enrichment.html:189
+msgid "Subject Status"
+msgstr "Statusi i subjektit"
+
+#: .\templates\analytics\registry_enrichment.html:190
+msgid "No status distribution available."
+msgstr "Nuk ka shperndarje statusi te disponueshme."
+
+#: .\templates\analytics\registry_enrichment.html:201
+msgid "QKB Registration Year Distribution"
+msgstr "Shperndarja e vitit te regjistrimit QKB"
+
+#: .\templates\analytics\registry_enrichment.html:224
+msgid "No registration year distribution available."
+msgstr "Nuk ka shperndarje te vitit te regjistrimit te disponueshme."
+
+#: .\templates\analytics\registry_enrichment.html:235
+msgid "QKB Data Completeness"
+msgstr "Plotesia e te dhenave QKB"
+
+#: .\templates\analytics\registry_enrichment.html:242
+#, python-format
+msgid "%(rate)s missing"
+msgstr "%(rate)s mungojne"
+
+#: .\templates\analytics\registry_enrichment.html:247
+#, python-format
+msgid "%(table)s.%(column)s; missing %(missing)s"
+msgstr "%(table)s.%(column)s; mungojne %(missing)s"
+
+#: .\templates\analytics\registry_enrichment.html:250
+msgid "No QKB missingness metrics available."
+msgstr "Nuk ka metrika mungesash QKB te disponueshme."
+
+#: .\templates\analytics\registry_enrichment.html:261
+msgid "OpenCorporates Enrichment"
+msgstr "Pasurimi OpenCorporates"
+
+#: .\templates\analytics\registry_enrichment.html:265
+msgid ""
+"OpenCorporates is shown as secondary enrichment. It can support subset "
+"analysis where rows are available, but QKB remains the registry backbone and "
+"OpenCorporates financial rows should be validated against source filings "
+"where required."
+msgstr "OpenCorporates shfaqet si pasurim dytesor. Mund te mbeshtese analize nenseti aty ku rreshtat jane te disponueshem, por QKB mbetet shtresa baze e regjistrit dhe rreshtat financiare OpenCorporates duhet te verifikohen kundrejt depozitimeve burimore kur kerkohet."
+
+#: .\templates\analytics\registry_enrichment.html:270
+msgid "Profile rows"
+msgstr "Rreshta profili"
+
+#: .\templates\analytics\registry_enrichment.html:271
+msgid "Distinct profile NIPTs"
+msgstr "NIPT-e profili te dallueshem"
+
+#: .\templates\analytics\registry_enrichment.html:272
+msgid "Financial year rows"
+msgstr "Rreshta viti financiar"
+
+#: .\templates\analytics\registry_enrichment.html:273
+msgid "Distinct financial NIPTs"
+msgstr "NIPT-e financiare te dallueshem"
+
+#: .\templates\analytics\registry_enrichment.html:274
+msgid "Profiles overlapping QKB"
+msgstr "Profile me mbivendosje QKB"
+
+#: .\templates\analytics\registry_enrichment.html:275
+msgid "Profiles overlapping joined APP-QKB"
+msgstr "Profile me mbivendosje APP-QKB te bashkuara"
+
+#: .\templates\analytics\registry_enrichment.html:276
+msgid "Financial coverage over QKB"
+msgstr "Mbulimi financiar mbi QKB"
+
+#: .\templates\analytics\registry_enrichment.html:277
+msgid "Financial coverage over joined APP-QKB"
+msgstr "Mbulimi financiar mbi APP-QKB te bashkuara"
+
+#: .\templates\analytics\registry_enrichment.html:287
+msgid "OpenCorporates Missingness"
+msgstr "Mungesat OpenCorporates"
+
+#: .\templates\analytics\registry_enrichment.html:290
+msgid "Company profiles"
+msgstr "Profile kompanish"
+
+#: .\templates\analytics\registry_enrichment.html:303
+msgid "Financial Year Availability"
+msgstr "Disponueshmeria e viteve financiare"
+
+#: .\templates\analytics\registry_enrichment.html:309
+msgid "Minimum year"
+msgstr "Viti minimal"
+
+#: .\templates\analytics\registry_enrichment.html:315
+msgid "Maximum year"
+msgstr "Viti maksimal"
+
+#: .\templates\analytics\registry_enrichment.html:323
+msgid "Distinct NIPTs"
+msgstr "NIPT-e te dallueshem"
+
+#: .\templates\analytics\registry_enrichment.html:333
+msgid "No financial year rows available."
+msgstr "Nuk ka rreshta vitesh financiare te disponueshem."
+
+#: .\templates\analytics\registry_enrichment.html:344
+msgid "Financial Fields"
+msgstr "Fusha financiare"
+
+#: .\templates\analytics\registry_enrichment.html:351
+msgid "No numeric financial fields detected."
+msgstr "Nuk u zbuluan fusha financiare numerike."
+
+#: .\templates\analytics\registry_enrichment.html:364
+msgid "QKB vs OpenCorporates Name Comparison"
+msgstr "Krahasimi i emrave QKB kundrejt OpenCorporates"
+
+#: .\templates\analytics\registry_enrichment.html:370
+msgid "Comparable pairs"
+msgstr "Cifte te krahasueshme"
+
+#: .\templates\analytics\registry_enrichment.html:371
+msgid "Exact normalized name differences"
+msgstr "Ndryshime emrash te normalizuar sakte"
+
+#: .\templates\analytics\registry_enrichment.html:372
+msgid "Difference percentage"
+msgstr "Perqindja e ndryshimit"
+
+#: .\templates\analytics\registry_enrichment.html:377
+msgid ""
+"Exact normalized name differences may reflect formatting, abbreviations, "
+"legal suffixes, or historical naming differences. They are comparison "
+"signals, not confirmed source errors."
+msgstr "Ndryshimet e sakta te emrave te normalizuar mund te reflektojne formatim, shkurtime, prapashtesa ligjore ose ndryshime historike emrash. Ato jane sinjale krahasimi, jo gabime burimore te konfirmuara."
+
+#: .\templates\analytics\registry_enrichment.html:394
+msgid "Download summary CSV"
+msgstr "Shkarko CSV permbledhes"
+
+#: .\templates\analytics\reports.html:4 .\templates\analytics\reports.html:11
+msgid "Reports & Export Center"
+msgstr "Qendra e raporteve dhe eksporteve"
+
+#: .\templates\analytics\reports.html:12
+msgid ""
+"Download thesis-friendly CSV summaries from the joined APP-QKB analytical "
+"dataset."
+msgstr "Shkarko permbledhje CSV te pershtatshme per teze nga dataseti analitik i bashkuar APP-QKB."
+
+#: .\templates\analytics\reports.html:27
+msgid ""
+"Exports are read-only and based on the current local collector database. "
+"Files are grouped for procurement and analytical risk indicators, data "
+"quality, registry enrichment, exploratory ML, and secondary financial "
+"enrichment. They contain analytical signals, not legal determinations."
+msgstr "Eksportet jane vetem per lexim dhe bazohen ne bazen lokale aktuale te kolektorit. Skedaret grupohen per prokurimin dhe treguesit analitike te riskut, cilesine e te dhenave, pasurimin e regjistrit, ML eksplorues dhe pasurimin financiar dytesor. Ato permbajne sinjale analitike, jo vendime ligjore."
+
+#: .\templates\analytics\reports.html:37
+msgid "Risk Indicator Reports"
+msgstr "Raporte te treguesve te riskut"
+
+#: .\templates\analytics\reports.html:41
+msgid "Risk summary CSV"
+msgstr "CSV permbledhese e riskut"
+
+#: .\templates\analytics\reports.html:42
+msgid "High-level joined dataset counts and indicator coverage."
+msgstr "Numra te nivelit te larte te datasetit te bashkuar dhe mbulim treguesish."
+
+#: .\templates\analytics\reports.html:44 .\templates\analytics\reports.html:51
+#: .\templates\analytics\reports.html:58 .\templates\analytics\reports.html:76
+#: .\templates\analytics\reports.html:83 .\templates\analytics\reports.html:101
+msgid "Download CSV"
+msgstr "Shkarko CSV"
+
+#: .\templates\analytics\reports.html:48
+msgid "Indicator distribution CSV"
+msgstr "CSV e shperndarjes se treguesve"
+
+#: .\templates\analytics\reports.html:49
+msgid "Counts and percentages for each analytical indicator."
+msgstr "Numra dhe perqindje per cdo tregues analitik."
+
+#: .\templates\analytics\reports.html:55
+msgid "Top indicator-count companies CSV"
+msgstr "CSV e kompanive kryesore sipas numrit te treguesve"
+
+#: .\templates\analytics\reports.html:56
+msgid ""
+"Top companies ranked by analytical risk indicator count, limited to 100 rows."
+msgstr "Kompanite kryesore te renditura sipas numrit te treguesve analitike te riskut, te kufizuara ne 100 rreshta."
+
+#: .\templates\analytics\reports.html:68
+msgid "Rankings"
+msgstr "Renditje"
+
+#: .\templates\analytics\reports.html:69
+msgid "Company Ranking Exports"
+msgstr "Eksporte te renditjes se kompanive"
+
+#: .\templates\analytics\reports.html:73
+msgid "Top winner value companies CSV"
+msgstr "CSV e kompanive kryesore sipas vleres fituese"
+
+#: .\templates\analytics\reports.html:74
+msgid "Top companies ranked by active winner value, limited to 100 rows."
+msgstr "Kompanite kryesore te renditura sipas vleres fituese aktive, te kufizuara ne 100 rreshta."
+
+#: .\templates\analytics\reports.html:80
+msgid "Top procurement count companies CSV"
+msgstr "CSV e kompanive kryesore sipas numrit te prokurimeve"
+
+#: .\templates\analytics\reports.html:81
+msgid "Top companies ranked by active procurement count, limited to 100 rows."
+msgstr "Kompanite kryesore te renditura sipas numrit te prokurimeve aktive, te kufizuara ne 100 rreshta."
+
+#: .\templates\analytics\reports.html:94
+msgid "Data Quality Exports"
+msgstr "Eksporte te cilesise se te dhenave"
+
+#: .\templates\analytics\reports.html:98
+msgid "Data quality summary CSV"
+msgstr "CSV permbledhese e cilesise se te dhenave"
+
+#: .\templates\analytics\reports.html:99
+msgid "Source counts, exact NIPT match coverage, and completeness metrics."
+msgstr "Numra burimesh, mbulim i perputhjes se sakte te NIPT-it dhe metrika plotesie."
+
+#: .\templates\analytics\reports.html:114
+msgid "Registry & Enrichment Exports"
+msgstr "Eksporte te regjistrit dhe pasurimit"
+
+#: .\templates\analytics\reports.html:117
+msgid ""
+"Compact QKB registry coverage, OpenCorporates overlap, name-comparison, and "
+"financial-year availability summary."
+msgstr "Permbledhje kompakte e mbulimit te regjistrit QKB, mbivendosjes OpenCorporates, krahasimit te emrave dhe disponueshmerise se viteve financiare."
+
+#: .\templates\analytics\reports.html:119
+msgid "Registry enrichment summary CSV"
+msgstr "CSV permbledhese e pasurimit te regjistrit"
+
+#: .\templates\analytics\reports.html:128
+msgid "Financial Enrichment Exports"
+msgstr "Eksporte te pasurimit financiar"
+
+#: .\templates\analytics\reports.html:131
+msgid ""
+"Generated ML files for the secondary OpenCorporates financial subset "
+"experiment. Use these for exploratory comparison with the procurement-only "
+"baseline."
+msgstr "Skedare ML te gjeneruar per eksperimentin e nensetit financiar dytesor OpenCorporates. Perdorni ato per krahasim eksplorues me bazen vetem me prokurim."
+
+#: .\templates\analytics\reports.html:134
+msgid "Ranking CSV"
+msgstr "CSV e renditjes"
+
+#: .\templates\analytics\reports.html:140
+msgid "Missingness CSV"
+msgstr "CSV e mungesave"
+
+#: .\templates\analytics\reports.html:152
+msgid "Exploratory ML"
+msgstr "ML eksplorues"
+
+#: .\templates\analytics\reports.html:153
+msgid "ML Output Exports"
+msgstr "Eksporte te rezultateve ML"
+
+#: .\templates\analytics\reports.html:156
+msgid ""
+"These exports serve existing generated files from <code>reports/ml/</code>. "
+"They are local analysis artifacts for heuristic-label and anomaly-review "
+"workflows and remain ignored by Git."
+msgstr "Keto eksporte sherbejne skedare ekzistues te gjeneruar nga <code>reports/ml/</code>. Ato jane artefakte lokale analize per rrjedha me etiketa heuristike dhe shqyrtim anomalish, dhe mbeten te injoruara nga Git."
+
+#: .\templates\analytics\reports.html:159
+msgid "ML Export Center"
+msgstr "Qendra e eksporteve ML"
+
+#: .\templates\analytics\reports.html:162
+msgid "Anomaly ranking CSV"
+msgstr "CSV e renditjes se anomalive"
+
+#: .\templates\analytics\reports.html:183
+msgid "Export Notes"
+msgstr "Shenime eksporti"
+
+#: .\templates\analytics\reports.html:187
+msgid ""
+"Exports are designed for thesis writing, appendix tables, and review "
+"workflows."
+msgstr "Eksportet jane projektuar per shkrimin e tezes, tabelat e shtojcave dhe rrjedhat e shqyrtimit."
+
+#: .\templates\analytics\reports.html:188
+msgid ""
+"Procurement/risk exports summarize analytical risk indicators, not confirmed "
+"outcomes."
+msgstr "Eksportet e prokurimit/riskut permbledhin tregues analitike te riskut, jo rezultate te konfirmuara."
+
+#: .\templates\analytics\reports.html:189
+msgid ""
+"Registry/enrichment exports document QKB coverage and secondary "
+"OpenCorporates availability."
+msgstr "Eksportet e regjistrit/pasurimit dokumentojne mbulimin QKB dhe disponueshmerine dytesore OpenCorporates."
+
+#: .\templates\analytics\reports.html:190
+msgid ""
+"ML exports document heuristic-label experiments, anomaly rankings, PCA "
+"projections, clustering, and model-card limitations."
+msgstr "Eksportet ML dokumentojne eksperimente me etiketa heuristike, renditje anomalish, projeksione PCA, grupim dhe kufizime te kartes se modelit."
+
+#: .\templates\analytics\reports.html:191
+msgid ""
+"Ranking exports are intentionally limited to the top 100 rows and do not "
+"expose raw source tables."
+msgstr "Eksportet e renditjes jane qellimisht te kufizuara ne 100 rreshtat kryesore dhe nuk ekspozojne tabela burimore bruto."
+
+#: .\templates\analytics\reports.html:192
+msgid ""
+"Company detail URLs are relative dashboard links for follow-up review inside "
+"Albiz."
+msgstr "URL-te e detajeve te kompanise jane lidhje relative te panelit per shqyrtim vijues brenda Albiz."
+
+#: .\templates\analytics\reports.html:193
+msgid ""
+"CSV files reflect the current local collector database and may change after "
+"pipeline reruns."
+msgstr "Skedaret CSV reflektojne bazen lokale aktuale te kolektorit dhe mund te ndryshojne pas riekzekutimeve te pipeline-it."
+
+#: .\templates\analytics\reports.html:201
+msgid "Related Pages"
+msgstr "Faqe te lidhura"
+
+#: .\templates\analytics\risk_overview.html:30
+msgid ""
+"Procurement anomaly indicators computed from joined APP and QKB company "
+"features."
+msgstr "Tregues te anomalive te prokurimit te llogaritur nga vecorite e kompanive te bashkuara APP dhe QKB."
+
+#: .\templates\analytics\risk_overview.html:57
+#: .\templates\analytics\visual_analytics.html:43
+msgid "Total joined companies"
+msgstr "Kompani te bashkuara gjithsej"
+
+#: .\templates\analytics\risk_overview.html:76
+#: .\templates\analytics\visual_analytics.html:100
+msgid "Companies with indicators"
+msgstr "Kompani me tregues"
+
+#: .\templates\analytics\risk_overview.html:80
+msgid "At least one indicator"
+msgstr "Te pakten nje tregues"
+
+#: .\templates\analytics\risk_overview.html:95
+msgid "Companies without indicators"
+msgstr "Kompani pa tregues"
+
+#: .\templates\analytics\risk_overview.html:99
+msgid "No computed indicators"
+msgstr "Pa tregues te llogaritur"
+
+#: .\templates\analytics\risk_overview.html:114
+msgid "Indicator coverage"
+msgstr "Mbulimi i treguesve"
+
+#: .\templates\analytics\risk_overview.html:118
+msgid "Companies with indicators / joined companies"
+msgstr "Kompani me tregues / kompani te bashkuara"
+
+#: .\templates\analytics\risk_overview.html:135
+msgid "Risk Indicator Frequency"
+msgstr "Frekuenca e treguesve te riskut"
+
+#: .\templates\analytics\risk_overview.html:138
+msgid ""
+"Frequency of analytical procurement anomaly indicators across joined APP-QKB "
+"companies."
+msgstr "Frekuenca e treguesve analitike te anomalive te prokurimit ne kompanite e bashkuara APP-QKB."
+
+#: .\templates\analytics\risk_overview.html:141
+msgid ""
+"Risk indicators are analytical signals for prioritizing review; they are not "
+"evidence for legal or administrative conclusions."
+msgstr "Treguesit e riskut jane sinjale analitike per prioritizim shqyrtimi; ata nuk jane prova per perfundime ligjore ose administrative."
+
+#: .\templates\analytics\risk_overview.html:149
+msgid "Risk Indicator Count Distribution"
+msgstr "Shperndarja e numrit te treguesve te riskut"
+
+#: .\templates\analytics\risk_overview.html:152
+msgid "Companies grouped by the number of computed analytical indicators."
+msgstr "Kompani te grupuara sipas numrit te treguesve analitike te llogaritur."
+
+#: .\templates\analytics\risk_overview.html:155
+msgid ""
+"Indicator counts summarize how many heuristic signals are present for each "
+"company, not the severity of any legal finding."
+msgstr "Numrat e treguesve permbledhin sa sinjale heuristike jane te pranishme per secilen kompani, jo ashpersine e ndonje gjetjeje ligjore."
+
+#: .\templates\analytics\risk_overview.html:166
+msgid "Risk Indicator Concentration by City"
+msgstr "Perqendrimi i treguesve te riskut sipas qytetit"
+
+#: .\templates\analytics\risk_overview.html:169
+msgid ""
+"This heatmap shows where the most frequent procurement anomaly indicators "
+"appear among top joined-company cities."
+msgstr "Kjo harte nxehtesie tregon ku shfaqen treguesit me te shpeshte te anomalive te prokurimit midis qyteteve kryesore te kompanive te bashkuara."
+
+#: .\templates\analytics\risk_overview.html:194
+msgid "No indicator concentration data available."
+msgstr "Nuk ka te dhena per perqendrimin e treguesve."
+
+#: .\templates\analytics\risk_overview.html:200
+msgid ""
+"Higher cell intensity means more companies in that city meet the indicator "
+"condition. This is an exploratory distribution, not an accusation."
+msgstr "Intensitet me i larte i qelizes do te thote se me shume kompani ne ate qytet plotesojne kushtin e treguesit. Kjo eshte shperndarje eksploruese, jo akuze."
+
+#: .\templates\analytics\risk_overview.html:211
+msgid "Indicator Distribution"
+msgstr "Shperndarja e treguesve"
+
+#: .\templates\analytics\risk_overview.html:218
+#: .\templates\analytics\visual_analytics.html:271
+msgid "Indicator"
+msgstr "Tregues"
+
+#: .\templates\analytics\risk_overview.html:219
+#: .\templates\analytics\visual_analytics.html:272
+msgid "Level"
+msgstr "Niveli"
+
+#: .\templates\analytics\risk_overview.html:230
+#: .\templates\analytics\visual_analytics.html:283
+msgid "High"
+msgstr "I larte"
+
+#: .\templates\analytics\risk_overview.html:232
+#: .\templates\analytics\visual_analytics.html:285
+msgid "Medium"
+msgstr "Mesatar"
+
+#: .\templates\analytics\risk_overview.html:234
+#: .\templates\analytics\visual_analytics.html:287
+msgid "Informational"
+msgstr "Informues"
+
+#: .\templates\analytics\risk_overview.html:245
+#, python-format
+msgid "%(count)s companies have zero budget with winner value."
+msgstr "%(count)s kompani kane buxhet zero me vlere fituese."
+
+#: .\templates\analytics\risk_overview.html:254
+msgid "Top Companies By Risk Indicator Count"
+msgstr "Kompanite kryesore sipas numrit te treguesve te riskut"
+
+#: .\templates\analytics\risk_overview.html:292
+#: .\templates\analytics\risk_overview.html:336
+#: .\templates\analytics\risk_overview.html:378
+#: .\templates\analytics\risk_overview.html:420
+#: .\templates\analytics\visual_analytics.html:326
+#: .\templates\analytics\visual_analytics.html:364
+#: .\templates\layouts\base.html:45
+msgid "View"
+msgstr "Shiko"
+
+#: .\templates\analytics\risk_overview.html:297
+msgid "No companies with indicators found."
+msgstr "Nuk u gjeten kompani me tregues."
+
+#: .\templates\analytics\risk_overview.html:312
+msgid "Top Companies By Extreme Winner/Budget"
+msgstr "Kompanite kryesore sipas raportit ekstrem fitues/buxhet"
+
+#: .\templates\analytics\risk_overview.html:321
+msgid "Avg ratio"
+msgstr "Raporti mesatar"
+
+#: .\templates\analytics\risk_overview.html:322
+#: .\templates\analytics\risk_overview.html:364
+#: .\templates\analytics\risk_overview.html:407
+msgid "Active procurements"
+msgstr "Prokurime aktive"
+
+#: .\templates\analytics\risk_overview.html:341
+msgid "No winner/budget ratios found."
+msgstr "Nuk u gjeten raporte fitues/buxhet."
+
+#: .\templates\analytics\risk_overview.html:354
+#: .\templates\analytics\visual_analytics.html:344
+msgid "Top Companies By Active Winner Value"
+msgstr "Kompanite kryesore sipas vleres fituese aktive"
+
+#: .\templates\analytics\risk_overview.html:365
+#: .\templates\analytics\risk_overview.html:408
+msgid "Indicator count"
+msgstr "Numri i treguesve"
+
+#: .\templates\analytics\risk_overview.html:383
+#: .\templates\analytics\visual_analytics.html:369
+msgid "No active winner values found."
+msgstr "Nuk u gjeten vlera fituese aktive."
+
+#: .\templates\analytics\risk_overview.html:398
+#: .\templates\analytics\visual_analytics.html:306
+msgid "Top Companies By Active Procurement Count"
+msgstr "Kompanite kryesore sipas numrit te prokurimeve aktive"
+
+#: .\templates\analytics\risk_overview.html:425
+#: .\templates\analytics\visual_analytics.html:331
+msgid "No active procurement counts found."
+msgstr "Nuk u gjeten numra prokurimesh aktive."
+
+#: .\templates\analytics\visual_analytics.html:16
+msgid ""
+"Exploratory distributions and patterns from joined APP and QKB company "
+"features."
+msgstr "Shperndarje dhe modele eksploruese nga vecorite e kompanive te bashkuara APP dhe QKB."
+
+#: .\templates\analytics\visual_analytics.html:62
+msgid "Distinct legal forms"
+msgstr "Forma ligjore te dallueshme"
+
+#: .\templates\analytics\visual_analytics.html:66
+msgid "Non-empty legal form values"
+msgstr "Vlera jo bosh te formes ligjore"
+
+#: .\templates\analytics\visual_analytics.html:81
+msgid "Distinct cities"
+msgstr "Qytete te dallueshme"
+
+#: .\templates\analytics\visual_analytics.html:85
+msgid "Non-empty city values"
+msgstr "Vlera jo bosh te qytetit"
+
+#: .\templates\analytics\visual_analytics.html:185
+msgid "Registration Year Trend"
+msgstr "Trendi i vitit te regjistrimit"
+
+#: .\templates\analytics\visual_analytics.html:196
+msgid "Top Cities By Joined Companies"
+msgstr "Qytetet kryesore sipas kompanive te bashkuara"
+
+#: .\templates\analytics\visual_analytics.html:217
+msgid "No city values found."
+msgstr "Nuk u gjeten vlera qyteti."
+
+#: .\templates\analytics\visual_analytics.html:232
+msgid "Winner/Budget Ratio Bands"
+msgstr "Brezat e raportit fitues/buxhet"
+
+#: .\templates\analytics\visual_analytics.html:240
+msgid "Band"
+msgstr "Brezi"
+
+#: .\templates\analytics\visual_analytics.html:263
+msgid "Risk Indicator Distribution"
+msgstr "Shperndarja e treguesve te riskut"
+
+#: .\templates\layouts\base.html:9
+msgid "Albiz analytics dashboard"
+msgstr "Paneli analitik Albiz"
+
+#: .\templates\layouts\base.html:35
+msgid "Back to top"
+msgstr "Kthehu ne krye"
+
+#: .\templates\layouts\base.html:43
+msgid "Unknown"
+msgstr "E panjohur"
+
+#: .\templates\layouts\base.html:46
+msgid "Unable to load companies from the collector database."
+msgstr "Nuk mund te ngarkohen kompanite nga baza e te dhenave e kolektorit."
+
+#: .\templates\layouts\base.html:47
+msgid "Unable to load companies from the collector database:"
+msgstr "Nuk mund te ngarkohen kompanite nga baza e te dhenave e kolektorit:"
+
+#: .\templates\layouts\base.html:49
+msgid "No companies found."
+msgstr "Nuk u gjeten kompani."
+
+#: .\templates\layouts\base.html:50
+#, python-brace-format
+msgid "Showing {first} to {last} of {total} rows"
+msgstr "Duke shfaqur {first} deri {last} nga {total} rreshta"
+
+#: .\templates\layouts\base.html:51
+msgid "Chart library is unavailable. The table below remains available."
+msgstr "Biblioteka e grafikut nuk eshte e disponueshme. Tabela me poshte mbetet e disponueshme."
+
+#: .\templates\layouts\base.html:52
+msgid "No chart data available"
+msgstr "Nuk ka te dhena per grafik."
+
+#: .\templates\layouts\base.html:53
+msgid "Financial year"
+msgstr "Viti financiar"
+
+#: .\templates\layouts\base.html:55
+msgid "Profit before tax"
+msgstr "Fitimi para tatimit"
+
+#: .\templates\layouts\partials\footer.html:10
+msgid "Analytics dashboard"
+msgstr "Panel analitik"
+
+#: .\templates\layouts\partials\modals.html:7
+#: .\templates\layouts\partials\modals.html:23
+#: .\templates\layouts\partials\modals.html:39
+#: .\templates\layouts\partials\modals.html:55
+#: .\templates\layouts\partials\modals.html:71
+#: .\templates\layouts\partials\modals.html:87
+msgid "Close"
+msgstr "Mbyll"
+
+#: .\templates\layouts\partials\sidebar.html:20
+msgid "Toggle compact sidebar"
+msgstr "Hap/mbyll shiritin kompakt"
+
+#: .\templates\layouts\partials\sidebar.html:29
+msgid "Analytics"
+msgstr "Analitike"
+
+#: .\templates\layouts\partials\sidebar.html:36
+msgid "Data Views"
+msgstr "Pamje te te dhenave"
+
+#: .\templates\layouts\partials\sidebar.html:122
+msgid "Collector Tables"
+msgstr "Tabelat e kolektorit"
+
+#: .\templates\layouts\partials\topbar.html:26
+msgid "Toggle navigation"
+msgstr "Hap/mbyll navigimin"
+
+#: .\templates\layouts\partials\topbar.html:41
+msgid "Change language"
+msgstr "Ndrysho gjuhen"
+
+#: .\templates\layouts\partials\topbar.html:57
+msgid "Toggle color mode"
+msgstr "Ndrysho modalitetin e ngjyrave"
+
+
+
+
+
+
+

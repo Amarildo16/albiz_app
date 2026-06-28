@@ -26,6 +26,10 @@
         return Number.isFinite(parsed) ? parsed : null;
     }
 
+    function t(key, fallback) {
+        return (window.AlbizI18n && window.AlbizI18n[key]) || fallback;
+    }
+
     function formatMoney(value) {
         var parsed = Number(value);
         if (!Number.isFinite(parsed)) {
@@ -68,12 +72,12 @@
                 zoom: { enabled: true }
             },
             series: [
-                { name: 'Revenue amount', data: revenue },
-                { name: 'Profit before tax', data: profit }
+                { name: t('revenueAmount', 'Revenue amount'), data: revenue },
+                { name: t('profitBeforeTax', 'Profit before tax'), data: profit }
             ],
             xaxis: {
                 categories: years,
-                title: { text: 'Financial year' }
+                title: { text: t('financialYear', 'Financial year') }
             },
             yaxis: {
                 labels: {
@@ -106,7 +110,7 @@
                 }
             },
             noData: {
-                text: 'No chart data available'
+                text: t('noChartData', 'No chart data available')
             }
         });
         chart.render();

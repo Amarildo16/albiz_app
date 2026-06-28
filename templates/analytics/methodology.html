@@ -1,20 +1,20 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Methodology | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'Methodology' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <div>
-                <h4 class="mb-sm-0">Methodology</h4>
-                <p class="text-muted mb-0 mt-1">Data notes for the Albiz analytical dashboard and joined APP-QKB dataset.</p>
+                <h4 class="mb-sm-0">{% trans 'Methodology' %}</h4>
+                <p class="text-muted mb-0 mt-1">{% trans 'Data notes for the Albiz analytical dashboard and joined APP-QKB dataset.' %}</p>
             </div>
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Methodology</li>
+                    <li class="breadcrumb-item"><a href="{% url 'analytics:dashboard' %}">{% trans 'Dashboard' %}</a></li>
+                    <li class="breadcrumb-item active">{% trans 'Methodology' %}</li>
                 </ol>
             </div>
         </div>
@@ -25,70 +25,68 @@
     <div class="col-xl-8">
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-primary-subtle text-primary">Core</span>
-                <h5 class="card-title mb-0">Overview</h5>
+                <span class="badge bg-primary-subtle text-primary">{% trans 'Core' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Overview' %}</h5>
             </div>
             <div class="card-body">
                 <p class="text-muted mb-3">
-                    Albiz is an academic analytical platform for exploring Albanian APP procurement data, QKB registry coverage,
-                    analytical risk indicators, and exploratory ML outputs. It separates collection and analysis into two
-                    independent components so the dashboard can remain a read-only interpretation layer.
+                    {% blocktrans %}Albiz is an academic analytical platform for exploring Albanian APP procurement data, QKB registry coverage, analytical risk indicators, and exploratory ML outputs. It separates collection and analysis into two independent components so the dashboard can remain a read-only interpretation layer.{% endblocktrans %}
                 </p>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
                             <h6 class="mb-2">albiz_collector</h6>
-                            <p class="text-muted mb-0">Scraper, ETL, feature materialization, profiling, and audit-oriented data pipeline.</p>
+                            <p class="text-muted mb-0">{% trans 'Scraper, ETL, feature materialization, profiling, and audit-oriented data pipeline.' %}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
                             <h6 class="mb-2">albiz_app</h6>
-                            <p class="text-muted mb-0">Django analytics and dashboard layer with read-only access to the collector database.</p>
+                            <p class="text-muted mb-0">{% trans 'Django analytics and dashboard layer with read-only access to the collector database.' %}</p>
                         </div>
                     </div>
                 </div>
                 <div class="alert alert-info mt-3 mb-0" role="alert">
-                    The integration contract between the two components is the database. The dashboard reads materialized collector tables and does not manage collector schema.
+                    {% trans 'The integration contract between the two components is the database. The dashboard reads materialized collector tables and does not manage collector schema.' %}
                 </div>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-success-subtle text-success">Core</span>
-                <h5 class="card-title mb-0">Data Sources</h5>
+                <span class="badge bg-success-subtle text-success">{% trans 'Core' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Data Sources' %}</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-2">APP procurement exports</h6>
-                            <p class="text-muted mb-0">Public procurement records are used to identify winner companies and procurement activity patterns.</p>
+                            <h6 class="mb-2">{% trans 'APP procurement exports' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'Public procurement records are used to identify winner companies and procurement activity patterns.' %}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-2">QKB registry lookup data</h6>
-                            <p class="text-muted mb-0">Business registry search and lookup data provide company-level registry attributes for joined subjects.</p>
+                            <h6 class="mb-2">{% trans 'QKB registry lookup data' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'Business registry search and lookup data provide company-level registry attributes for joined subjects.' %}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
                             <div class="d-flex align-items-center gap-2 mb-2">
-                                <span class="badge bg-warning-subtle text-warning">Experimental</span>
-                                <h6 class="mb-0">QKB historical discovery</h6>
+                                <span class="badge bg-warning-subtle text-warning">{% trans 'Experimental' %}</span>
+                                <h6 class="mb-0">{% trans 'QKB historical discovery' %}</h6>
                             </div>
-                            <p class="text-muted mb-0">Historical extract and document discovery are exploratory in the current version and are not yet fully batch-extracted.</p>
+                            <p class="text-muted mb-0">{% trans 'Historical extract and document discovery are exploratory in the current version and are not yet fully batch-extracted.' %}</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
                             <div class="d-flex align-items-center gap-2 mb-2">
-                                <span class="badge bg-info-subtle text-info">Secondary</span>
+                                <span class="badge bg-info-subtle text-info">{% trans 'Secondary' %}</span>
                                 <h6 class="mb-0">OpenCorporates</h6>
                             </div>
-                            <p class="text-muted mb-0">OpenCorporates is treated only as secondary exploratory enrichment, not as the QKB registry backbone or complete financial coverage.</p>
+                            <p class="text-muted mb-0">{% trans 'OpenCorporates is treated only as secondary exploratory enrichment, not as the QKB registry backbone or complete financial coverage.' %}</p>
                         </div>
                     </div>
                 </div>
@@ -97,45 +95,45 @@
 
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-primary-subtle text-primary">Pipeline</span>
-                <h5 class="card-title mb-0">Data Pipeline</h5>
+                <span class="badge bg-primary-subtle text-primary">{% trans 'Pipeline' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Data Pipeline' %}</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded h-100">
-                            <h6>1. Raw fetch</h6>
-                            <p class="text-muted mb-0">Source files and responses are collected by the pipeline.</p>
+                            <h6>{% trans '1. Raw fetch' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'Source files and responses are collected by the pipeline.' %}</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded h-100">
-                            <h6>2. Raw storage</h6>
-                            <p class="text-muted mb-0">Content hashing supports reproducibility and change detection.</p>
+                            <h6>{% trans '2. Raw storage' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'Content hashing supports reproducibility and change detection.' %}</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded h-100">
-                            <h6>3. Normalization</h6>
-                            <p class="text-muted mb-0">Identifiers, dates, amounts, and labels are standardized for analysis.</p>
+                            <h6>{% trans '3. Normalization' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'Identifiers, dates, amounts, and labels are standardized for analysis.' %}</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded h-100">
-                            <h6>4. Feature materialization</h6>
-                            <p class="text-muted mb-0">Company-level feature tables are built for APP, QKB, and joined records.</p>
+                            <h6>{% trans '4. Feature materialization' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'Company-level feature tables are built for APP, QKB, and joined records.' %}</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded h-100">
-                            <h6>5. Profiling and audit</h6>
-                            <p class="text-muted mb-0">Row counts, joins, and coverage metrics are checked after pipeline runs.</p>
+                            <h6>{% trans '5. Profiling and audit' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'Row counts, joins, and coverage metrics are checked after pipeline runs.' %}</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 bg-light rounded h-100">
-                            <h6>6. Dashboard access</h6>
-                            <p class="text-muted mb-0">Django reads the materialized tables through the collector database alias.</p>
+                            <h6>{% trans '6. Dashboard access' %}</h6>
+                            <p class="text-muted mb-0">{% trans 'Django reads the materialized tables through the collector database alias.' %}</p>
                         </div>
                     </div>
                 </div>
@@ -144,27 +142,24 @@
 
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-info-subtle text-info">Definitions</span>
-                <h5 class="card-title mb-0">Analytical Definitions</h5>
+                <span class="badge bg-info-subtle text-info">{% trans 'Definitions' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Analytical Definitions' %}</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-2">Procurement-based performance proxy</h6>
+                            <h6 class="mb-2">{% trans 'Procurement-based performance proxy' %}</h6>
                             <p class="text-muted mb-0">
-                                Company performance in this dashboard means activity observed in APP procurement data, such as
-                                active procurement count, winner value, authority diversity, and active year span. It is not a
-                                full financial-performance measure.
+                                {% blocktrans %}Company performance in this dashboard means activity observed in APP procurement data, such as active procurement count, winner value, authority diversity, and active year span. It is not a full financial-performance measure.{% endblocktrans %}
                             </p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="border rounded p-3 h-100">
-                            <h6 class="mb-2">Analytical risk indicators</h6>
+                            <h6 class="mb-2">{% trans 'Analytical risk indicators' %}</h6>
                             <p class="text-muted mb-0">
-                                Risk indicators are heuristic analytical flags for prioritizing review. They are not evidence
-                                for legal findings or administrative determinations.
+                                {% trans 'Risk indicators are heuristic analytical flags for prioritizing review. They are not evidence for legal findings or administrative determinations.' %}
                             </p>
                         </div>
                     </div>
@@ -174,29 +169,29 @@
 
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-primary-subtle text-primary">Core join</span>
-                <h5 class="card-title mb-0">Exact NIPT Matching</h5>
+                <span class="badge bg-primary-subtle text-primary">{% trans 'Core join' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Exact NIPT Matching' %}</h5>
             </div>
             <div class="card-body">
                 <p class="text-muted mb-3">
-                    APP winners and QKB subjects are joined only by exact normalized NIPT/NUIS. No fuzzy matching is used for the core joined dataset.
+                    {% trans 'APP winners and QKB subjects are joined only by exact normalized NIPT/NUIS. No fuzzy matching is used for the core joined dataset.' %}
                 </p>
                 <ul class="mb-0 text-muted">
-                    <li>Exact matching reduces false positive links between unrelated entities.</li>
-                    <li>The joined dataset contains companies that appear in both APP procurement data and QKB registry data.</li>
-                    <li>Records with missing, malformed, or inconsistent identifiers may remain unmatched.</li>
+                    <li>{% trans 'Exact matching reduces false positive links between unrelated entities.' %}</li>
+                    <li>{% trans 'The joined dataset contains companies that appear in both APP procurement data and QKB registry data.' %}</li>
+                    <li>{% trans 'Records with missing, malformed, or inconsistent identifiers may remain unmatched.' %}</li>
                 </ul>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-warning-subtle text-warning">Indicators</span>
-                <h5 class="card-title mb-0">Risk Indicators</h5>
+                <span class="badge bg-warning-subtle text-warning">{% trans 'Indicators' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Risk Indicators' %}</h5>
             </div>
             <div class="card-body">
                 <p class="text-muted mb-3">
-                    Risk indicators are computed analytical signals that help prioritize entities for further review. They are not legal findings or determinations.
+                    {% trans 'Risk indicators are computed analytical signals that help prioritize entities for further review. They are not legal findings or determinations.' %}
                 </p>
                 <div class="d-flex flex-wrap gap-2">
                     <span class="badge bg-warning-subtle text-warning">Winner/Budget &gt; 1</span>
@@ -215,32 +210,30 @@
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
                 <span class="badge bg-primary-subtle text-primary">ML</span>
-                <h5 class="card-title mb-0">Exploratory ML Methodology</h5>
+                <h5 class="card-title mb-0">{% trans 'Exploratory ML Methodology' %}</h5>
             </div>
             <div class="card-body">
                 <p class="text-muted mb-3">
-                    ML outputs are built from generated files under <code>reports/ml/</code> and are not trained inside page views.
-                    The models are exploratory tools for understanding heuristic labels and procurement-profile structure.
+                    {% blocktrans %}ML outputs are built from generated files under <code>reports/ml/</code> and are not trained inside page views. The models are exploratory tools for understanding heuristic labels and procurement-profile structure.{% endblocktrans %}
                 </p>
                 <ul class="text-muted mb-0">
-                    <li>Weak-label classification measures agreement with constructed heuristic labels, not external ground truth.</li>
-                    <li>The reduced-feature strict-label experiment excludes direct label-defining fields as much as possible to reduce circularity.</li>
-                    <li>Isolation Forest and Local Outlier Factor provide statistical anomaly rankings for unusual procurement profiles.</li>
-                    <li>KMeans clustering and PCA summarize procurement-profile structure for interpretation and visualization.</li>
-                    <li>The financial enrichment subset experiment compares procurement-only features with secondary OpenCorporates financial features where coverage exists.</li>
+                    <li>{% trans 'Weak-label classification measures agreement with constructed heuristic labels, not external ground truth.' %}</li>
+                    <li>{% trans 'The reduced-feature strict-label experiment excludes direct label-defining fields as much as possible to reduce circularity.' %}</li>
+                    <li>{% trans 'Isolation Forest and Local Outlier Factor provide statistical anomaly rankings for unusual procurement profiles.' %}</li>
+                    <li>{% trans 'KMeans clustering and PCA summarize procurement-profile structure for interpretation and visualization.' %}</li>
+                    <li>{% trans 'The financial enrichment subset experiment compares procurement-only features with secondary OpenCorporates financial features where coverage exists.' %}</li>
                 </ul>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-info-subtle text-info">Exploratory</span>
-                <h5 class="card-title mb-0">Visual Analytics</h5>
+                <span class="badge bg-info-subtle text-info">{% trans 'Exploratory' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Visual Analytics' %}</h5>
             </div>
             <div class="card-body">
                 <p class="text-muted mb-0">
-                    Visual Analytics summarizes distributions by legal form, city, registration year, procurement activity, winner value,
-                    winner/budget ratio bands, and risk indicator distribution. These views are exploratory results based on joined APP-QKB companies.
+                    {% blocktrans %}Visual Analytics summarizes distributions by legal form, city, registration year, procurement activity, winner value, winner/budget ratio bands, and risk indicator distribution. These views are exploratory results based on joined APP-QKB companies.{% endblocktrans %}
                 </p>
             </div>
         </div>
@@ -249,29 +242,29 @@
     <div class="col-xl-4">
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-info-subtle text-info">Current profile</span>
-                <h5 class="card-title mb-0">Dataset Scope</h5>
+                <span class="badge bg-info-subtle text-info">{% trans 'Current profile' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Dataset Scope' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted">Current local dataset/profile values. These may change after future pipeline reruns.</p>
+                <p class="text-muted">{% trans 'Current local dataset/profile values. These may change after future pipeline reruns.' %}</p>
                 <div class="table-responsive">
                     <table class="table table-sm align-middle mb-0">
                         <tbody>
                             <tr>
-                                <th>APP/procurement winner companies</th>
+                                <th>{% trans 'APP/procurement winner companies' %}</th>
                                 <td class="text-end fw-semibold">10,341</td>
                             </tr>
                             <tr>
                                 <th>QKB company features</th>
-                                <td class="text-end fw-semibold">around 59,266</td>
+                                <td class="text-end fw-semibold">{% trans 'around 59,266' %}</td>
                             </tr>
                             <tr>
-                                <th>Joined APP-QKB companies</th>
+                                <th>{% trans 'Joined APP-QKB companies' %}</th>
                                 <td class="text-end fw-semibold">10,266</td>
                             </tr>
                             <tr>
-                                <th>QKB match rate over APP winner companies</th>
-                                <td class="text-end fw-semibold">around 99.3%</td>
+                                <th>{% trans 'QKB match rate over APP winner companies' %}</th>
+                                <td class="text-end fw-semibold">{% trans 'around 99.3%' %}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -281,53 +274,53 @@
 
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-danger-subtle text-danger">Limitations</span>
-                <h5 class="card-title mb-0">Limitations</h5>
+                <span class="badge bg-danger-subtle text-danger">{% trans 'Limitations' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Limitations' %}</h5>
             </div>
             <div class="card-body">
                 <ul class="text-muted mb-0">
-                    <li>Public source completeness depends on source availability and publication formats.</li>
-                    <li>Exact NIPT matching may miss records with missing or incorrect identifiers.</li>
-                    <li>Some APP records have missing winner NIPT values.</li>
-                    <li>QKB historical documents are not fully batch-extracted in the current version.</li>
-                    <li>Scanned PDFs and OCR are not part of the core pipeline.</li>
-                    <li>OpenCorporates financial data is incomplete, secondary, and should be validated against source filings where required.</li>
-                    <li>There is no official ground-truth risk label in this version.</li>
-                    <li>Risk indicators and ML outputs are heuristic analytical signals that require human interpretation and future validation.</li>
+                    <li>{% trans 'Public source completeness depends on source availability and publication formats.' %}</li>
+                    <li>{% trans 'Exact NIPT matching may miss records with missing or incorrect identifiers.' %}</li>
+                    <li>{% trans 'Some APP records have missing winner NIPT values.' %}</li>
+                    <li>{% trans 'QKB historical documents are not fully batch-extracted in the current version.' %}</li>
+                    <li>{% trans 'Scanned PDFs and OCR are not part of the core pipeline.' %}</li>
+                    <li>{% trans 'OpenCorporates financial data is incomplete, secondary, and should be validated against source filings where required.' %}</li>
+                    <li>{% trans 'There is no official ground-truth risk label in this version.' %}</li>
+                    <li>{% trans 'Risk indicators and ML outputs are heuristic analytical signals that require human interpretation and future validation.' %}</li>
                 </ul>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <span class="badge bg-secondary-subtle text-secondary">Future work</span>
-                <h5 class="card-title mb-0">Future Work</h5>
+                <span class="badge bg-secondary-subtle text-secondary">{% trans 'Future work' %}</span>
+                <h5 class="card-title mb-0">{% trans 'Future Work' %}</h5>
             </div>
             <div class="card-body">
                 <ul class="text-muted mb-0">
-                    <li>QKB historical document link extraction.</li>
-                    <li>Financial document parsing from XLSX where available.</li>
-                    <li>OCR as optional future work for scanned documents.</li>
-                    <li>More advanced statistical and ML models.</li>
-                    <li>Exportable analytical reports.</li>
-                    <li>Read-only user roles and deployment hardening.</li>
+                    <li>{% trans 'QKB historical document link extraction.' %}</li>
+                    <li>{% trans 'Financial document parsing from XLSX where available.' %}</li>
+                    <li>{% trans 'OCR as optional future work for scanned documents.' %}</li>
+                    <li>{% trans 'More advanced statistical and ML models.' %}</li>
+                    <li>{% trans 'Exportable analytical reports.' %}</li>
+                    <li>{% trans 'Read-only user roles and deployment hardening.' %}</li>
                 </ul>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Related Views</h5>
+                <h5 class="card-title mb-0">{% trans 'Related Views' %}</h5>
             </div>
             <div class="card-body d-grid gap-2">
                 <a href="{% url 'analytics:companies' %}" class="btn btn-soft-primary text-start">
-                    <i class="ri-building-2-line align-bottom me-1"></i> Companies
+                    <i class="ri-building-2-line align-bottom me-1"></i> {% trans 'Companies' %}
                 </a>
                 <a href="{% url 'analytics:risk_overview' %}" class="btn btn-soft-warning text-start">
-                    <i class="ri-alert-line align-bottom me-1"></i> Risk Overview
+                    <i class="ri-alert-line align-bottom me-1"></i> {% trans 'Risk Overview' %}
                 </a>
                 <a href="{% url 'analytics:visual_analytics' %}" class="btn btn-soft-info text-start">
-                    <i class="ri-bar-chart-2-line align-bottom me-1"></i> Visual Analytics
+                    <i class="ri-bar-chart-2-line align-bottom me-1"></i> {% trans 'Visual Analytics' %}
                 </a>
             </div>
         </div>

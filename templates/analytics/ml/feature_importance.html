@@ -1,28 +1,31 @@
 {% extends 'layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}ML Feature Importance | Albiz Analytics{% endblock %}
+{% block title %}{% trans 'ML Feature Importance' %} | {% trans 'Albiz Analytics' %}{% endblock %}
 
 {% block content %}
-{% include 'analytics/ml/partials/page_header.html' with title='Feature Importance' subtitle='Feature importance previews for weak-label and reduced-feature strict-label experiments.' crumb='Feature Importance' %}
+{% trans 'Feature Importance' as page_title %}
+{% trans 'Feature importance previews for weak-label and reduced-feature strict-label experiments.' as page_subtitle %}
+{% trans 'Feature Importance' as page_crumb %}
+{% include 'analytics/ml/partials/page_header.html' with title=page_title subtitle=page_subtitle crumb=page_crumb %}
 {% include 'analytics/ml/partials/output_warnings.html' %}
 
 <div class="row mb-4">
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Feature Importance Preview</h5>
+                <h5 class="card-title mb-0">{% trans 'Feature Importance Preview' %}</h5>
                 <a href="{% url 'analytics:export_ml_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary">
                     <i class="ri-download-2-line align-bottom me-1"></i> CSV
                 </a>
             </div>
             <div class="card-body">
                 <div class="alert alert-info" role="alert">
-                    Feature importance explains heuristic labels, not external outcome labels. Full-feature importance mainly explains the constructed weak label; reduced-feature importance is more useful for cautious exploratory interpretation.
+                    {% trans 'Feature importance explains heuristic labels, not external outcome labels. Full-feature importance mainly explains the constructed weak label; reduced-feature importance is more useful for cautious exploratory interpretation.' %}
                 </div>
                 <div id="ml-feature-importance-chart" class="mb-4"></div>
                 <div class="alert alert-light border mb-4 py-2" role="alert">
-                    The chart highlights the largest absolute importances in the generated outputs; the grouped tables below retain experiment and model context.
+                    {% trans 'The chart highlights the largest absolute importances in the generated outputs; the grouped tables below retain experiment and model context.' %}
                 </div>
                 {% for group in ml.feature_importance_groups %}
                     <div class="border rounded p-3 mb-3">
@@ -31,12 +34,12 @@
                                 <h6 class="mb-1">{{ group.experiment_display }}</h6>
                                 <span class="text-muted">{{ group.model_display }}</span>
                             </div>
-                            <span class="badge bg-light text-body">{{ group.rows|length }} preview rows</span>
+                            <span class="badge bg-light text-body">{% blocktrans with count=group.rows|length %}{{ count }} preview rows{% endblocktrans %}</span>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-sm table-hover align-middle mb-0">
                                 <thead class="table-light">
-                                    <tr><th>Experiment</th><th>Model</th><th>Feature</th><th>Importance</th><th>Rank</th></tr>
+                                    <tr><th>{% trans 'Experiment' %}</th><th>{% trans 'Model' %}</th><th>{% trans 'Feature' %}</th><th>{% trans 'Importance' %}</th><th>{% trans 'Rank' %}</th></tr>
                                 </thead>
                                 <tbody>
                                     {% for row in group.rows %}
