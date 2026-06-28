@@ -229,6 +229,10 @@ def ml_financial_enrichment(request):
     return render_ml_results_page(request, 'analytics/ml/financial_enrichment.html')
 
 
+def ml_benchmark(request):
+    return render_ml_results_page(request, 'analytics/ml/benchmark.html')
+
+
 def ml_model_card(request):
     return render_ml_results_page(request, 'analytics/ml/model_card.html')
 
@@ -339,6 +343,18 @@ def export_ml_financial_subset_feature_importance_csv(request):
 
 def export_ml_financial_feature_missingness_csv(request):
     return export_generated_ml_csv('ml-financial-feature-missingness.csv')
+
+
+def export_ml_benchmark_cv_metrics_csv(request):
+    return export_generated_ml_csv('ml-benchmark-cv-metrics.csv')
+
+
+def export_ml_benchmark_model_ranking_csv(request):
+    return export_generated_ml_csv('ml-benchmark-model-ranking.csv')
+
+
+def export_ml_benchmark_feature_importance_csv(request):
+    return export_generated_ml_csv('ml-benchmark-feature-importance.csv')
 
 
 def export_csv(filename, export_builder):

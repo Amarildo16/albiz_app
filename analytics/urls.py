@@ -23,6 +23,7 @@ urlpatterns = [
     path('ml/clustering/', views.ml_clustering, name='ml_clustering'),
     path('ml/feature-importance/', views.ml_feature_importance, name='ml_feature_importance'),
     path('ml/financial-enrichment/', views.ml_financial_enrichment, name='ml_financial_enrichment'),
+    path('ml/benchmark/', views.ml_benchmark, name='ml_benchmark'),
     path('ml/model-card/', views.ml_model_card, name='ml_model_card'),
     path('ml/exports/', views.ml_exports, name='ml_exports'),
     path('ml/run-analysis/', views.ml_run_analysis, name='ml_run_analysis'),
@@ -43,4 +44,7 @@ urlpatterns = [
     path('reports/export/ml-financial-subset-ranking.csv', views.export_ml_financial_subset_ranking_csv, name='export_ml_financial_subset_ranking_csv'),
     path('reports/export/ml-financial-subset-feature-importance.csv', views.export_ml_financial_subset_feature_importance_csv, name='export_ml_financial_subset_feature_importance_csv'),
     path('reports/export/ml-financial-feature-missingness.csv', views.export_ml_financial_feature_missingness_csv, name='export_ml_financial_feature_missingness_csv'),
+    path('reports/export/ml-benchmark-cv-metrics.csv', views.export_ml_benchmark_cv_metrics_csv, name='export_ml_benchmark_cv_metrics_csv'),
+    path('reports/export/ml-benchmark-model-ranking.csv', views.export_ml_benchmark_model_ranking_csv, name='export_ml_benchmark_model_ranking_csv'),
+    path('reports/export/ml-benchmark-feature-importance.csv', views.export_ml_benchmark_feature_importance_csv, name='export_ml_benchmark_feature_importance_csv'),
 ]

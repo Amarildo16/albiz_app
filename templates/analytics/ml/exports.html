@@ -115,6 +115,31 @@
     <div class="col-12">
         <div class="card mb-0">
             <div class="card-header">
+                <h5 class="card-title mb-0">Benchmark Suite</h5>
+            </div>
+            <div class="card-body d-grid gap-2">
+                <p class="text-muted mb-1">Benchmark exports are generated separately with <code>manage.py run_ml_benchmark</code> and summarize repeated cross-validation stability.</p>
+                <a href="{% url 'analytics:export_ml_benchmark_model_ranking_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Benchmark model ranking CSV
+                </a>
+                <a href="{% url 'analytics:export_ml_benchmark_cv_metrics_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Benchmark CV metrics CSV
+                </a>
+                <a href="{% url 'analytics:export_ml_benchmark_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary text-start">
+                    <i class="ri-download-2-line align-bottom me-1"></i> Benchmark feature importance CSV
+                </a>
+                <a href="{% url 'analytics:ml_benchmark' %}" class="btn btn-soft-secondary mt-2">
+                    <i class="ri-bar-chart-grouped-line align-bottom me-1"></i> Open Benchmark Suite
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header">
                 <h5 class="card-title mb-0">Financial Enrichment Experiment</h5>
             </div>
             <div class="card-body d-grid gap-2">

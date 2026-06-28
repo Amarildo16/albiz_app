@@ -1,0 +1,356 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}ML Benchmark Suite | Albiz Analytics{% endblock %}
+
+{% block content %}
+{% include 'analytics/ml/partials/page_header.html' with title='ML Benchmark Suite' subtitle='Repeated cross-validation benchmark for heuristic weak-label experiments.' crumb='Benchmark' %}
+{% include 'analytics/ml/partials/output_warnings.html' %}
+
+{% if ml.benchmark.missing_files %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-warning mb-0">
+            <div class="card-body">
+                <h5 class="card-title mb-2">Benchmark outputs are not available yet</h5>
+                <p class="text-muted mb-3">{{ ml.benchmark.missing_message }}</p>
+                <div class="alert alert-light border mb-0" role="alert">
+                    Benchmarks are intentionally separate from the web refresh workflow because repeated cross-validation can take longer than the standard ML analysis.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-warning mb-0" role="alert">
+            The benchmark target is a heuristic strict weak label. Repeated cross-validation improves stability compared with a single split, but this remains exploratory ML evaluation and not real-world validation.
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Validation</p>
+                <h5 class="fs-18 fw-semibold mt-3 mb-0">{{ ml.benchmark.summary.validation_method }}</h5>
+                <span class="text-muted">{{ ml.benchmark.summary.n_splits }} folds x {{ ml.benchmark.summary.n_repeats }} repeats</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Best F1</p>
+                <h5 class="fs-18 fw-semibold mt-3 mb-1">{{ ml.benchmark.summary.best_model_by_f1.model }}</h5>
+                <span class="text-muted">{{ ml.benchmark.summary.best_model_by_f1.metric }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Best ROC AUC</p>
+                <h5 class="fs-18 fw-semibold mt-3 mb-1">{{ ml.benchmark.summary.best_model_by_roc_auc.model }}</h5>
+                <span class="text-muted">{{ ml.benchmark.summary.best_model_by_roc_auc.metric }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-animate h-100 mb-0">
+            <div class="card-body">
+                <p class="text-uppercase fw-medium text-muted text-truncate mb-0">Best PR AUC</p>
+                <h5 class="fs-18 fw-semibold mt-3 mb-1">{{ ml.benchmark.summary.best_model_by_average_precision.model }}</h5>
+                <span class="text-muted">{{ ml.benchmark.summary.best_model_by_average_precision.metric }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    {% for dataset in ml.benchmark.dataset_rows %}
+        <div class="col-xl-4">
+            <div class="card h-100 mb-0">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ dataset.experiment_display }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">{{ dataset.dataset_display }}</p>
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-3">
+                            <tbody>
+                                <tr><th>Rows</th><td>{{ dataset.row_count }}</td></tr>
+                                <tr><th>Features</th><td>{{ dataset.feature_count }}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for label in dataset.label_distribution %}
+                            <span class="badge bg-light text-body">Label {{ label.label }}: {{ label.count }} ({{ label.percentage }})</span>
+                        {% empty %}
+                            <span class="text-muted">No label distribution available.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-light border mb-0" role="alert">No benchmark datasets are available yet.</div>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Mean F1 Comparison</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Mean F1 across repeated stratified folds. Higher values indicate stronger agreement with the heuristic label.</p>
+                <div id="ml-benchmark-f1-chart" class="apex-charts" style="min-height: 360px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Mean ROC AUC Comparison</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Mean ROC AUC across repeated folds, shown as a heuristic-label benchmark metric.</p>
+                <div id="ml-benchmark-roc-chart" class="apex-charts" style="min-height: 360px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Mean PR AUC Comparison</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Average precision is useful when classes are imbalanced because it focuses on precision-recall behavior.</p>
+                <div id="ml-benchmark-pr-chart" class="apex-charts" style="min-height: 360px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">F1 Stability</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Lower standard deviation suggests more stable fold-to-fold behavior.</p>
+                <div id="ml-benchmark-stability-chart" class="apex-charts" style="min-height: 360px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Model Ranking</h5>
+                <a href="{% url 'analytics:export_ml_benchmark_model_ranking_csv' %}" class="btn btn-sm btn-soft-primary">
+                    <i class="ri-download-2-line align-bottom me-1"></i> CSV
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Dataset</th>
+                                <th>Experiment</th>
+                                <th>Model</th>
+                                <th>F1 mean/std</th>
+                                <th>ROC AUC mean/std</th>
+                                <th>PR AUC mean/std</th>
+                                <th>Balanced accuracy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.benchmark.ranking_rows %}
+                                <tr>
+                                    <td>{{ row.dataset_display }}</td>
+                                    <td>{{ row.experiment_display }}</td>
+                                    <td>{{ row.model_display }}</td>
+                                    <td>{{ row.mean_f1_display }} / {{ row.std_f1_display }}</td>
+                                    <td>{{ row.mean_roc_auc_display }} / {{ row.std_roc_auc_display }}</td>
+                                    <td>{{ row.mean_average_precision_display }} / {{ row.std_average_precision_display }}</td>
+                                    <td>{{ row.mean_balanced_accuracy_display }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="7" class="text-muted">Benchmark ranking is unavailable.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-xl-7">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Financial Subset Comparison</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">{{ ml.benchmark.financial_comparison.conclusion }}</p>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Model</th>
+                                <th>Baseline F1</th>
+                                <th>Enriched F1</th>
+                                <th>Delta F1</th>
+                                <th>Baseline PR AUC</th>
+                                <th>Enriched PR AUC</th>
+                                <th>Delta PR AUC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.benchmark.financial_comparison.rows %}
+                                <tr>
+                                    <td>{{ row.model }}</td>
+                                    <td>{{ row.baseline_f1 }}</td>
+                                    <td>{{ row.enriched_f1 }}</td>
+                                    <td>{{ row.delta_f1 }}</td>
+                                    <td>{{ row.baseline_average_precision }}</td>
+                                    <td>{{ row.enriched_average_precision }}</td>
+                                    <td>{{ row.delta_average_precision }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="7" class="text-muted">Financial subset comparison is unavailable.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-5">
+        <div class="card h-100 mb-0">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Best Model Confusion Matrix</h5>
+            </div>
+            <div class="card-body">
+                {% if ml.benchmark.confusion_matrix.available %}
+                    <p class="text-muted">{{ ml.benchmark.confusion_matrix.model }} on {{ ml.benchmark.confusion_matrix.experiment }}</p>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered align-middle mb-0">
+                            <thead class="table-light">
+                                <tr><th></th><th>Predicted 0</th><th>Predicted 1</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for row in ml.benchmark.confusion_matrix.matrix %}
+                                    <tr>
+                                        <th class="table-light">{{ row.label }}</th>
+                                        {% for cell in row.cells %}
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-between gap-3">
+                                                    <span class="fw-semibold">{{ cell.value }}</span>
+                                                    <div class="progress flex-grow-1" style="height: 8px;">
+                                                        <div class="progress-bar bg-primary" style="width: {{ cell.intensity }}%;"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">Confusion matrix output is unavailable.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Benchmark Feature Importance</h5>
+                <a href="{% url 'analytics:export_ml_benchmark_feature_importance_csv' %}" class="btn btn-sm btn-soft-primary">
+                    <i class="ri-download-2-line align-bottom me-1"></i> CSV
+                </a>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Feature importance is exported only for models with direct importance attributes. HistGradientBoosting importance is not fabricated.</p>
+                <div id="ml-benchmark-feature-importance-chart" class="apex-charts mb-4" style="min-height: 420px;"></div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>Dataset</th><th>Experiment</th><th>Model</th><th>Feature</th><th>Importance</th><th>Rank</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for row in ml.benchmark.feature_importance_rows %}
+                                <tr>
+                                    <td>{{ row.dataset_display }}</td>
+                                    <td>{{ row.experiment_display }}</td>
+                                    <td>{{ row.model_display }}</td>
+                                    <td><code>{{ row.feature }}</code></td>
+                                    <td>{{ row.importance_display }}</td>
+                                    <td>{{ row.rank }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="6" class="text-muted">Benchmark feature importance is unavailable.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <h5 class="card-title mb-0">Notes and Limitations</h5>
+                <a href="{% url 'analytics:export_ml_benchmark_cv_metrics_csv' %}" class="btn btn-sm btn-soft-primary">
+                    <i class="ri-download-2-line align-bottom me-1"></i> CV metrics CSV
+                </a>
+            </div>
+            <div class="card-body">
+                {% for section in ml.benchmark.notes_sections %}
+                    <div class="{% if not forloop.last %}mb-4{% endif %}">
+                        {% if section.title %}<h6 class="mb-2">{{ section.title }}</h6>{% endif %}
+                        {% for paragraph in section.paragraphs %}
+                            <p class="text-muted mb-2">{{ paragraph }}</p>
+                        {% endfor %}
+                        {% if section.bullets %}
+                            <ul class="text-muted mb-0">
+                                {% for bullet in section.bullets %}
+                                    <li>{{ bullet }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <p class="text-muted mb-0">Benchmark notes are unavailable.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% include 'analytics/ml/partials/chart_scripts.html' %}
+{% endblock %}

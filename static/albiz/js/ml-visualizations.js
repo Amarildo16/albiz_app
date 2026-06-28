@@ -613,6 +613,67 @@
         });
     }
 
+    function renderBenchmarkHorizontalChart(containerId, data, seriesName, color, formatterPlaces) {
+        if (!data || !Array.isArray(data.labels) || !data.labels.length) {
+            return;
+        }
+        renderApexChart(containerId, {
+            chart: {
+                type: 'bar',
+                height: 360,
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    borderRadius: 3,
+                    barHeight: '70%'
+                }
+            },
+            dataLabels: { enabled: false },
+            series: [{
+                name: seriesName,
+                data: data.values || []
+            }],
+            xaxis: {
+                min: 0,
+                max: seriesName === 'F1 std' ? undefined : 1,
+                labels: {
+                    formatter: function (value) {
+                        return formatNumber(value, formatterPlaces || 4);
+                    }
+                }
+            },
+            yaxis: { labels: { maxWidth: 300 } },
+            colors: [color],
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return formatNumber(value, formatterPlaces || 4);
+                    }
+                }
+            },
+            responsive: [{
+                breakpoint: 576,
+                options: {
+                    chart: { height: 320 },
+                    yaxis: { labels: { maxWidth: 210 } }
+                }
+            }]
+        });
+    }
+
+    function renderBenchmarkCharts(data) {
+        if (!data) {
+            return;
+        }
+        renderBenchmarkHorizontalChart('ml-benchmark-f1-chart', data.f1Comparison, 'Mean F1', '#405189', 4);
+        renderBenchmarkHorizontalChart('ml-benchmark-roc-chart', data.rocAucComparison, 'Mean ROC AUC', '#0ab39c', 4);
+        renderBenchmarkHorizontalChart('ml-benchmark-pr-chart', data.averagePrecisionComparison, 'Mean PR AUC', '#f7b84b', 4);
+        renderBenchmarkHorizontalChart('ml-benchmark-stability-chart', data.stabilityComparison, 'F1 std', '#299cdb', 4);
+        renderBenchmarkHorizontalChart('ml-benchmark-feature-importance-chart', data.featureImportance, 'Importance', '#6559cc', 6);
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         var data = readChartData();
         renderFullModelComparison(data.fullModelComparison);
@@ -626,5 +687,6 @@
         renderFinancialComparison(data.financialComparison);
         renderFinancialCoverage(data.financialCoverage);
         renderFinancialFeatureImportance(data.financialFeatureImportance);
+        renderBenchmarkCharts(data.benchmark);
     });
 })();

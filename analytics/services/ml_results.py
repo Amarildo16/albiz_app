@@ -59,7 +59,19 @@ ML_CSV_EXPORTS = {
     'ml-financial-subset-ranking.csv': 'ml_financial_subset_ranking.csv',
     'ml-financial-subset-feature-importance.csv': 'ml_financial_subset_feature_importance.csv',
     'ml-financial-feature-missingness.csv': 'ml_financial_feature_missingness.csv',
+    'ml-benchmark-cv-metrics.csv': 'ml_benchmark_cv_metrics.csv',
+    'ml-benchmark-model-ranking.csv': 'ml_benchmark_model_ranking.csv',
+    'ml-benchmark-feature-importance.csv': 'ml_benchmark_feature_importance.csv',
 }
+
+BENCHMARK_REQUIRED_FILES = [
+    'ml_benchmark_summary.json',
+    'ml_benchmark_cv_metrics.csv',
+    'ml_benchmark_model_ranking.csv',
+    'ml_benchmark_confusion_matrices.json',
+    'ml_benchmark_feature_importance.csv',
+    'ml_benchmark_notes.md',
+]
 
 
 def get_ml_results_context(preview_limit=20):
@@ -76,6 +88,9 @@ def get_ml_results_context(preview_limit=20):
     pca_summary = read_json('ml_pca_summary.json', errors)
     financial_summary = read_json('ml_financial_enrichment_summary.json', errors)
     financial_subset_metrics = read_json('ml_financial_subset_metrics.json', errors)
+    benchmark_summary = read_json('ml_benchmark_summary.json', errors)
+    benchmark_confusion = read_json('ml_benchmark_confusion_matrices.json', errors)
+    benchmark_notes = read_text('ml_benchmark_notes.md', errors)
     limitations_text = read_text('ml_limitations.md', errors)
     pca_2d_rows = sampled_pca_rows('ml_pca_2d.csv', PCA_VISUALIZATION_LIMIT, errors)
     pca_3d_rows = sampled_pca_rows('ml_pca_3d.csv', PCA_VISUALIZATION_LIMIT, errors)
@@ -88,6 +103,12 @@ def get_ml_results_context(preview_limit=20):
     financial_context = build_financial_enrichment_context(
         financial_summary=financial_summary,
         financial_subset_metrics=financial_subset_metrics,
+        preview_limit=preview_limit,
+    )
+    benchmark_context = build_benchmark_context(
+        summary=benchmark_summary,
+        confusion_matrices=benchmark_confusion,
+        notes_text=benchmark_notes,
         preview_limit=preview_limit,
     )
 
@@ -142,6 +163,7 @@ def get_ml_results_context(preview_limit=20):
         'pca_3d_rows': pca_3d_rows,
         'procurement_cube_rows': procurement_cube_rows,
         'financial_enrichment': financial_context,
+        'benchmark': benchmark_context,
         'chart_data': build_chart_data(
             full_metric_rows=full_metric_rows,
             reduced_metric_rows=reduced_metric_rows,
@@ -152,6 +174,7 @@ def get_ml_results_context(preview_limit=20):
             cluster_summary_rows=cluster_summary_rows,
             feature_importance_rows=feature_importance_preview,
             financial_context=financial_context,
+            benchmark_context=benchmark_context,
         ),
         'model_card': model_card,
         'limitations_text': limitations_text,
@@ -800,6 +823,251 @@ def financial_missingness_rows(limit):
     return rows
 
 
+def build_benchmark_context(summary, confusion_matrices, notes_text, preview_limit):
+    missing_files = [
+        filename
+        for filename in BENCHMARK_REQUIRED_FILES
+        if not (ML_OUTPUT_DIR / filename).exists()
+    ]
+    ranking_rows = benchmark_model_ranking_rows()
+    feature_rows = benchmark_feature_importance_rows(preview_limit)
+    return {
+        'available': not missing_files and bool(summary),
+        'missing_files': missing_files,
+        'missing_message': (
+            'Benchmark outputs are unavailable. Run .\\.venv\\Scripts\\python.exe manage.py run_ml_benchmark.'
+            if missing_files else ''
+        ),
+        'summary': build_benchmark_summary(summary),
+        'dataset_rows': benchmark_dataset_rows(summary),
+        'ranking_rows': ranking_rows,
+        'feature_importance_rows': feature_rows,
+        'confusion_matrix': benchmark_confusion_matrix(summary, confusion_matrices),
+        'notes_text': notes_text,
+        'notes_sections': parse_limitations_markdown(notes_text),
+        'financial_comparison': benchmark_financial_comparison(ranking_rows),
+    }
+
+
+def build_benchmark_summary(summary):
+    validation = summary.get('validation', {})
+    return {
+        'target': summary.get('target', 'strict_weak_risk_label'),
+        'target_type': summary.get('target_type', 'heuristic strict weak label'),
+        'validation_method': validation.get('method', 'RepeatedStratifiedKFold'),
+        'n_splits': validation.get('n_splits', 'N/A'),
+        'n_repeats': validation.get('n_repeats', 'N/A'),
+        'models_tested': ', '.join(display_model_name(model) for model in summary.get('models_evaluated', [])),
+        'best_model_by_f1': best_benchmark_model_display(summary.get('best_model_by_f1'), 'mean_f1'),
+        'best_model_by_roc_auc': best_benchmark_model_display(summary.get('best_model_by_roc_auc'), 'mean_roc_auc'),
+        'best_model_by_average_precision': best_benchmark_model_display(
+            summary.get('best_model_by_average_precision'),
+            'mean_average_precision',
+        ),
+        'interpretation_note': summary.get('interpretation_note', ''),
+        'limitations_note': summary.get('limitations_note', ''),
+    }
+
+
+def best_benchmark_model_display(payload, metric_name):
+    if not payload:
+        return {
+            'dataset': 'N/A',
+            'experiment': 'N/A',
+            'model': 'N/A',
+            'metric': 'N/A',
+        }
+    return {
+        'dataset': display_dataset_name(payload.get('dataset_name')),
+        'experiment': display_experiment_name(payload.get('experiment_name')),
+        'model': display_model_name(payload.get('model')),
+        'metric': format_decimal(payload.get(metric_name), 4),
+    }
+
+
+def benchmark_dataset_rows(summary):
+    rows = []
+    for item in summary.get('datasets_evaluated', []):
+        rows.append(
+            {
+                'dataset_name': item.get('dataset_name', ''),
+                'dataset_display': display_dataset_name(item.get('dataset_name')),
+                'experiment_name': item.get('experiment_name', ''),
+                'experiment_display': display_experiment_name(item.get('experiment_name')),
+                'row_count': format_int(item.get('row_count')),
+                'feature_count': format_int(item.get('feature_count_before_encoding')),
+                'label_distribution': distribution_rows(item.get('label_distribution', {})),
+            }
+        )
+    return rows
+
+
+def benchmark_model_ranking_rows():
+    rows = read_csv_rows('ml_benchmark_model_ranking.csv', limit=None)
+    rows = sorted(
+        rows,
+        key=lambda row: (
+            row.get('dataset_name', ''),
+            row.get('experiment_name', ''),
+            safe_int(row.get('rank_by_f1')),
+        ),
+    )
+    formatted = []
+    for row in rows:
+        row['dataset_display'] = display_dataset_name(row.get('dataset_name'))
+        row['experiment_display'] = display_experiment_name(row.get('experiment_name'))
+        row['model_display'] = display_model_name(row.get('model'))
+        for key in [
+            'mean_f1',
+            'std_f1',
+            'mean_roc_auc',
+            'std_roc_auc',
+            'mean_average_precision',
+            'std_average_precision',
+            'mean_balanced_accuracy',
+            'std_balanced_accuracy',
+        ]:
+            row[f'{key}_display'] = format_decimal(row.get(key), 4)
+        formatted.append(row)
+    return formatted
+
+
+def benchmark_feature_importance_rows(limit):
+    rows = []
+    all_rows = read_csv_rows('ml_benchmark_feature_importance.csv', limit=None)
+    sorted_rows = sorted(
+        all_rows,
+        key=lambda row: (
+            row.get('dataset_name', ''),
+            row.get('experiment_name', ''),
+            row.get('model', ''),
+            safe_int(row.get('rank')),
+        ),
+    )
+    for row in sorted_rows[:limit]:
+        row['dataset_display'] = display_dataset_name(row.get('dataset_name'))
+        row['experiment_display'] = display_experiment_name(row.get('experiment_name'))
+        row['model_display'] = display_model_name(row.get('model'))
+        row['importance_display'] = format_decimal(row.get('importance'), 6)
+        rows.append(row)
+    return rows
+
+
+def benchmark_confusion_matrix(summary, confusion_matrices):
+    best = summary.get('best_model_by_f1', {})
+    key = f"{best.get('dataset_name', '')}:{best.get('experiment_name', '')}"
+    model_name = best.get('model')
+    values = (
+        confusion_matrices.get(key, {})
+        .get('models', {})
+        .get(model_name, {})
+        .get('matrix')
+    )
+    if not values:
+        return {'available': False, 'model': display_model_name(model_name), 'matrix': []}
+    max_value = max(max(row) for row in values if row) or 1
+    labels = ['Actual 0', 'Actual 1']
+    matrix = []
+    for row_index, row in enumerate(values):
+        cells = []
+        for value in row:
+            cells.append(
+                {
+                    'value': format_int(value),
+                    'intensity': int((safe_float(value) or 0) / max_value * 100),
+                }
+            )
+        matrix.append(
+            {
+                'label': labels[row_index] if row_index < len(labels) else f'Actual {row_index}',
+                'cells': cells,
+            }
+        )
+    return {
+        'available': True,
+        'dataset': display_dataset_name(best.get('dataset_name')),
+        'experiment': display_experiment_name(best.get('experiment_name')),
+        'model': display_model_name(model_name),
+        'matrix': matrix,
+    }
+
+
+def benchmark_financial_comparison(rows):
+    financial_rows = [
+        row for row in rows
+        if row.get('dataset_name') == 'financial_enrichment_subset'
+    ]
+    baseline = {
+        row.get('model'): row
+        for row in financial_rows
+        if row.get('experiment_name') == 'procurement_only_on_financial_subset_benchmark'
+    }
+    enriched = {
+        row.get('model'): row
+        for row in financial_rows
+        if row.get('experiment_name') == 'procurement_plus_financial_enrichment_benchmark'
+    }
+    comparisons = []
+    for model_name in sorted(set(baseline) | set(enriched)):
+        base = baseline.get(model_name, {})
+        plus = enriched.get(model_name, {})
+        comparisons.append(
+            {
+                'model': display_model_name(model_name),
+                'baseline_f1': format_decimal(base.get('mean_f1'), 4),
+                'enriched_f1': format_decimal(plus.get('mean_f1'), 4),
+                'delta_f1': signed_decimal(delta(plus.get('mean_f1'), base.get('mean_f1')), 4),
+                'baseline_roc_auc': format_decimal(base.get('mean_roc_auc'), 4),
+                'enriched_roc_auc': format_decimal(plus.get('mean_roc_auc'), 4),
+                'delta_roc_auc': signed_decimal(delta(plus.get('mean_roc_auc'), base.get('mean_roc_auc')), 4),
+                'baseline_average_precision': format_decimal(base.get('mean_average_precision'), 4),
+                'enriched_average_precision': format_decimal(plus.get('mean_average_precision'), 4),
+                'delta_average_precision': signed_decimal(
+                    delta(plus.get('mean_average_precision'), base.get('mean_average_precision')),
+                    4,
+                ),
+            }
+        )
+    best_baseline = max(
+        baseline.values(),
+        key=lambda row: safe_float(row.get('mean_f1')) or -1,
+        default={},
+    )
+    best_enriched = max(
+        enriched.values(),
+        key=lambda row: safe_float(row.get('mean_f1')) or -1,
+        default={},
+    )
+    return {
+        'rows': comparisons,
+        'conclusion': financial_benchmark_conclusion(best_baseline, best_enriched),
+    }
+
+
+def financial_benchmark_conclusion(best_baseline, best_enriched):
+    baseline_f1 = safe_float(best_baseline.get('mean_f1'))
+    enriched_f1 = safe_float(best_enriched.get('mean_f1'))
+    if baseline_f1 is None or enriched_f1 is None:
+        return 'Financial subset benchmark results are unavailable.'
+    if enriched_f1 > baseline_f1:
+        return (
+            'In this benchmark, secondary financial enrichment improved the best mean F1 within '
+            'the heuristic-label financial subset experiment. This is exploratory signal, not external validation.'
+        )
+    return (
+        'In this benchmark, secondary financial enrichment did not improve the best mean F1 over '
+        'the procurement-only baseline. This suggests procurement/registry-derived features dominate this heuristic-label target.'
+    )
+
+
+def delta(new_value, old_value):
+    new_number = safe_float(new_value)
+    old_number = safe_float(old_value)
+    if new_number is None or old_number is None:
+        return None
+    return new_number - old_number
+
+
 def financial_conclusion(payload):
     best_f1 = payload.get('best_model_by_f1', {})
     best_roc = payload.get('best_model_by_roc_auc', {})
@@ -837,6 +1105,7 @@ def build_chart_data(
     cluster_summary_rows,
     feature_importance_rows,
     financial_context,
+    benchmark_context,
 ):
     return {
         'fullModelComparison': {
@@ -863,6 +1132,52 @@ def build_chart_data(
         'financialFeatureImportance': financial_feature_importance_chart_data(
             financial_context.get('feature_importance_rows', []),
         ),
+        'benchmark': benchmark_chart_data(benchmark_context),
+    }
+
+
+def benchmark_chart_data(context):
+    rows = context.get('ranking_rows', [])
+    return {
+        'f1Comparison': benchmark_metric_chart_data(rows, 'mean_f1'),
+        'rocAucComparison': benchmark_metric_chart_data(rows, 'mean_roc_auc'),
+        'averagePrecisionComparison': benchmark_metric_chart_data(rows, 'mean_average_precision'),
+        'stabilityComparison': benchmark_metric_chart_data(rows, 'std_f1', lower_is_better=True),
+        'featureImportance': benchmark_feature_importance_chart_data(
+            context.get('feature_importance_rows', []),
+        ),
+    }
+
+
+def benchmark_metric_chart_data(rows, metric_name, lower_is_better=False):
+    ranked = sorted(
+        rows,
+        key=lambda row: safe_float(row.get(metric_name)) if safe_float(row.get(metric_name)) is not None else -1,
+        reverse=not lower_is_better,
+    )[:18]
+    ranked.reverse()
+    return {
+        'labels': [
+            f"{row.get('experiment_display', '')}: {row.get('model_display', '')}"
+            for row in ranked
+        ],
+        'values': [safe_float(row.get(metric_name)) for row in ranked],
+    }
+
+
+def benchmark_feature_importance_chart_data(rows, limit=15):
+    ranked = sorted(
+        rows,
+        key=lambda row: abs(safe_float(row.get('importance')) or 0),
+        reverse=True,
+    )[:limit]
+    ranked.reverse()
+    return {
+        'labels': [
+            f"{row.get('model_display', '')}: {row.get('feature', '')}"
+            for row in ranked
+        ],
+        'values': [safe_float(row.get('importance')) for row in ranked],
     }
 
 
@@ -957,6 +1272,17 @@ def display_experiment_name(value):
         'financial_enrichment_subset_experiment': 'Financial enrichment subset experiment',
         'procurement_only_on_financial_subset': 'Procurement-only baseline',
         'procurement_plus_financial_enrichment': 'Procurement plus financial enrichment',
+        'reduced_feature_strict_label_benchmark': 'Reduced-feature strict-label benchmark',
+        'procurement_only_on_financial_subset_benchmark': 'Procurement-only financial subset benchmark',
+        'procurement_plus_financial_enrichment_benchmark': 'Procurement plus financial enrichment benchmark',
+    }
+    return labels.get(str(value), display_model_name(value))
+
+
+def display_dataset_name(value):
+    labels = {
+        'main_reduced_strict_label_dataset': 'Main reduced-feature dataset',
+        'financial_enrichment_subset': 'Financial enrichment subset',
     }
     return labels.get(str(value), display_model_name(value))
 
