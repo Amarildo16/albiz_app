@@ -184,6 +184,52 @@
         });
     }
 
+    function renderFullModelComparison(data) {
+        if (!data || !Array.isArray(data.models) || !data.models.length) {
+            return;
+        }
+        renderApexChart('ml-full-model-comparison-chart', {
+            chart: {
+                type: 'bar',
+                height: 320,
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '45%'
+                }
+            },
+            dataLabels: { enabled: false },
+            series: [
+                { name: 'F1', data: data.f1 || [] },
+                { name: 'ROC AUC', data: data.roc_auc || [] }
+            ],
+            xaxis: {
+                categories: data.models,
+                labels: { rotate: -25, trim: true }
+            },
+            yaxis: {
+                min: 0,
+                max: 1,
+                labels: {
+                    formatter: function (value) {
+                        return value.toFixed(2);
+                    }
+                }
+            },
+            colors: ['#f7b84b', '#f06548'],
+            legend: { position: 'top' },
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return formatNumber(value, 4);
+                    }
+                }
+            }
+        });
+    }
+
     function renderPcaVariance(data) {
         if (!data || !Array.isArray(data.labels) || !data.labels.length) {
             return;
@@ -450,8 +496,117 @@
         });
     }
 
+    function renderFinancialComparison(data) {
+        if (!data || !Array.isArray(data.models) || !data.models.length) {
+            return;
+        }
+        renderApexChart('ml-financial-comparison-chart', {
+            chart: {
+                type: 'bar',
+                height: 360,
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '52%'
+                }
+            },
+            dataLabels: { enabled: false },
+            series: [
+                { name: 'Procurement-only F1', data: data.baselineF1 || [] },
+                { name: 'Procurement + financial F1', data: data.enrichedF1 || [] },
+                { name: 'Procurement-only ROC AUC', data: data.baselineRocAuc || [] },
+                { name: 'Procurement + financial ROC AUC', data: data.enrichedRocAuc || [] }
+            ],
+            xaxis: {
+                categories: data.models,
+                labels: { rotate: -25, trim: true }
+            },
+            yaxis: {
+                min: 0,
+                max: 1,
+                labels: {
+                    formatter: function (value) {
+                        return value.toFixed(2);
+                    }
+                }
+            },
+            colors: ['#405189', '#0ab39c', '#f7b84b', '#299cdb'],
+            legend: { position: 'top' },
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return formatNumber(value, 4);
+                    }
+                }
+            }
+        });
+    }
+
+    function renderFinancialCoverage(data) {
+        if (!data || !Array.isArray(data.labels) || !data.labels.length) {
+            return;
+        }
+        renderApexChart('ml-financial-coverage-chart', {
+            chart: {
+                type: 'donut',
+                height: 300,
+                toolbar: { show: false }
+            },
+            labels: data.labels || [],
+            series: data.series || [],
+            colors: ['#0ab39c', '#6c757d'],
+            legend: { position: 'bottom' },
+            dataLabels: { enabled: false },
+            tooltip: {
+                y: {
+                    formatter: formatCount
+                }
+            }
+        });
+    }
+
+    function renderFinancialFeatureImportance(data) {
+        if (!data || !Array.isArray(data.labels) || !data.labels.length) {
+            return;
+        }
+        renderApexChart('ml-financial-feature-importance-chart', {
+            chart: {
+                type: 'bar',
+                height: 420,
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: { horizontal: true }
+            },
+            series: [{
+                name: 'Importance',
+                data: data.values || []
+            }],
+            xaxis: {
+                labels: {
+                    formatter: function (value) {
+                        return formatNumber(value, 2);
+                    }
+                }
+            },
+            yaxis: { labels: { maxWidth: 280 } },
+            colors: ['#0ab39c'],
+            dataLabels: { enabled: false },
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return formatNumber(value, 6);
+                    }
+                }
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         var data = readChartData();
+        renderFullModelComparison(data.fullModelComparison);
         renderModelComparison(data.modelComparison);
         renderPcaVariance(data.pcaVariance);
         renderPca2d(data.pca2d);
@@ -459,5 +614,8 @@
         renderProcurementAnomalyCube(data.procurementAnomalyCube);
         renderClusterDistribution(data.clusterDistribution);
         renderFeatureImportance(data.featureImportance);
+        renderFinancialComparison(data.financialComparison);
+        renderFinancialCoverage(data.financialCoverage);
+        renderFinancialFeatureImportance(data.financialFeatureImportance);
     });
 })();

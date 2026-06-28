@@ -9,6 +9,8 @@ media/
 staticfiles/
 reports/ml/
 reports/registry/
+reports/visual-audit/
+node_modules/
 .DS_Store
 .idea/
 .vscode/

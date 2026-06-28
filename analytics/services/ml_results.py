@@ -83,7 +83,13 @@ def get_ml_results_context(preview_limit=20):
     lof_rows = preview_rows('ml_lof_anomaly_ranking.csv', preview_limit, add_detail_url=True)
     cluster_summary_rows = cluster_rows()
     feature_importance_preview = feature_importance_rows(preview_limit)
+    full_metric_rows = metrics_rows(classification_metrics.get('metrics', {}))
     reduced_metric_rows = metrics_rows(reduced_metrics.get('metrics', {}))
+    financial_context = build_financial_enrichment_context(
+        financial_summary=financial_summary,
+        financial_subset_metrics=financial_subset_metrics,
+        preview_limit=preview_limit,
+    )
 
     return {
         'output_dir': str(ML_OUTPUT_DIR),
@@ -100,8 +106,12 @@ def get_ml_results_context(preview_limit=20):
         ],
         'summary': summary,
         'dataset': build_dataset_summary(summary),
-        'full_metrics': metrics_rows(classification_metrics.get('metrics', {})),
+        'full_metrics': full_metric_rows,
         'reduced_metrics': reduced_metric_rows,
+        'reduced_confusion_matrix': best_confusion_matrix(
+            reduced_metrics,
+            summary.get('reduced_feature_strict_label_results', {}),
+        ),
         'full_interpretation': classification_metrics.get('interpretation', ''),
         'reduced_interpretation': reduced_metrics.get('interpretation', ''),
         'full_target_distribution': distribution_rows(
@@ -131,12 +141,9 @@ def get_ml_results_context(preview_limit=20):
         'pca_2d_rows': pca_2d_rows,
         'pca_3d_rows': pca_3d_rows,
         'procurement_cube_rows': procurement_cube_rows,
-        'financial_enrichment': build_financial_enrichment_context(
-            financial_summary=financial_summary,
-            financial_subset_metrics=financial_subset_metrics,
-            preview_limit=preview_limit,
-        ),
+        'financial_enrichment': financial_context,
         'chart_data': build_chart_data(
+            full_metric_rows=full_metric_rows,
             reduced_metric_rows=reduced_metric_rows,
             pca_summary=pca_summary,
             pca_2d_rows=pca_2d_rows,
@@ -144,6 +151,7 @@ def get_ml_results_context(preview_limit=20):
             procurement_cube_rows=procurement_cube_rows,
             cluster_summary_rows=cluster_summary_rows,
             feature_importance_rows=feature_importance_preview,
+            financial_context=financial_context,
         ),
         'model_card': model_card,
         'limitations_text': limitations_text,
@@ -320,6 +328,46 @@ def build_shuffled_check(payload):
             if sanity_passed
             else 'Review this check: shuffled-label performance is not close to chance.'
         ),
+    }
+
+
+def best_confusion_matrix(reduced_metrics, summary_reduced_results):
+    best_model = (
+        reduced_metrics.get('best_model_by_f1')
+        or summary_reduced_results.get('best_model_by_f1')
+    )
+    metrics = reduced_metrics.get('metrics', {}) or summary_reduced_results.get('metrics', {})
+    values = metrics.get(best_model, {}).get('confusion_matrix')
+    if not values or len(values) < 2:
+        return {
+            'available': False,
+            'model': display_model_name(best_model),
+            'matrix': [],
+        }
+    max_value = max(max(row) for row in values if row) or 1
+    labels = ['Actual 0', 'Actual 1']
+    columns = ['Predicted 0', 'Predicted 1']
+    matrix = []
+    for row_index, row in enumerate(values):
+        cells = []
+        for column_index, value in enumerate(row):
+            cells.append(
+                {
+                    'label': columns[column_index] if column_index < len(columns) else f'Predicted {column_index}',
+                    'value': format_int(value),
+                    'intensity': int((safe_float(value) or 0) / max_value * 100),
+                }
+            )
+        matrix.append(
+            {
+                'label': labels[row_index] if row_index < len(labels) else f'Actual {row_index}',
+                'cells': cells,
+            }
+        )
+    return {
+        'available': True,
+        'model': display_model_name(best_model),
+        'matrix': matrix,
     }
 
 
@@ -599,10 +647,14 @@ def build_financial_enrichment_context(financial_summary, financial_subset_metri
 def build_financial_summary(summary):
     return {
         'total_joined_companies': format_int(summary.get('total_joined_companies')),
+        'total_joined_companies_raw': safe_int(summary.get('total_joined_companies')),
         'companies_with_financial_enrichment': format_int(summary.get('companies_with_financial_enrichment')),
+        'companies_with_financial_enrichment_raw': safe_int(summary.get('companies_with_financial_enrichment')),
         'coverage_percentage': summary.get('coverage_percentage') or 'N/A',
         'financial_table_rows': format_int(summary.get('financial_table_rows')),
+        'financial_table_rows_raw': safe_int(summary.get('financial_table_rows')),
         'distinct_financial_nipts': format_int(summary.get('distinct_financial_nipts')),
+        'distinct_financial_nipts_raw': safe_int(summary.get('distinct_financial_nipts')),
         'financial_year_range': year_range_display(
             summary.get('min_financial_year'),
             summary.get('max_financial_year'),
@@ -774,6 +826,7 @@ def year_range_display(year_min, year_max):
 
 
 def build_chart_data(
+    full_metric_rows,
     reduced_metric_rows,
     pca_summary,
     pca_2d_rows,
@@ -781,8 +834,14 @@ def build_chart_data(
     procurement_cube_rows,
     cluster_summary_rows,
     feature_importance_rows,
+    financial_context,
 ):
     return {
+        'fullModelComparison': {
+            'models': [row['model'] for row in full_metric_rows],
+            'f1': [safe_float(row['f1']) for row in full_metric_rows],
+            'roc_auc': [safe_float(row['roc_auc']) for row in full_metric_rows],
+        },
         'modelComparison': {
             'models': [row['model'] for row in reduced_metric_rows],
             'f1': [safe_float(row['f1']) for row in reduced_metric_rows],
@@ -797,6 +856,57 @@ def build_chart_data(
             'counts': [safe_float(row.get('company_count')) for row in cluster_summary_rows],
         },
         'featureImportance': feature_importance_chart_data(feature_importance_rows),
+        'financialComparison': financial_comparison_chart_data(financial_context.get('metric_rows', [])),
+        'financialCoverage': financial_coverage_chart_data(financial_context.get('summary', {})),
+        'financialFeatureImportance': financial_feature_importance_chart_data(
+            financial_context.get('feature_importance_rows', []),
+        ),
+    }
+
+
+def financial_comparison_chart_data(rows):
+    return {
+        'models': [row['model'] for row in rows],
+        'baselineF1': [safe_float(row['baseline_f1']) for row in rows],
+        'enrichedF1': [safe_float(row['enriched_f1']) for row in rows],
+        'baselineRocAuc': [safe_float(row['baseline_roc_auc']) for row in rows],
+        'enrichedRocAuc': [safe_float(row['enriched_roc_auc']) for row in rows],
+    }
+
+
+def financial_coverage_chart_data(summary):
+    covered = safe_int(
+        summary.get('companies_with_financial_enrichment_raw')
+        if summary.get('companies_with_financial_enrichment_raw') is not None
+        else summary.get('companies_with_financial_enrichment')
+    )
+    total = safe_int(
+        summary.get('total_joined_companies_raw')
+        if summary.get('total_joined_companies_raw') is not None
+        else summary.get('total_joined_companies')
+    )
+    without_financial = max(0, total - covered)
+    return {
+        'labels': ['With financial enrichment', 'Without financial enrichment'],
+        'series': [covered, without_financial],
+    }
+
+
+def financial_feature_importance_chart_data(rows, limit=15):
+    preferred = [
+        row for row in rows
+        if row.get('experiment') == 'procurement_plus_financial_enrichment'
+        and row.get('model') in {'random_forest', 'extra_trees'}
+    ]
+    ranked = sorted(
+        preferred or rows,
+        key=lambda row: abs(safe_float(row.get('importance')) or 0),
+        reverse=True,
+    )[:limit]
+    ranked.reverse()
+    return {
+        'labels': [row.get('feature', '') for row in ranked],
+        'values': [safe_float(row.get('importance')) for row in ranked],
     }
 
 
@@ -930,6 +1040,10 @@ def safe_float(value):
     if value in (None, ''):
         return None
     try:
+        if isinstance(value, str):
+            value = value.replace(',', '').strip()
+            if value.endswith('%'):
+                value = value[:-1]
         return float(value)
     except (TypeError, ValueError):
         return None
@@ -939,6 +1053,10 @@ def safe_int(value):
     if value in (None, ''):
         return 0
     try:
+        if isinstance(value, str):
+            value = value.replace(',', '').strip()
+            if value.endswith('%'):
+                value = value[:-1]
         return int(float(value))
     except (TypeError, ValueError):
         return 0

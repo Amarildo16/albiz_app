@@ -147,6 +147,12 @@ def get_risk_overview(top_limit=OVERVIEW_TOP_LIMIT):
     ratio_rows = []
     procurement_rows = []
     winner_value_rows = []
+    risk_count_distribution = {
+        '0 indicators': 0,
+        '1 indicator': 0,
+        '2 indicators': 0,
+        '3+ indicators': 0,
+    }
 
     companies = base_risk_queryset().only(*RISK_OVERVIEW_FIELDS).iterator(chunk_size=1000)
     for company in companies:
@@ -155,6 +161,7 @@ def get_risk_overview(top_limit=OVERVIEW_TOP_LIMIT):
         risk_count = len(indicators)
         winner_value = get_winner_value(company)
         company_row = _risk_company_row(company, indicators, winner_value)
+        risk_count_distribution[risk_count_bucket(risk_count)] += 1
 
         if risk_count:
             companies_with_indicators += 1
@@ -194,6 +201,10 @@ def get_risk_overview(top_limit=OVERVIEW_TOP_LIMIT):
             distribution.values(),
             key=lambda item: (-item['count'], item['label']),
         ),
+        'risk_indicator_count_distribution': risk_count_distribution_rows(
+            risk_count_distribution,
+            total_joined_companies,
+        ),
         'top_companies_by_risk_count': sorted(
             risk_rows,
             key=lambda item: (-item['risk_indicator_count'], item['business_name'].lower(), item['company_nipt']),
@@ -210,6 +221,7 @@ def get_risk_overview(top_limit=OVERVIEW_TOP_LIMIT):
             winner_value_rows,
             key=lambda item: -item['active_winner_value_sort'],
         )[:top_limit],
+        'chart_data': risk_chart_data(distribution, risk_count_distribution),
     }
 
 
@@ -236,6 +248,46 @@ def _risk_company_row(company, indicators, winner_value):
         'ratio_sort': ratio,
         'active_procurement_count_sort': active_procurement_count,
         'active_winner_value_sort': active_winner_value or Decimal('0'),
+    }
+
+
+def risk_count_bucket(risk_count):
+    if risk_count <= 0:
+        return '0 indicators'
+    if risk_count == 1:
+        return '1 indicator'
+    if risk_count == 2:
+        return '2 indicators'
+    return '3+ indicators'
+
+
+def risk_count_distribution_rows(distribution, total):
+    return [
+        {
+            'label': label,
+            'count': count,
+            'count_display': format_integer(count),
+            'percentage': _percentage(count, total),
+            'percentage_display': format_percent(_percentage(count, total)),
+        }
+        for label, count in distribution.items()
+    ]
+
+
+def risk_chart_data(indicator_distribution, risk_count_distribution):
+    indicator_items = sorted(
+        indicator_distribution.values(),
+        key=lambda item: (-item['count'], item['label']),
+    )
+    return {
+        'riskIndicatorFrequency': {
+            'labels': [item['label'] for item in indicator_items],
+            'series': [item['count'] for item in indicator_items],
+        },
+        'riskIndicatorCountDistribution': {
+            'labels': list(risk_count_distribution.keys()),
+            'series': list(risk_count_distribution.values()),
+        },
     }
 
 

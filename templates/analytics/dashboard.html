@@ -180,4 +180,27 @@
         </div>
     </div>
 </div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card mb-0">
+            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <h5 class="card-title mb-0">Data Coverage Snapshot</h5>
+                    <p class="text-muted mb-0 mt-1">Compact view of core collector coverage and local ML dataset availability.</p>
+                </div>
+                <span class="badge bg-info-subtle text-info">Read-only summary</span>
+            </div>
+            <div class="card-body">
+                <div id="dashboard-data-coverage-chart" class="apex-charts" style="min-height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ metrics.chart_data|json_script:'dashboard-chart-data' }}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'velzon/libs/apexcharts/apexcharts.min.js' %}"></script>
+<script src="{% static 'albiz/js/albiz-charts.js' %}"></script>
 {% endblock %}

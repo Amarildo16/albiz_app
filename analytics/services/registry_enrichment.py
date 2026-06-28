@@ -50,6 +50,7 @@ def get_registry_enrichment_report():
         'open_corporates': open_corporates,
         'name_comparison': name_comparison,
         'financial_years': financial_years,
+        'chart_data': registry_chart_data(qkb, open_corporates),
         'limitations': [
             'OpenCorporates is secondary and exploratory enrichment, not an authoritative core source.',
             'QKB remains the registry backbone for company identity and registry attributes.',
@@ -58,6 +59,36 @@ def get_registry_enrichment_report():
             'The OpenCorporates financial subset can support exploratory analysis but should not be treated as complete national financial coverage.',
             'Further work should validate financial values against official filings where available.',
         ],
+    }
+
+
+def registry_chart_data(qkb, open_corporates):
+    return {
+        'coverageFunnel': {
+            'labels': [
+                'APP winner companies',
+                'APP-QKB joined companies',
+                'OpenCorporates profile overlap',
+                'OpenCorporates financial overlap',
+            ],
+            'series': [
+                qkb['counts']['app_winner_companies']['value'] or 0,
+                qkb['counts']['joined_app_qkb_companies']['value'] or 0,
+                open_corporates['overlap']['profiles_with_joined']['value'] or 0,
+                open_corporates['overlap']['financial_with_joined']['value'] or 0,
+            ],
+        },
+        'legalForms': distribution_chart_data(qkb['distributions']['legal_form'], limit=8),
+        'topCities': distribution_chart_data(qkb['distributions']['city'], limit=10),
+        'registrationYears': distribution_chart_data(qkb['distributions']['registration_year'], limit=YEAR_DISTRIBUTION_LIMIT),
+    }
+
+
+def distribution_chart_data(distribution_payload, limit):
+    items = distribution_payload.get('items', [])[:limit]
+    return {
+        'labels': [item['label'] for item in items],
+        'series': [item['count']['value'] or 0 for item in items],
     }
 
 

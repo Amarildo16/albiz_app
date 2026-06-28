@@ -1,0 +1,24 @@
+{
+  "name": "albiz_app",
+  "version": "1.0.0",
+  "description": "`albiz_app` is a Django analytics and dashboard application for the Albiz project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Amarildo16/albiz_app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Amarildo16/albiz_app/issues"
+  },
+  "homepage": "https://github.com/Amarildo16/albiz_app#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
+  }
+}
