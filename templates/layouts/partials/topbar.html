@@ -57,6 +57,29 @@
                 <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle light-dark-mode" aria-label="{% trans 'Toggle color mode' %}">
                     <i class="bx bx-moon fs-22"></i>
                 </button>
+                {% if request.user.is_authenticated %}
+                    <div class="dropdown ms-1">
+                        <button class="btn btn-topbar btn-ghost-secondary rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{% trans 'User menu' %}">
+                            <i class="ri-user-line fs-20"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <div class="dropdown-header">
+                                <h6 class="mb-0">{{ request.user.get_username }}</h6>
+                                {% if request.user.email %}
+                                    <small class="text-muted">{{ request.user.email }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item">
+                                    <i class="ri-logout-box-r-line align-bottom me-1"></i>
+                                    {% trans 'Logout' %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

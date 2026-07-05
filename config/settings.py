@@ -14,8 +14,9 @@ import os
 from pathlib import Path
 
 import pymysql
-from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
+from dotenv import load_dotenv
 
 pymysql.install_as_MySQLdb()
 
@@ -40,11 +41,13 @@ def env_list(name, default=''):
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'change-me')
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool('DEBUG', default=True)
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.getenv('SECRET_KEY', 'change-me').strip()
+if not DEBUG and SECRET_KEY in {'', 'change-me'}:
+    raise ImproperlyConfigured('SECRET_KEY must be set to a non-default value when DEBUG=False.')
 
 ENABLE_WEB_ML_RUN = os.getenv(
     'ENABLE_WEB_ML_RUN',
@@ -57,6 +60,7 @@ ENABLE_WEB_ML_BENCHMARK_RUN = os.getenv(
 ).lower() in {'1', 'true', 'yes', 'on'}
 
 ALLOWED_HOSTS = env_list('ALLOWED_HOSTS', '127.0.0.1,localhost')
+CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS')
 
 
 # Application definition
@@ -108,21 +112,36 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },
-    'collector': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('COLLECTOR_DB_NAME', 'albiz_collector'),
-        'USER': os.getenv('COLLECTOR_DB_USER', 'root'),
-        'PASSWORD': os.getenv('COLLECTOR_DB_PASSWORD', ''),
-        'HOST': os.getenv('COLLECTOR_DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('COLLECTOR_DB_PORT', '3306'),
+        'NAME': os.getenv('DJANGO_CORE_DB_NAME', 'albiz_app_core_local'),
+        'USER': os.getenv('DJANGO_CORE_DB_USER', 'root'),
+        'PASSWORD': os.getenv('DJANGO_CORE_DB_PASSWORD', ''),
+        'HOST': os.getenv('DJANGO_CORE_DB_HOST', '127.0.0.1'),
+        'PORT': os.getenv('DJANGO_CORE_DB_PORT', '3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
+    },
+    'data': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DATA_DB_NAME', os.getenv('COLLECTOR_DB_NAME', 'albiz_collector')),
+        'USER': os.getenv('DATA_DB_USER', os.getenv('COLLECTOR_DB_USER', 'root')),
+        'PASSWORD': os.getenv('DATA_DB_PASSWORD', os.getenv('COLLECTOR_DB_PASSWORD', '')),
+        'HOST': os.getenv('DATA_DB_HOST', os.getenv('COLLECTOR_DB_HOST', '127.0.0.1')),
+        'PORT': os.getenv('DATA_DB_PORT', os.getenv('COLLECTOR_DB_PORT', '3306')),
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
     }
 }
+
+DATABASE_ROUTERS = ['config.db_router.AlbizDatabaseRouter']
+
+
+# Authentication redirects
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 
 # Password validation
@@ -168,3 +187,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

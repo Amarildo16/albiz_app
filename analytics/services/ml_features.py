@@ -5,10 +5,10 @@ from statistics import median
 
 from django.db import connections
 
+from analytics.db import DATA_DB_ALIAS
 from analytics.models import JoinedCompanyFeature
 from analytics.services.risk import compute_risk_indicators
 
-COLLECTOR_ALIAS = 'collector'
 FINANCIAL_TABLE = 'opencorporates_financial_years'
 FINANCIAL_NIPT_CANDIDATES = ['nipt', 'company_nipt', 'business_nipt', 'nuis']
 FINANCIAL_YEAR_CANDIDATES = ['year', 'financial_year', 'fiscal_year', 'statement_year']
@@ -110,7 +110,7 @@ PERFORMANCE_COMPONENTS = [
 
 def build_ml_dataset():
     companies = list(
-        JoinedCompanyFeature.objects.using(COLLECTOR_ALIAS)
+        JoinedCompanyFeature.objects.using(DATA_DB_ALIAS)
         .only(*QUERY_FIELDS)
         .order_by('company_nipt')
     )
@@ -331,7 +331,7 @@ def missingness_summary(missingness_rows):
 
 
 def financial_enrichment_lookup():
-    connection = connections[COLLECTOR_ALIAS]
+    connection = connections[DATA_DB_ALIAS]
     table_names = set(connection.introspection.table_names())
     summary = {
         'table_available': FINANCIAL_TABLE in table_names,

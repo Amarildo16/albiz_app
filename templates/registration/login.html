@@ -1,0 +1,93 @@
+{% load static i18n %}
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="utf-8">
+    <title>{% trans 'Login' %} | Albiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% trans 'Albiz analytics login' %}">
+    <link href="{% static 'velzon/libs/simplebar/dist/simplebar.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/libs/node-waves/dist/waves.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/css/icons.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/css/app.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'velzon/css/custom.min.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body class="bg-light">
+    <main class="auth-page-wrapper min-vh-100 d-flex align-items-center py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    <div class="text-center mb-4">
+                        <div class="avatar-md mx-auto mb-3 rounded bg-primary text-white d-inline-flex align-items-center justify-content-center fw-semibold fs-3">A</div>
+                        <h1 class="h3 mb-1">Albiz</h1>
+                        <p class="text-muted mb-0">{% trans 'Sign in to continue.' %}</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body p-4">
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for error in form.non_field_errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {% if next %}
+                                <div class="alert alert-warning" role="alert">
+                                    {% trans 'Please sign in to access that page.' %}
+                                </div>
+                            {% endif %}
+
+                            <form method="post" action="{% url 'login' %}" novalidate>
+                                {% csrf_token %}
+                                {% if next %}
+                                    <input type="hidden" name="next" value="{{ next }}">
+                                {% endif %}
+
+                                <div class="mb-3">
+                                    <label for="id_username" class="form-label">{% trans 'Username' %}</label>
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        id="id_username"
+                                        class="form-control{% if form.username.errors %} is-invalid{% endif %}"
+                                        value="{{ form.username.value|default_if_none:'' }}"
+                                        autocomplete="username"
+                                        autofocus
+                                        required
+                                    >
+                                    {% for error in form.username.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="id_password" class="form-label">{% trans 'Password' %}</label>
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        id="id_password"
+                                        class="form-control{% if form.password.errors %} is-invalid{% endif %}"
+                                        autocomplete="current-password"
+                                        required
+                                    >
+                                    {% for error in form.password.errors %}
+                                        <div class="invalid-feedback">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="ri-login-circle-line align-bottom me-1"></i>
+                                    {% trans 'Sign In' %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

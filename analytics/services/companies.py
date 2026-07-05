@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.urls import reverse
 
+from analytics.db import DATA_DB_ALIAS
 from analytics.models import JoinedCompanyFeature
 from analytics.services.risk import (
     RISK_INDICATOR_OPTIONS,
@@ -8,8 +9,6 @@ from analytics.services.risk import (
     get_risk_indicator_q,
     get_winner_value,
 )
-
-COLLECTOR_ALIAS = 'collector'
 
 DATATABLE_COLUMNS = [
     'company_nipt',
@@ -76,7 +75,7 @@ ORDERING_FIELDS = {
 
 
 def base_company_queryset():
-    return JoinedCompanyFeature.objects.using(COLLECTOR_ALIAS).all()
+    return JoinedCompanyFeature.objects.using(DATA_DB_ALIAS).all()
 
 
 def normalize_ordering(ordering):

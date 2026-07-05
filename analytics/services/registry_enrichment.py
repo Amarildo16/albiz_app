@@ -6,8 +6,8 @@ from pathlib import Path
 from django.conf import settings
 from django.db import connections
 
+from analytics.db import DATA_DB_ALIAS
 
-COLLECTOR_ALIAS = 'collector'
 AUDIT_REPORT_PATH = Path(settings.BASE_DIR) / 'reports' / 'registry' / 'registry_enrichment_audit.json'
 NORMALIZED_QKB_TABLE = 'normalized_qkb_search_rows'
 QKB_FEATURES_TABLE = 'qkb_company_features'
@@ -20,7 +20,7 @@ YEAR_DISTRIBUTION_LIMIT = 80
 
 
 def get_registry_enrichment_report():
-    connection = connections[COLLECTOR_ALIAS]
+    connection = connections[DATA_DB_ALIAS]
     table_names = set(connection.introspection.table_names())
     columns_by_table = {
         table_name: table_columns(connection, table_name)

@@ -2,7 +2,8 @@ from decimal import Decimal
 
 from django.db import connections
 
-COLLECTOR_ALIAS = 'collector'
+from analytics.db import DATA_DB_ALIAS
+
 NORMALIZED_APP_TABLE = 'normalized_app_export_rows'
 NORMALIZED_QKB_TABLE = 'normalized_qkb_search_rows'
 APP_FEATURES_TABLE = 'app_company_features'
@@ -21,7 +22,7 @@ LIMITATION_NOTES = [
 
 
 def get_data_quality_report():
-    connection = connections[COLLECTOR_ALIAS]
+    connection = connections[DATA_DB_ALIAS]
     table_names = set(connection.introspection.table_names())
     columns_by_table = {
         table_name: get_table_columns(connection, table_name)

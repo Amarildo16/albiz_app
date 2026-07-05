@@ -7,8 +7,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import DatabaseError, connections
 
+from analytics.db import DATA_DB_ALIAS
 
-COLLECTOR_ALIAS = 'collector'
 REPORT_PATH = Path(settings.BASE_DIR) / 'reports' / 'registry' / 'registry_enrichment_audit.json'
 RELEVANT_KEYWORDS = [
     'qkb',
@@ -109,7 +109,7 @@ class Command(BaseCommand):
 
 
 def build_registry_enrichment_audit():
-    connection = connections[COLLECTOR_ALIAS]
+    connection = connections[DATA_DB_ALIAS]
     table_names = sorted(connection.introspection.table_names())
     relevant_tables = relevant_table_names(table_names)
     columns_by_table = {

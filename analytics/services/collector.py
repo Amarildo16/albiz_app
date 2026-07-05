@@ -4,7 +4,8 @@ from pathlib import Path
 from django.conf import settings
 from django.db import DatabaseError, connections
 
-COLLECTOR_ALIAS = 'collector'
+from analytics.db import DATA_DB_ALIAS
+
 APP_COMPANY_FEATURES_TABLE = 'app_company_features'
 QKB_COMPANY_FEATURES_TABLE = 'qkb_company_features'
 JOINED_COMPANY_FEATURES_TABLE = 'joined_company_features'
@@ -13,7 +14,7 @@ ML_DATASET_SUMMARY_PATH = Path(settings.BASE_DIR) / 'reports' / 'ml' / 'ml_datas
 
 
 def get_collector_connection():
-    return connections[COLLECTOR_ALIAS]
+    return connections[DATA_DB_ALIAS]
 
 
 def get_current_database_name():

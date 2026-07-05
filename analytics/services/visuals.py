@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.urls import reverse
 
+from analytics.db import DATA_DB_ALIAS
 from analytics.models import JoinedCompanyFeature
 from analytics.services.risk import (
     RISK_INDICATOR_DEFINITIONS,
@@ -13,7 +14,6 @@ from analytics.services.risk import (
     format_ratio,
 )
 
-COLLECTOR_ALIAS = 'collector'
 VISUAL_TOP_LIMIT = 10
 RATIO_BANDS = [
     ('missing_invalid', 'Missing/invalid'),
@@ -58,7 +58,7 @@ def get_visual_analytics(top_limit=VISUAL_TOP_LIMIT):
     winner_value_rows = []
 
     companies = (
-        JoinedCompanyFeature.objects.using(COLLECTOR_ALIAS)
+        JoinedCompanyFeature.objects.using(DATA_DB_ALIAS)
         .only(*VISUAL_FIELDS)
         .iterator(chunk_size=1000)
     )

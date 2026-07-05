@@ -4,9 +4,9 @@ from decimal import Decimal
 from django.db.models import Q
 from django.urls import reverse
 
+from analytics.db import DATA_DB_ALIAS
 from analytics.models import JoinedCompanyFeature
 
-COLLECTOR_ALIAS = 'collector'
 RATIO_GT_ONE_THRESHOLD = Decimal('1')
 EXTREME_RATIO_THRESHOLD = Decimal('2')
 YOUNG_COMPANY_DAYS_THRESHOLD = 365
@@ -52,7 +52,7 @@ RISK_OVERVIEW_FIELDS = [
 
 
 def base_risk_queryset():
-    return JoinedCompanyFeature.objects.using(COLLECTOR_ALIAS).all()
+    return JoinedCompanyFeature.objects.using(DATA_DB_ALIAS).all()
 
 
 def get_winner_value(company):

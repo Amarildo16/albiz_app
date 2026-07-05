@@ -2,8 +2,8 @@ from decimal import Decimal, InvalidOperation
 
 from django.db import connections
 
+from analytics.db import DATA_DB_ALIAS
 
-COLLECTOR_ALIAS = 'collector'
 FINANCIAL_TABLE = 'opencorporates_financial_years'
 NIPT_CANDIDATES = ['nipt', 'company_nipt', 'business_nipt', 'nuis']
 YEAR_CANDIDATES = ['year', 'financial_year', 'fiscal_year', 'statement_year']
@@ -19,7 +19,7 @@ PROFIT_CANDIDATES = [
 def get_company_financial_enrichment(company_nipt):
     normalized_nipt = normalize_nipt(company_nipt)
     base = empty_result(normalized_nipt)
-    connection = connections[COLLECTOR_ALIAS]
+    connection = connections[DATA_DB_ALIAS]
     table_names = set(connection.introspection.table_names())
 
     if FINANCIAL_TABLE not in table_names:
