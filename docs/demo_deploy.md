@@ -65,6 +65,21 @@ CSRF_TRUSTED_ORIGINS=https://your-subdomain.ngrok-free.app
 ```
 
 Do not hardcode ngrok URLs in source files. Keep them in `.env`.
+Restart Django after changing `.env` so host, CSRF, debug, or database changes are loaded.
+
+## Authentication And Sessions
+
+- Login and logout are enabled through Django's built-in authentication views.
+- There is no public registration, signup page, remember-me option, or public user creation flow.
+- Authenticated sessions expire after 6 hours.
+- Session expiry is not refreshed on every request.
+- Logout is POST-only from the topbar and includes CSRF protection.
+
+If the demo stays live for multiple days, periodically clear expired sessions from the core database:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py clearsessions
+```
 
 ## Data Refresh Workflow
 
