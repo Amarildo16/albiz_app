@@ -1,8 +1,10 @@
 import csv
 import json
 import math
+import os
+import stat
 from collections import Counter, defaultdict
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import numpy as np
 from scipy import sparse
@@ -113,14 +115,24 @@ FINANCIAL_SUBSET_MODEL_NAMES = [
 ]
 
 
-def run_ml_analysis(output_dir):
-    output_dir = Path(output_dir)
-    dataset_path = output_dir / 'ml_dataset.csv'
-    feature_columns_path = output_dir / 'ml_feature_columns.json'
+class MLAnalysisDirectoryError(ValueError):
+    """Raised when an ML analysis input or output directory is unsafe or invalid."""
+
+
+def run_ml_analysis(
+    output_dir: str | os.PathLike[str],
+    *,
+    input_dir: str | os.PathLike[str] | None = None,
+):
+    raw_input_dir = output_dir if input_dir is None else input_dir
+    input_dir = _require_safe_existing_directory(raw_input_dir, role='input directory')
+    dataset_path = input_dir / 'ml_dataset.csv'
+    feature_columns_path = input_dir / 'ml_feature_columns.json'
     if not dataset_path.exists():
         raise FileNotFoundError(f'{dataset_path} was not found. Run build_ml_dataset first.')
     if not feature_columns_path.exists():
         raise FileNotFoundError(f'{feature_columns_path} was not found. Run build_ml_dataset first.')
+    output_dir = _prepare_safe_output_directory(output_dir)
 
     rows = read_csv_rows(dataset_path)
     metadata = read_json(feature_columns_path)
@@ -184,7 +196,7 @@ def run_ml_analysis(output_dir):
         lof_scores=lof_anomaly['scores'],
     )
     financial_subset = run_financial_subset_experiment(
-        output_dir=output_dir,
+        output_dir=input_dir,
         reduced_numeric_features=reduced_numeric_features,
         reduced_categorical_features=reduced_categorical_features,
     )
@@ -358,6 +370,7 @@ def run_classification_experiment(
 
 
 def run_financial_subset_experiment(output_dir, reduced_numeric_features, reduced_categorical_features):
+    # Retain the legacy keyword name while routing it to the selected input root.
     dataset_path = output_dir / FINANCIAL_DATASET_FILENAME
     metadata_path = output_dir / FINANCIAL_FEATURE_COLUMNS_FILENAME
     if not dataset_path.exists() or not metadata_path.exists():
@@ -1292,6 +1305,100 @@ def rounded(value, places):
     if value is None:
         return None
     return round(float(value), places)
+
+
+def _require_safe_existing_directory(path_value, *, role):
+    path = _coerce_directory_path(path_value, role=role)
+    _reject_unsafe_existing_components(path, role=role)
+    try:
+        if not path.exists() or not path.is_dir():
+            raise MLAnalysisDirectoryError(f'{role.capitalize()} does not exist or is not a directory.')
+        return path.resolve(strict=True)
+    except MLAnalysisDirectoryError:
+        raise
+    except OSError as exc:
+        raise MLAnalysisDirectoryError(f'{role.capitalize()} could not be inspected safely.') from exc
+
+
+def _prepare_safe_output_directory(path_value):
+    role = 'output directory'
+    path = _coerce_directory_path(path_value, role=role)
+    _reject_unsafe_existing_components(path, role=role)
+    try:
+        if path.exists() and not path.is_dir():
+            raise MLAnalysisDirectoryError('Output directory path exists but is not a directory.')
+        path.mkdir(parents=True, exist_ok=True)
+        _reject_unsafe_existing_components(path, role=role)
+        if not path.is_dir():
+            raise MLAnalysisDirectoryError('Output directory could not be created as a directory.')
+        return path.resolve(strict=True)
+    except MLAnalysisDirectoryError:
+        raise
+    except OSError as exc:
+        raise MLAnalysisDirectoryError('Output directory could not be prepared safely.') from exc
+
+
+def _coerce_directory_path(path_value, *, role):
+    if path_value is None or (isinstance(path_value, str) and not path_value.strip()):
+        raise MLAnalysisDirectoryError(f'An explicit {role} path is required.')
+    try:
+        path = Path(path_value).expanduser()
+        path_text = os.fspath(path)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise MLAnalysisDirectoryError(f'{role.capitalize()} is not a valid path.') from exc
+    if '\0' in path_text:
+        raise MLAnalysisDirectoryError(f'{role.capitalize()} contains a null byte.')
+    windows_path = PureWindowsPath(path_text)
+    if os.name == 'nt' and path_text.startswith(('\\\\', '//')):
+        raise MLAnalysisDirectoryError(f'{role.capitalize()} must not be a UNC path.')
+    if os.name == 'nt' and windows_path.root and not windows_path.drive:
+        raise MLAnalysisDirectoryError(
+            f'{role.capitalize()} must not be drive-root-relative.'
+        )
+    if windows_path.drive and (
+        os.name != 'nt' or not windows_path.is_absolute()
+    ):
+        raise MLAnalysisDirectoryError(
+            f'{role.capitalize()} is drive-qualified for another platform or drive-relative.'
+        )
+    try:
+        return Path(os.path.abspath(path_text))
+    except (OSError, ValueError) as exc:
+        raise MLAnalysisDirectoryError(f'{role.capitalize()} is not a valid path.') from exc
+
+
+def _reject_unsafe_existing_components(path, *, role):
+    for component in (path, *path.parents):
+        try:
+            if not os.path.lexists(component):
+                continue
+            if _is_unsafe_link(component):
+                raise MLAnalysisDirectoryError(
+                    f'{role.capitalize()} must not contain a symbolic link, junction, or reparse point.'
+                )
+            if component != path and not component.is_dir():
+                raise MLAnalysisDirectoryError(
+                    f'{role.capitalize()} has an existing ancestor that is not a directory.'
+                )
+        except MLAnalysisDirectoryError:
+            raise
+        except OSError as exc:
+            raise MLAnalysisDirectoryError(
+                f'{role.capitalize()} could not be inspected safely.'
+            ) from exc
+
+
+def _is_unsafe_link(path):
+    if path.is_symlink():
+        return True
+    is_junction = getattr(path, 'is_junction', None)
+    if is_junction and is_junction():
+        return True
+    if os.name == 'nt' and os.path.lexists(path):
+        file_attributes = getattr(path.lstat(), 'st_file_attributes', 0)
+        reparse_flag = getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0x400)
+        return bool(file_attributes & reparse_flag)
+    return False
 
 
 def read_csv_rows(path):

@@ -1,7 +1,9 @@
 import csv
 import json
+import os
+import stat
 from collections import Counter, defaultdict
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import numpy as np
 from sklearn.base import clone
@@ -59,12 +61,118 @@ BENCHMARK_OUTPUTS = {
 }
 
 
-def run_ml_benchmark(output_dir):
-    output_dir = Path(output_dir)
-    base_dataset_path = output_dir / 'ml_dataset.csv'
-    base_metadata_path = output_dir / 'ml_feature_columns.json'
+class MLBenchmarkDirectoryError(ValueError):
+    """Raised when a benchmark input or output directory is unsafe or invalid."""
+
+
+def resolve_benchmark_directory(
+    directory: str | os.PathLike[str],
+    *,
+    role: str,
+    create: bool = False,
+) -> Path:
+    """Return a safe real directory for benchmark input or output."""
+
+    role_name = f'benchmark {role} directory'
+    path = _coerce_directory_path(directory, role=role_name)
+    _reject_unsafe_existing_components(path, role=role_name)
+    try:
+        if create:
+            path.mkdir(parents=True, exist_ok=True)
+            _reject_unsafe_existing_components(path, role=role_name)
+        if not path.exists() or not path.is_dir():
+            raise MLBenchmarkDirectoryError(
+                f'{role_name.capitalize()} does not exist or is not a directory.'
+            )
+        return path.resolve(strict=True)
+    except MLBenchmarkDirectoryError:
+        raise
+    except (OSError, RuntimeError) as exc:
+        raise MLBenchmarkDirectoryError(
+            f'{role_name.capitalize()} could not be prepared safely.'
+        ) from exc
+
+
+def _coerce_directory_path(path_value, *, role):
+    if path_value is None or (
+        isinstance(path_value, str) and not path_value.strip()
+    ):
+        raise MLBenchmarkDirectoryError(f'An explicit {role} path is required.')
+    try:
+        path = Path(path_value).expanduser()
+        path_text = os.fspath(path)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise MLBenchmarkDirectoryError(f'{role.capitalize()} is not a valid path.') from exc
+    if '\0' in path_text:
+        raise MLBenchmarkDirectoryError(f'{role.capitalize()} contains a null byte.')
+    windows_path = PureWindowsPath(path_text)
+    if os.name == 'nt' and path_text.startswith(('\\\\', '//')):
+        raise MLBenchmarkDirectoryError(f'{role.capitalize()} must not be a UNC path.')
+    if os.name == 'nt' and windows_path.root and not windows_path.drive:
+        raise MLBenchmarkDirectoryError(
+            f'{role.capitalize()} must not be drive-root-relative.'
+        )
+    if windows_path.drive and (
+        os.name != 'nt' or not windows_path.is_absolute()
+    ):
+        raise MLBenchmarkDirectoryError(
+            f'{role.capitalize()} is drive-qualified for another platform or drive-relative.'
+        )
+    try:
+        return Path(os.path.abspath(path_text))
+    except (OSError, ValueError) as exc:
+        raise MLBenchmarkDirectoryError(f'{role.capitalize()} is not a valid path.') from exc
+
+
+def _reject_unsafe_existing_components(path, *, role):
+    for component in (path, *path.parents):
+        try:
+            if not os.path.lexists(component):
+                continue
+            if _is_unsafe_link(component):
+                raise MLBenchmarkDirectoryError(
+                    f'{role.capitalize()} must not contain a symbolic link, junction, '
+                    'or reparse point.'
+                )
+            if component != path and not component.is_dir():
+                raise MLBenchmarkDirectoryError(
+                    f'{role.capitalize()} has an existing ancestor that is not a directory.'
+                )
+        except MLBenchmarkDirectoryError:
+            raise
+        except OSError as exc:
+            raise MLBenchmarkDirectoryError(
+                f'{role.capitalize()} could not be inspected safely.'
+            ) from exc
+
+
+def _is_unsafe_link(path: Path) -> bool:
+    if path.is_symlink():
+        return True
+    is_junction = getattr(path, 'is_junction', None)
+    if is_junction and is_junction():
+        return True
+    if os.name == 'nt' and os.path.lexists(path):
+        file_attributes = getattr(os.lstat(path), 'st_file_attributes', 0)
+        reparse_flag = getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0x400)
+        return bool(file_attributes & reparse_flag)
+    return False
+
+
+def run_ml_benchmark(
+    output_dir: str | os.PathLike[str],
+    *,
+    input_dir: str | os.PathLike[str] | None = None,
+):
+    input_dir = resolve_benchmark_directory(
+        output_dir if input_dir is None else input_dir,
+        role='input',
+    )
+    base_dataset_path = input_dir / 'ml_dataset.csv'
+    base_metadata_path = input_dir / 'ml_feature_columns.json'
     if not base_dataset_path.exists() or not base_metadata_path.exists():
         raise FileNotFoundError('ML dataset outputs are missing. Run build_ml_dataset first.')
+    output_dir = resolve_benchmark_directory(output_dir, role='output', create=True)
 
     base_rows = read_csv_rows(base_dataset_path)
     base_metadata = read_json(base_metadata_path)
@@ -86,7 +194,7 @@ def run_ml_benchmark(output_dir):
         )
     )
 
-    financial_results = financial_subset_benchmarks(output_dir, base_numeric, base_categorical)
+    financial_results = financial_subset_benchmarks(input_dir, base_numeric, base_categorical)
     benchmark_results.extend(financial_results)
 
     cv_rows = []
@@ -135,6 +243,7 @@ def reduced_feature_columns(numeric_features, categorical_features):
 
 
 def financial_subset_benchmarks(output_dir, base_numeric, base_categorical):
+    # Retain the legacy keyword name while routing it to the selected input root.
     dataset_path = output_dir / FINANCIAL_DATASET_FILENAME
     metadata_path = output_dir / FINANCIAL_FEATURE_COLUMNS_FILENAME
     if not dataset_path.exists() or not metadata_path.exists():

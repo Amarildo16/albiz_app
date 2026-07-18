@@ -1,19 +1,42 @@
+from argparse import ArgumentTypeError
 from pathlib import Path
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from analytics.services.ml_benchmark import run_ml_benchmark
+from analytics.services.ml_benchmark import MLBenchmarkDirectoryError, run_ml_benchmark
+
+
+def _directory_path(value):
+    if not value or not value.strip():
+        raise ArgumentTypeError('Directory path must not be blank.')
+    return Path(value)
 
 
 class Command(BaseCommand):
     help = 'Run repeated cross-validation ML benchmarks from generated ML datasets.'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--input-dir',
+            type=_directory_path,
+            default=None,
+            help='Directory containing generated ML dataset inputs.',
+        )
+        parser.add_argument(
+            '--output-dir',
+            type=_directory_path,
+            default=None,
+            help='Directory where benchmark artifacts will be written.',
+        )
+
     def handle(self, *args, **options):
-        output_dir = Path(settings.BASE_DIR) / 'reports' / 'ml'
+        default_dir = Path(settings.BASE_DIR) / 'reports' / 'ml'
+        input_dir = options.get('input_dir') or default_dir
+        output_dir = options.get('output_dir') or default_dir
         try:
-            result = run_ml_benchmark(output_dir)
-        except FileNotFoundError as exc:
+            result = run_ml_benchmark(output_dir, input_dir=input_dir)
+        except (MLBenchmarkDirectoryError, FileNotFoundError) as exc:
             raise CommandError(str(exc)) from exc
 
         summary = result['summary']

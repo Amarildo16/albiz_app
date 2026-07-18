@@ -1,23 +1,55 @@
+from argparse import ArgumentTypeError
 from pathlib import Path
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from analytics.services.ml_analysis import run_ml_analysis
+from analytics.services.ml_analysis import MLAnalysisDirectoryError, run_ml_analysis
+
+
+def _directory_path(value):
+    if not value or not value.strip():
+        raise ArgumentTypeError('Directory path must not be blank.')
+    return Path(value)
 
 
 class Command(BaseCommand):
     help = 'Runs exploratory ML analysis over the generated modelling dataset.'
 
-    def handle(self, *args, **options):
-        output_dir = Path(settings.BASE_DIR) / 'reports' / 'ml'
-        dataset_path = output_dir / 'ml_dataset.csv'
-        if not dataset_path.exists():
-            raise CommandError(
-                f'{dataset_path} was not found. Run ".\\.venv\\Scripts\\python.exe manage.py build_ml_dataset" first.'
-            )
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--input-dir',
+            type=_directory_path,
+            help=(
+                'Existing directory containing ml_dataset.csv, ml_feature_columns.json, '
+                'and optional financial-enrichment inputs.'
+            ),
+        )
+        parser.add_argument(
+            '--output-dir',
+            type=_directory_path,
+            help='Directory for generated analysis artifacts; it is created when necessary.',
+        )
 
-        result = run_ml_analysis(output_dir)
+    def handle(self, *args, **options):
+        default_dir = Path(settings.BASE_DIR) / 'reports' / 'ml'
+        input_override = options.get('input_dir')
+        output_override = options.get('output_dir')
+        input_dir = input_override or default_dir
+        output_dir = output_override or default_dir
+
+        if input_override is None and output_override is None:
+            dataset_path = default_dir / 'ml_dataset.csv'
+            if not dataset_path.exists():
+                raise CommandError(
+                    f'{dataset_path} was not found. Run '
+                    '".\\.venv\\Scripts\\python.exe manage.py build_ml_dataset" first.'
+                )
+
+        try:
+            result = run_ml_analysis(output_dir=output_dir, input_dir=input_dir)
+        except (MLAnalysisDirectoryError, FileNotFoundError) as exc:
+            raise CommandError(str(exc)) from exc
         summary = result['summary']
 
         self.stdout.write(self.style.SUCCESS('ML analysis completed successfully.'))

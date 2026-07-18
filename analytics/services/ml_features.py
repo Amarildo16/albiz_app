@@ -1,8 +1,14 @@
+import csv
+import json
 import math
+import os
+import stat
 from collections import Counter, defaultdict
 from decimal import Decimal, InvalidOperation
+from pathlib import Path, PureWindowsPath
 from statistics import median
 
+from django.conf import settings
 from django.db import connections
 
 from analytics.db import DATA_DB_ALIAS
@@ -106,6 +112,80 @@ PERFORMANCE_COMPONENTS = [
     ('active_year_span', Decimal('0.10')),
     ('rows_with_winner_value_count', Decimal('0.10')),
 ]
+
+
+class MLDatasetDirectoryError(ValueError):
+    """Raised when the dataset artifact output directory is unsafe or invalid."""
+
+
+def write_ml_dataset_artifacts(
+    output_dir: str | os.PathLike[str] | None = None,
+):
+    """Build and write the eight frozen-v1 dataset artifacts.
+
+    Omitting ``output_dir`` preserves the legacy ``BASE_DIR/reports/ml``
+    destination. Files are created only when this callable is executed.
+    """
+
+    requested_output_dir = (
+        Path(settings.BASE_DIR) / 'reports' / 'ml'
+        if output_dir is None
+        else output_dir
+    )
+    output_dir = _prepare_safe_dataset_output_directory(requested_output_dir)
+    dataset = build_ml_dataset()
+    outputs = {
+        'dataset': output_dir / 'ml_dataset.csv',
+        'summary': output_dir / 'ml_dataset_summary.json',
+        'missingness': output_dir / 'ml_feature_missingness.csv',
+        'feature_columns': output_dir / 'ml_feature_columns.json',
+        'financial_dataset': output_dir / 'ml_dataset_with_financial_enrichment.csv',
+        'financial_summary': output_dir / 'ml_financial_enrichment_summary.json',
+        'financial_missingness': output_dir / 'ml_financial_feature_missingness.csv',
+        'financial_feature_columns': output_dir / 'ml_financial_feature_columns.json',
+    }
+
+    dataset_columns = [
+        *IDENTIFIER_COLUMNS,
+        *NUMERIC_FEATURES,
+        *CATEGORICAL_FEATURES,
+        *DERIVED_COLUMNS,
+    ]
+    _write_csv(outputs['dataset'], dataset_columns, dataset['rows'])
+    _write_json(outputs['summary'], dataset['summary'])
+    _write_csv(
+        outputs['missingness'],
+        ['feature', 'missing_count', 'missing_percentage', 'usable'],
+        dataset['missingness'],
+    )
+    _write_json(outputs['feature_columns'], dataset['feature_columns'])
+    financial_dataset_columns = [
+        *IDENTIFIER_COLUMNS,
+        *NUMERIC_FEATURES,
+        *CATEGORICAL_FEATURES,
+        *FINANCIAL_NUMERIC_FEATURES,
+        *DERIVED_COLUMNS,
+    ]
+    _write_csv(
+        outputs['financial_dataset'],
+        financial_dataset_columns,
+        dataset['financial_enriched_rows'],
+    )
+    _write_json(outputs['financial_summary'], dataset['financial_summary'])
+    _write_csv(
+        outputs['financial_missingness'],
+        ['feature', 'missing_count', 'missing_percentage', 'usable'],
+        dataset['financial_missingness'],
+    )
+    _write_json(
+        outputs['financial_feature_columns'],
+        dataset['financial_feature_columns'],
+    )
+    return {
+        'dataset': dataset,
+        'output_dir': output_dir,
+        'outputs': outputs,
+    }
 
 
 def build_ml_dataset():
@@ -613,6 +693,102 @@ def numeric_value(value):
 
 def is_missing(value):
     return value is None or value == ''
+
+
+def _prepare_safe_dataset_output_directory(path_value):
+    role = 'dataset output directory'
+    if path_value is None or (
+        isinstance(path_value, str) and not path_value.strip()
+    ):
+        raise MLDatasetDirectoryError('An explicit dataset output directory is required.')
+    try:
+        path = Path(path_value).expanduser()
+        path_text = os.fspath(path)
+    except (TypeError, ValueError, RuntimeError) as exc:
+        raise MLDatasetDirectoryError('Dataset output directory is not a valid path.') from exc
+    if '\0' in path_text:
+        raise MLDatasetDirectoryError('Dataset output directory contains a null byte.')
+    windows_path = PureWindowsPath(path_text)
+    if os.name == 'nt' and path_text.startswith(('\\\\', '//')):
+        raise MLDatasetDirectoryError('UNC dataset output directories are unsupported.')
+    if os.name == 'nt' and windows_path.root and not windows_path.drive:
+        raise MLDatasetDirectoryError(
+            'Drive-root-relative dataset output directories are unsupported.'
+        )
+    if windows_path.drive and (
+        os.name != 'nt' or not windows_path.is_absolute()
+    ):
+        raise MLDatasetDirectoryError(
+            'Dataset output directory is drive-qualified for another platform or drive-relative.'
+        )
+    try:
+        path = Path(os.path.abspath(path_text))
+        _reject_unsafe_dataset_path_components(path)
+        if path.exists() and not path.is_dir():
+            raise MLDatasetDirectoryError(
+                'Dataset output directory path exists but is not a directory.'
+            )
+        path.mkdir(parents=True, exist_ok=True)
+        _reject_unsafe_dataset_path_components(path)
+        if not path.is_dir():
+            raise MLDatasetDirectoryError(
+                'Dataset output directory could not be created as a directory.'
+            )
+        return path.resolve(strict=True)
+    except MLDatasetDirectoryError:
+        raise
+    except OSError as exc:
+        raise MLDatasetDirectoryError(
+            'Dataset output directory could not be prepared safely.'
+        ) from exc
+
+
+def _reject_unsafe_dataset_path_components(path):
+    for component in (path, *path.parents):
+        try:
+            if not os.path.lexists(component):
+                continue
+            if _is_unsafe_dataset_link(component):
+                raise MLDatasetDirectoryError(
+                    'Dataset output directory must not contain a symbolic link, '
+                    'junction, or reparse point.'
+                )
+            if component != path and not component.is_dir():
+                raise MLDatasetDirectoryError(
+                    'Dataset output directory has an existing ancestor that is not a directory.'
+                )
+        except MLDatasetDirectoryError:
+            raise
+        except OSError as exc:
+            raise MLDatasetDirectoryError(
+                'Dataset output directory could not be inspected safely.'
+            ) from exc
+
+
+def _is_unsafe_dataset_link(path):
+    if path.is_symlink():
+        return True
+    is_junction = getattr(path, 'is_junction', None)
+    if is_junction and is_junction():
+        return True
+    if os.name == 'nt' and os.path.lexists(path):
+        file_attributes = getattr(path.lstat(), 'st_file_attributes', 0)
+        reparse_flag = getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0x400)
+        return bool(file_attributes & reparse_flag)
+    return False
+
+
+def _write_csv(path, fieldnames, rows):
+    with path.open('w', newline='', encoding='utf-8') as output_file:
+        writer = csv.DictWriter(output_file, fieldnames=fieldnames, extrasaction='ignore')
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def _write_json(path, data):
+    with path.open('w', encoding='utf-8') as output_file:
+        json.dump(data, output_file, indent=2, ensure_ascii=False)
+        output_file.write('\n')
 
 
 def percent_display(rate):
