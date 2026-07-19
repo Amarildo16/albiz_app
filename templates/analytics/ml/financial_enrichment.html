@@ -97,7 +97,8 @@
                 <p class="text-muted mb-3">{% trans 'Grouped comparison of F1 and ROC AUC by model for the financial subset experiment.' %}</p>
                 <div id="ml-financial-comparison-chart" class="apex-charts" style="min-height: 360px;"></div>
                 <div class="alert alert-light border mb-0 mt-3 py-2" role="alert">
-                    {% trans 'This compares a procurement-only baseline with the same subset plus secondary financial enrichment features; it is still evaluated against a heuristic strict weak label.' %}
+                    {% trans 'This comparison displays only the models included in the existing financial-subset experiment.' %}
+                    {% trans 'It compares a procurement-only baseline with the same subset plus secondary financial enrichment features; it is still evaluated against a heuristic strict weak label.' %}
                 </div>
             </div>
         </div>
@@ -153,7 +154,7 @@
             <div class="card-body">
                 <p class="fs-15 mb-3">{{ ml.financial_enrichment.conclusion }}</p>
                 <div class="alert alert-info mb-0" role="alert">
-                    {% trans 'In this run, the procurement-only baseline produced the best F1 and ROC AUC. Adding secondary financial enrichment did not clearly improve the best model. This should not be interpreted as financial data being useless; it means that for the current heuristic strict weak label and the available OpenCorporates subset, procurement/registry-derived signals dominate the model behavior.' %}
+                    {% trans 'The conclusion above is derived from the current financial subset metrics JSON. It compares only the models present in that file.' %}
                 </div>
                 <div class="row g-3 mt-1">
                     <div class="col-md-6">
@@ -183,7 +184,7 @@
                 <h5 class="card-title mb-0">{% trans 'Metrics Comparison' %}</h5>
             </div>
             <div class="card-body">
-                <p class="text-muted mb-3">{% trans 'The table compares model metrics on the same financial-enrichment subset so the procurement-only and enriched feature sets are directly comparable.' %}</p>
+                <p class="text-muted mb-3">{% trans 'The table compares every model present in the financial subset metrics JSON on the same covered subset.' %}</p>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">
                         <thead class="table-light">
@@ -237,7 +238,7 @@
             <div class="card-body">
                 <div id="ml-financial-feature-importance-chart" class="apex-charts mb-4" style="min-height: 420px;"></div>
                 <div class="alert alert-light border mb-4 py-2" role="alert">
-                    {% trans 'Feature importance describes model behavior within this secondary financial subset and should not be read as evidence of external outcomes.' %}
+                    {% trans 'Feature importance describes supported-model behavior within this secondary financial subset and should not be read as evidence of external outcomes. Models without native or coefficient-based importance do not receive fabricated rows.' %}
                 </div>
                 <div class="table-responsive">
                     <table class="table table-sm table-hover align-middle mb-0">

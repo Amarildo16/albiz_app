@@ -139,6 +139,30 @@
         });
     }
 
+    function horizontalDataPoints(data) {
+        var labels = Array.isArray(data.labels) ? data.labels : [];
+        var values = Array.isArray(data.values) ? data.values : [];
+        return labels.map(function (label, index) {
+            return {
+                x: label || 'N/A',
+                y: numberValue(values[index], 0)
+            };
+        });
+    }
+
+    function horizontalDataPointsTopFirst(data) {
+        return horizontalDataPoints(data).slice().reverse();
+    }
+
+    function paddedMaxValue(data, paddingRatio) {
+        var values = Array.isArray(data.values) ? data.values : [];
+        var maxValue = values.reduce(function (currentMax, value) {
+            var parsed = Number(value);
+            return Number.isFinite(parsed) ? Math.max(currentMax, parsed) : currentMax;
+        }, 0);
+        return maxValue > 0 ? maxValue * (1 + (paddingRatio || 0)) : undefined;
+    }
+
     function markerSizeFromPerformance(value) {
         var parsed = Number(value);
         if (!Number.isFinite(parsed)) {
@@ -243,17 +267,50 @@
         if (!data || !Array.isArray(data.labels) || !data.labels.length) {
             return;
         }
+        var labels = data.labels.slice(0, 3).concat(['2D Total', '3D Total']);
+        var values = (data.values || []).slice(0, 3).concat([
+            numberValue(data.cumulative_2d, null),
+            numberValue(data.cumulative_3d, null)
+        ]);
+        var individualColor = '#299cdb';
+        var cumulativeColor = '#0ab39c';
+        var tooltipDescriptions = [
+            'Individual explained variance',
+            'Individual explained variance',
+            'Individual explained variance',
+            'Cumulative variance retained by the 2D projection',
+            'Cumulative variance retained by the 3D projection'
+        ];
+        function formatPercentValue(value) {
+            if (value === null || value === '' || typeof value === 'undefined') {
+                return 'N/A';
+            }
+            var parsed = Number(value);
+            if (!Number.isFinite(parsed)) {
+                return 'N/A';
+            }
+            return (parsed * 100).toFixed(1) + '%';
+        }
         renderApexChart('ml-pca-variance-chart', {
             chart: {
                 type: 'bar',
                 height: 280,
                 toolbar: { show: false }
             },
+            plotOptions: {
+                bar: {
+                    columnWidth: '48%',
+                    distributed: true,
+                    dataLabels: {
+                        position: 'top'
+                    }
+                }
+            },
             series: [{
-                name: 'Explained variance',
-                data: data.values || []
+                name: 'Variance retained',
+                data: values
             }],
-            xaxis: { categories: data.labels },
+            xaxis: { categories: labels },
             yaxis: {
                 min: 0,
                 labels: {
@@ -262,17 +319,35 @@
                     }
                 }
             },
-            colors: ['#299cdb'],
+            colors: [
+                individualColor,
+                individualColor,
+                individualColor,
+                cumulativeColor,
+                cumulativeColor
+            ],
             dataLabels: {
                 enabled: true,
+                offsetY: -18,
+                style: {
+                    fontSize: '12px',
+                    colors: ['#495057']
+                },
                 formatter: function (value) {
-                    return (value * 100).toFixed(1) + '%';
+                    return formatPercentValue(value);
                 }
             },
             tooltip: {
+                x: {
+                    formatter: function (label, options) {
+                        var index = options && options.dataPointIndex;
+                        var description = tooltipDescriptions[index] || 'Explained variance';
+                        return label + ' — ' + description;
+                    }
+                },
                 y: {
                     formatter: function (value) {
-                        return (value * 100).toFixed(2) + '%';
+                        return formatPercentValue(value);
                     }
                 }
             }
@@ -478,27 +553,49 @@
                 height: 420,
                 toolbar: { show: false }
             },
+            title: data.title ? {
+                text: data.title,
+                style: { fontSize: '14px', fontWeight: 600 }
+            } : undefined,
             plotOptions: {
-                bar: { horizontal: true }
+                bar: {
+                    horizontal: true,
+                    dataLabels: { position: 'top' }
+                }
             },
             series: [{
                 name: 'Importance',
-                data: data.values || []
+                data: horizontalDataPointsTopFirst(data)
             }],
             xaxis: {
+                max: paddedMaxValue(data, 0.18),
                 labels: {
                     formatter: function (value) {
-                        return formatNumber(value, 2);
+                        return formatNumber(value, 3);
                     }
                 }
             },
-            yaxis: { labels: { maxWidth: 260 } },
-            colors: ['#f7b84b'],
-            dataLabels: { enabled: false },
+            yaxis: {
+                labels: {
+                    maxWidth: 460,
+                    style: { fontSize: '12px' }
+                }
+            },
+            colors: ['#405189'],
+            dataLabels: {
+                enabled: true,
+                textAnchor: 'start',
+                formatter: function (value) {
+                    return formatNumber(value, 3);
+                },
+                offsetX: 10,
+                style: { colors: ['#343a40'] },
+                background: { enabled: false }
+            },
             tooltip: {
                 y: {
                     formatter: function (value) {
-                        return formatNumber(value, 6);
+                        return formatNumber(value, 3);
                     }
                 }
             }
@@ -591,7 +688,7 @@
             },
             series: [{
                 name: 'Importance',
-                data: data.values || []
+                data: horizontalDataPoints(data)
             }],
             xaxis: {
                 labels: {
@@ -633,7 +730,7 @@
             dataLabels: { enabled: false },
             series: [{
                 name: seriesName,
-                data: data.values || []
+                data: horizontalDataPoints(data)
             }],
             xaxis: {
                 min: 0,
@@ -663,15 +760,82 @@
         });
     }
 
+    function renderBenchmarkFeatureImportanceChart(containerId, data) {
+        if (!data || !Array.isArray(data.labels) || !data.labels.length) {
+            return;
+        }
+        renderApexChart(containerId, {
+            chart: {
+                type: 'bar',
+                height: 420,
+                toolbar: { show: false }
+            },
+            title: data.title ? {
+                text: data.title,
+                style: { fontSize: '14px', fontWeight: 600 }
+            } : undefined,
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    borderRadius: 3,
+                    barHeight: '70%',
+                    dataLabels: { position: 'right' }
+                }
+            },
+            series: [{
+                name: 'Importance',
+                data: horizontalDataPointsTopFirst(data)
+            }],
+            xaxis: {
+                min: 0,
+                labels: {
+                    formatter: function (value) {
+                        return formatNumber(value, 3);
+                    }
+                }
+            },
+            yaxis: {
+                labels: {
+                    maxWidth: 460,
+                    style: { fontSize: '12px' }
+                }
+            },
+            colors: ['#6559cc'],
+            dataLabels: {
+                enabled: true,
+                formatter: function (value) {
+                    return formatNumber(value, 3);
+                },
+                offsetX: 8,
+                style: { colors: ['#343a40'] },
+                background: { enabled: false }
+            },
+            tooltip: {
+                y: {
+                    formatter: function (value) {
+                        return formatNumber(value, 3);
+                    }
+                }
+            },
+            responsive: [{
+                breakpoint: 576,
+                options: {
+                    chart: { height: 360 },
+                    yaxis: { labels: { maxWidth: 360 } }
+                }
+            }]
+        });
+    }
+
     function renderBenchmarkCharts(data) {
         if (!data) {
             return;
         }
         renderBenchmarkHorizontalChart('ml-benchmark-f1-chart', data.f1Comparison, 'Mean F1', '#405189', 4);
         renderBenchmarkHorizontalChart('ml-benchmark-roc-chart', data.rocAucComparison, 'Mean ROC AUC', '#0ab39c', 4);
-        renderBenchmarkHorizontalChart('ml-benchmark-pr-chart', data.averagePrecisionComparison, 'Mean PR AUC', '#f7b84b', 4);
+        renderBenchmarkHorizontalChart('ml-benchmark-pr-chart', data.averagePrecisionComparison, 'Mean Average Precision', '#f7b84b', 4);
         renderBenchmarkHorizontalChart('ml-benchmark-stability-chart', data.stabilityComparison, 'F1 std', '#299cdb', 4);
-        renderBenchmarkHorizontalChart('ml-benchmark-feature-importance-chart', data.featureImportance, 'Importance', '#6559cc', 6);
+        renderBenchmarkFeatureImportanceChart('ml-benchmark-feature-importance-chart', data.featureImportance);
     }
 
     document.addEventListener('DOMContentLoaded', function () {

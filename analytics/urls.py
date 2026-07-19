@@ -33,6 +33,8 @@ urlpatterns = [
     path('ml/exports/', login_required(views.ml_exports), name='ml_exports'),
     path('ml/run-analysis/', login_required(views.ml_run_analysis), name='ml_run_analysis'),
     path('ml/run-benchmark/', login_required(views.ml_run_benchmark), name='ml_run_benchmark'),
+    path('ml/run-supervised-v2/', login_required(views.ml_run_supervised_v2), name='ml_run_supervised_v2'),
+    path('ml/supervised-v2-status/', login_required(views.ml_supervised_v2_status), name='ml_supervised_v2_status'),
     path('reports/export/risk-summary.csv', login_required(views.export_risk_summary_csv), name='export_risk_summary_csv'),
     path(
         'reports/export/top-risk-companies.csv',

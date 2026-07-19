@@ -6,7 +6,7 @@ from django.contrib.messages import get_messages
 from django.db import DatabaseError
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from analytics.models import JoinedCompanyFeature
 from analytics.services.collector import get_collector_health, get_dashboard_metrics
@@ -24,6 +24,10 @@ from analytics.services.data_quality import get_data_quality_report
 from analytics.services.ml_results import get_ml_export_path, get_ml_results_context
 from analytics.services.ml_benchmark_runner import run_ml_benchmark_from_web
 from analytics.services.ml_runner import run_ml_pipeline_from_web
+from analytics.services.ml_supervised_v2_runner import (
+    get_ml_supervised_v2_status,
+    start_ml_supervised_v2_from_web,
+)
 from analytics.services.risk import (
     RISK_INDICATOR_OPTIONS,
     compute_risk_indicators,
@@ -196,7 +200,7 @@ def render_ml_results_page(request, template_name):
         request,
         template_name,
         {
-            'ml': get_ml_results_context(),
+            'ml': get_ml_results_context(selection=request.GET),
             'ml_page_messages': page_messages,
         },
     )
@@ -298,6 +302,33 @@ def ml_run_benchmark(request):
         )
 
     return redirect('analytics:ml_benchmark')
+
+
+@require_POST
+def ml_run_supervised_v2(request):
+    if not settings.ENABLE_WEB_ML_BENCHMARK_RUN:
+        return JsonResponse(
+            {
+                'state': 'disabled',
+                'running': False,
+                'success': False,
+                'locked': False,
+                'message': 'Web corrected-benchmark runs are disabled in this environment.',
+                'error_details': '',
+            },
+            status=403,
+        )
+
+    result = start_ml_supervised_v2_from_web()
+    status = 200 if result.get('locked') else 202
+    if result.get('state') == 'failure':
+        status = 500
+    return JsonResponse(result, status=status)
+
+
+@require_GET
+def ml_supervised_v2_status(request):
+    return JsonResponse(get_ml_supervised_v2_status())
 
 
 def export_risk_summary_csv(request):

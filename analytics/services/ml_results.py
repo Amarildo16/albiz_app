@@ -9,6 +9,18 @@ from django.utils import timezone
 
 
 ML_OUTPUT_DIR = Path(settings.BASE_DIR) / 'reports' / 'ml'
+ML_SUPERVISED_V2_OUTPUT_DIR = Path(settings.BASE_DIR) / 'reports' / 'ml_v2' / 'supervised'
+SUPERVISED_V2_MODEL_RANKING_FILENAME = 'ml_v2_supervised_model_ranking' + '.csv'
+SUPERVISED_V2_RUN_LOCK_FILENAME = '.ml_v2_supervised_run.lock'
+SUPERVISED_V2_RUN_STATUS_FILENAME = '.ml_v2_supervised_run_status.json'
+SUPERVISED_V2_EXPERIMENTS = (
+    'full_feature_strict_label',
+    'reduced_feature_strict_label',
+    'full_feature_weak_label_replication',
+)
+DEFAULT_BENCHMARK_IMPORTANCE_DATASET = 'main_reduced_strict_label_dataset'
+DEFAULT_BENCHMARK_IMPORTANCE_EXPERIMENT = 'reduced_feature_strict_label_benchmark'
+DEFAULT_BENCHMARK_IMPORTANCE_MODEL = 'random_forest'
 PLOTLY_ASSET_PATH = Path(settings.BASE_DIR) / 'static' / 'velzon' / 'libs' / 'plotly' / 'plotly.min.js'
 PCA_VISUALIZATION_LIMIT = 2000
 PCA_TOP_ANOMALY_LIMIT = 500
@@ -75,7 +87,7 @@ BENCHMARK_REQUIRED_FILES = [
 BENCHMARK_LOCK_FILENAME = '.ml_benchmark_run.lock'
 
 
-def get_ml_results_context(preview_limit=20):
+def get_ml_results_context(preview_limit=20, selection=None):
     errors = []
     file_status = get_file_status()
 
@@ -106,11 +118,19 @@ def get_ml_results_context(preview_limit=20):
         financial_subset_metrics=financial_subset_metrics,
         preview_limit=preview_limit,
     )
+    supervised_v2_context = build_supervised_v2_benchmark_context(
+        errors=errors,
+        selection=selection,
+    )
+    benchmark_feature_importance_context = build_benchmark_feature_importance_context(
+        selection=selection,
+    )
     benchmark_context = build_benchmark_context(
         summary=benchmark_summary,
         confusion_matrices=benchmark_confusion,
         notes_text=benchmark_notes,
         preview_limit=preview_limit,
+        supervised_v2_context=supervised_v2_context,
     )
 
     return {
@@ -146,6 +166,7 @@ def get_ml_results_context(preview_limit=20):
         'leakage_audit': build_leakage_audit(leakage_audit),
         'feature_importance_rows': feature_importance_preview,
         'feature_importance_groups': feature_importance_groups(limit_per_group=8),
+        'benchmark_feature_importance': benchmark_feature_importance_context,
         'anomaly_rows': preview_rows('ml_anomaly_ranking.csv', preview_limit, add_detail_url=True),
         'lof_rows': lof_rows,
         'classification_ranking_rows': preview_rows(
@@ -176,6 +197,7 @@ def get_ml_results_context(preview_limit=20):
             feature_importance_rows=feature_importance_preview,
             financial_context=financial_context,
             benchmark_context=benchmark_context,
+            benchmark_feature_importance_context=benchmark_feature_importance_context,
         ),
         'model_card': model_card,
         'limitations_text': limitations_text,
@@ -233,8 +255,8 @@ def read_json(filename, errors):
 
     try:
         return json.loads(path.read_text(encoding='utf-8'))
-    except (OSError, json.JSONDecodeError) as exc:
-        errors.append(f'{filename}: {exc}')
+    except (OSError, json.JSONDecodeError):
+        errors.append(f'{filename}: could not be read as valid JSON.')
         return {}
 
 
@@ -245,13 +267,14 @@ def read_text(filename, errors):
 
     try:
         return path.read_text(encoding='utf-8')
-    except OSError as exc:
-        errors.append(f'{filename}: {exc}')
+    except OSError:
+        errors.append(f'{filename}: could not be read.')
         return ''
 
 
-def read_csv_rows(filename, limit=None, errors=None):
-    path = ML_OUTPUT_DIR / filename
+def read_csv_rows(filename, limit=None, errors=None, directory=None):
+    root = Path(directory) if directory is not None else ML_OUTPUT_DIR
+    path = root / filename
     if not path.exists():
         return []
 
@@ -264,9 +287,9 @@ def read_csv_rows(filename, limit=None, errors=None):
                     break
                 rows.append(dict(row))
             return rows
-    except OSError as exc:
+    except (OSError, csv.Error, UnicodeError):
         if errors is not None:
-            errors.append(f'{filename}: {exc}')
+            errors.append(f'{filename}: could not be read as valid CSV.')
         return []
 
 
@@ -824,7 +847,224 @@ def financial_missingness_rows(limit):
     return rows
 
 
-def build_benchmark_context(summary, confusion_matrices, notes_text, preview_limit):
+def build_supervised_v2_benchmark_context(errors, selection=None):
+    filename = SUPERVISED_V2_MODEL_RANKING_FILENAME
+    path = ML_SUPERVISED_V2_OUTPUT_DIR / filename
+    rows = supervised_v2_model_ranking_rows(errors)
+    experiment_options = option_rows(SUPERVISED_V2_EXPERIMENTS, display_experiment_name)
+    requested_experiment = selected_param(selection, 'supervised_experiment')
+    selected_experiment = choose_available_value(
+        requested_experiment,
+        [option['value'] for option in experiment_options],
+        SUPERVISED_V2_EXPERIMENTS[0],
+    )
+    selected_rows = [
+        row for row in rows
+        if row.get('experiment') == selected_experiment
+    ]
+
+    missing_message = ''
+    if not path.exists():
+        missing_message = (
+            f'{filename} is unavailable. Run the supervised v2 command into '
+            'reports/ml_v2/supervised, then refresh this page.'
+        )
+    elif not rows:
+        missing_message = f'{filename} is present but contains no ranking rows.'
+    elif not selected_rows:
+        missing_message = 'No supervised v2 ranking rows exist for the selected experiment.'
+
+    return {
+        'available': bool(rows),
+        'filename': filename,
+        'missing_file': not path.exists(),
+        'missing_message': missing_message,
+        'experiment_options': experiment_options,
+        'selected_experiment': selected_experiment,
+        'selected_experiment_display': display_experiment_name(selected_experiment),
+        'selected_rows': selected_rows,
+        'selected_best_f1': best_supervised_v2_model(selected_rows, 'mean_f1'),
+        'selected_best_roc_auc': best_supervised_v2_model(selected_rows, 'mean_roc_auc'),
+        'selected_best_average_precision': best_supervised_v2_model(
+            selected_rows,
+            'mean_average_precision',
+        ),
+        'status': {
+            'run_lock_exists': (
+                ML_SUPERVISED_V2_OUTPUT_DIR / SUPERVISED_V2_RUN_LOCK_FILENAME
+            ).exists(),
+        },
+        'web_run_enabled': getattr(settings, 'ENABLE_WEB_ML_BENCHMARK_RUN', False),
+    }
+
+
+def supervised_v2_model_ranking_rows(errors):
+    rows = read_csv_rows(
+        SUPERVISED_V2_MODEL_RANKING_FILENAME,
+        limit=None,
+        errors=errors,
+        directory=ML_SUPERVISED_V2_OUTPUT_DIR,
+    )
+    experiment_order = {
+        experiment: index
+        for index, experiment in enumerate(SUPERVISED_V2_EXPERIMENTS)
+    }
+    rows = sorted(
+        rows,
+        key=lambda row: (
+            experiment_order.get(row.get('experiment'), len(experiment_order)),
+            safe_int(row.get('rank_by_f1')),
+            row.get('model', ''),
+        ),
+    )
+    formatted = []
+    for row in rows:
+        row['experiment_display'] = display_experiment_name(row.get('experiment'))
+        row['model_display'] = display_model_name(row.get('model'))
+        row['fold_count_display'] = format_int(row.get('fold_count'))
+        for key in [
+            'mean_f1',
+            'std_f1',
+            'mean_roc_auc',
+            'std_roc_auc',
+            'mean_average_precision',
+            'std_average_precision',
+        ]:
+            row[f'{key}_display'] = format_decimal(row.get(key), 4)
+        formatted.append(row)
+    return formatted
+
+
+def best_supervised_v2_model(rows, metric_name):
+    best = max(
+        rows,
+        key=lambda row: safe_float(row.get(metric_name)) if safe_float(row.get(metric_name)) is not None else -1,
+        default={},
+    )
+    return {
+        'model': display_model_name(best.get('model')),
+        'metric': format_decimal(best.get(metric_name), 4),
+    }
+
+
+def build_benchmark_feature_importance_context(selection=None):
+    filename = 'ml_benchmark_feature_importance.csv'
+    path = ML_OUTPUT_DIR / filename
+    rows = benchmark_feature_importance_rows(limit=None)
+    dataset_options = option_rows(unique_values(rows, 'dataset_name'), display_dataset_name)
+    selected_dataset = choose_available_value(
+        selected_param(selection, 'importance_dataset'),
+        [option['value'] for option in dataset_options],
+        DEFAULT_BENCHMARK_IMPORTANCE_DATASET,
+    )
+    dataset_rows = filter_rows(rows, dataset_name=selected_dataset)
+    experiment_options = option_rows(
+        unique_values(dataset_rows, 'experiment_name'),
+        display_experiment_name,
+    )
+    selected_experiment = choose_available_value(
+        selected_param(selection, 'importance_experiment'),
+        [option['value'] for option in experiment_options],
+        DEFAULT_BENCHMARK_IMPORTANCE_EXPERIMENT,
+    )
+    experiment_rows = filter_rows(
+        dataset_rows,
+        experiment_name=selected_experiment,
+    )
+    model_options = option_rows(unique_values(experiment_rows, 'model'), display_model_name)
+    selected_model = choose_available_value(
+        selected_param(selection, 'importance_model'),
+        [option['value'] for option in model_options],
+        DEFAULT_BENCHMARK_IMPORTANCE_MODEL,
+    )
+    selected_rows = filter_rows(experiment_rows, model=selected_model)
+    selected_rows = sorted(selected_rows, key=lambda row: safe_int(row.get('rank')))
+
+    missing_message = ''
+    if not path.exists():
+        missing_message = f'{filename} is unavailable. Run the benchmark suite, then refresh this page.'
+    elif not rows:
+        missing_message = f'{filename} is present but contains no feature-importance rows.'
+    elif not selected_rows:
+        missing_message = 'No feature-importance rows exist for the selected dataset, experiment and model.'
+
+    return {
+        'available': bool(rows),
+        'filename': filename,
+        'missing_file': not path.exists(),
+        'missing_message': missing_message,
+        'dataset_options': dataset_options,
+        'experiment_options': experiment_options,
+        'model_options': model_options,
+        'selected_dataset': selected_dataset,
+        'selected_experiment': selected_experiment,
+        'selected_model': selected_model,
+        'selected_dataset_display': display_dataset_name(selected_dataset),
+        'selected_experiment_display': display_experiment_name(selected_experiment),
+        'selected_model_display': display_model_name(selected_model),
+        'show_dataset_selector': len(dataset_options) > 1,
+        'show_experiment_selector': len(experiment_options) > 1,
+        'show_model_selector': len(model_options) > 1,
+        'selected_rows': selected_rows,
+    }
+
+
+def selected_param(selection, key):
+    if not selection:
+        return ''
+    try:
+        return str(selection.get(key, '')).strip()
+    except AttributeError:
+        return ''
+
+
+def choose_available_value(requested, values, fallback=''):
+    values = [value for value in values if value]
+    if requested and requested in values:
+        return requested
+    if fallback and fallback in values:
+        return fallback
+    return values[0] if values else fallback
+
+
+def unique_values(rows, field_name):
+    values = []
+    seen = set()
+    for row in rows:
+        value = row.get(field_name, '')
+        if not value or value in seen:
+            continue
+        seen.add(value)
+        values.append(value)
+    return values
+
+
+def option_rows(values, display_func):
+    return [
+        {
+            'value': value,
+            'label': display_func(value),
+        }
+        for value in values
+    ]
+
+
+def filter_rows(rows, **criteria):
+    filtered = rows
+    for key, expected in criteria.items():
+        if not expected:
+            continue
+        filtered = [row for row in filtered if row.get(key) == expected]
+    return filtered
+
+
+def build_benchmark_context(
+    summary,
+    confusion_matrices,
+    notes_text,
+    preview_limit,
+    supervised_v2_context=None,
+):
     file_status = benchmark_file_status()
     missing_files = [item['filename'] for item in file_status if not item['available']]
     ranking_rows = benchmark_model_ranking_rows()
@@ -846,6 +1086,7 @@ def build_benchmark_context(summary, confusion_matrices, notes_text, preview_lim
         'financial_comparison': benchmark_financial_comparison(ranking_rows),
         'status': benchmark_output_status(file_status),
         'web_run_enabled': getattr(settings, 'ENABLE_WEB_ML_BENCHMARK_RUN', False),
+        'supervised_v2': supervised_v2_context or {},
     }
 
 
@@ -1132,6 +1373,7 @@ def build_chart_data(
     feature_importance_rows,
     financial_context,
     benchmark_context,
+    benchmark_feature_importance_context,
 ):
     return {
         'fullModelComparison': {
@@ -1152,26 +1394,46 @@ def build_chart_data(
             'labels': [f"Cluster {row.get('cluster_id', '')}" for row in cluster_summary_rows],
             'counts': [safe_float(row.get('company_count')) for row in cluster_summary_rows],
         },
-        'featureImportance': feature_importance_chart_data(feature_importance_rows),
+        'featureImportance': benchmark_feature_importance_chart_data(
+            benchmark_feature_importance_context.get('selected_rows', []),
+        ),
         'financialComparison': financial_comparison_chart_data(financial_context.get('metric_rows', [])),
         'financialCoverage': financial_coverage_chart_data(financial_context.get('summary', {})),
         'financialFeatureImportance': financial_feature_importance_chart_data(
             financial_context.get('feature_importance_rows', []),
         ),
-        'benchmark': benchmark_chart_data(benchmark_context),
+        'benchmark': benchmark_chart_data(benchmark_context, benchmark_feature_importance_context),
     }
 
 
-def benchmark_chart_data(context):
-    rows = context.get('ranking_rows', [])
+def benchmark_chart_data(context, benchmark_feature_importance_context=None):
+    supervised_v2 = context.get('supervised_v2', {})
+    rows = supervised_v2.get('selected_rows', [])
+    feature_context = benchmark_feature_importance_context or {}
     return {
-        'f1Comparison': benchmark_metric_chart_data(rows, 'mean_f1'),
-        'rocAucComparison': benchmark_metric_chart_data(rows, 'mean_roc_auc'),
-        'averagePrecisionComparison': benchmark_metric_chart_data(rows, 'mean_average_precision'),
-        'stabilityComparison': benchmark_metric_chart_data(rows, 'std_f1', lower_is_better=True),
-        'featureImportance': benchmark_feature_importance_chart_data(
-            context.get('feature_importance_rows', []),
+        'f1Comparison': supervised_v2_metric_chart_data(rows, 'mean_f1'),
+        'rocAucComparison': supervised_v2_metric_chart_data(rows, 'mean_roc_auc'),
+        'averagePrecisionComparison': supervised_v2_metric_chart_data(
+            rows,
+            'mean_average_precision',
         ),
+        'stabilityComparison': supervised_v2_metric_chart_data(rows, 'std_f1', lower_is_better=True),
+        'featureImportance': benchmark_feature_importance_chart_data(
+            feature_context.get('selected_rows', []),
+        ),
+    }
+
+
+def supervised_v2_metric_chart_data(rows, metric_name, lower_is_better=False):
+    ranked = sorted(
+        rows,
+        key=lambda row: safe_float(row.get(metric_name)) if safe_float(row.get(metric_name)) is not None else -1,
+        reverse=not lower_is_better,
+    )
+    ranked.reverse()
+    return {
+        'labels': [row.get('model_display', '') for row in ranked],
+        'values': [safe_float(row.get(metric_name)) for row in ranked],
     }
 
 
@@ -1191,19 +1453,20 @@ def benchmark_metric_chart_data(rows, metric_name, lower_is_better=False):
     }
 
 
-def benchmark_feature_importance_chart_data(rows, limit=15):
-    ranked = sorted(
+def benchmark_feature_importance_chart_data(rows, limit=10):
+    top_ranked = sorted(
         rows,
-        key=lambda row: abs(safe_float(row.get('importance')) or 0),
-        reverse=True,
+        key=lambda row: (
+            safe_int(row.get('rank')) if safe_int(row.get('rank')) is not None else 10**9,
+            row.get('feature', ''),
+        ),
     )[:limit]
-    ranked.reverse()
+    chart_rows = list(reversed(top_ranked))
+    model = display_model_name(chart_rows[-1].get('model')) if chart_rows else ''
     return {
-        'labels': [
-            f"{row.get('model_display', '')}: {row.get('feature', '')}"
-            for row in ranked
-        ],
-        'values': [safe_float(row.get('importance')) for row in ranked],
+        'title': f'{model} — Top 10 Feature Importances' if model else 'Top 10 Feature Importances',
+        'labels': [row.get('feature', '') for row in chart_rows],
+        'values': [safe_float(row.get('importance')) for row in chart_rows],
     }
 
 
@@ -1286,7 +1549,10 @@ def feature_importance_chart_data(rows, limit=15):
 def display_model_name(value):
     if not value:
         return 'N/A'
-    return str(value).replace('_', ' ').title()
+    labels = {
+        'knn': 'KNN',
+    }
+    return labels.get(str(value), str(value).replace('_', ' ').title())
 
 
 def display_experiment_name(value):
@@ -1301,6 +1567,9 @@ def display_experiment_name(value):
         'reduced_feature_strict_label_benchmark': 'Reduced-feature strict-label benchmark',
         'procurement_only_on_financial_subset_benchmark': 'Procurement-only financial subset benchmark',
         'procurement_plus_financial_enrichment_benchmark': 'Procurement plus financial enrichment benchmark',
+        'full_feature_strict_label': 'Full-feature strict label',
+        'reduced_feature_strict_label': 'Reduced-feature strict label',
+        'full_feature_weak_label_replication': 'Full-feature weak-label replication',
     }
     return labels.get(str(value), display_model_name(value))
 

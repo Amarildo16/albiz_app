@@ -8,6 +8,7 @@ db.sqlite3
 media/
 staticfiles/
 reports/ml/
+reports/ml_v2/
 reports/registry/
 reports/visual-audit/
 node_modules/

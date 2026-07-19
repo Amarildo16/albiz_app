@@ -26,6 +26,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 from sklearn.model_selection import RepeatedStratifiedKFold
+from sklearn.neighbors import KNeighborsClassifier
 
 from analytics.services.ml_analysis import (
     FINANCIAL_FEATURE_COLUMNS_FILENAME,
@@ -396,11 +397,7 @@ def run_cv_experiment(dataset_name, experiment_name, rows, numeric_features, cat
 def benchmark_models():
     return {
         'dummy_baseline': DummyClassifier(strategy='stratified', random_state=RANDOM_STATE),
-        'logistic_regression': LogisticRegression(
-            max_iter=2000,
-            class_weight='balanced',
-            random_state=RANDOM_STATE,
-        ),
+        'hist_gradient_boosting': HistGradientBoostingClassifier(random_state=RANDOM_STATE),
         'random_forest': RandomForestClassifier(
             n_estimators=200,
             min_samples_leaf=2,
@@ -408,14 +405,26 @@ def benchmark_models():
             random_state=RANDOM_STATE,
             n_jobs=-1,
         ),
+        'gradient_boosting': GradientBoostingClassifier(random_state=RANDOM_STATE),
         'extra_trees': ExtraTreesClassifier(
             n_estimators=300,
             class_weight='balanced',
             random_state=RANDOM_STATE,
             n_jobs=-1,
         ),
-        'gradient_boosting': GradientBoostingClassifier(random_state=RANDOM_STATE),
-        'hist_gradient_boosting': HistGradientBoostingClassifier(random_state=RANDOM_STATE),
+        'knn': KNeighborsClassifier(
+            n_neighbors=5,
+            weights='uniform',
+            algorithm='brute',
+            metric='minkowski',
+            p=2,
+            n_jobs=1,
+        ),
+        'logistic_regression': LogisticRegression(
+            max_iter=2000,
+            class_weight='balanced',
+            random_state=RANDOM_STATE,
+        ),
     }
 
 

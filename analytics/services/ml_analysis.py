@@ -29,7 +29,7 @@ from sklearn.metrics import (
     roc_auc_score,
 )
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import LocalOutlierFactor
+from sklearn.neighbors import KNeighborsClassifier, LocalOutlierFactor
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
@@ -110,8 +110,10 @@ FINANCIAL_RANKING_FIELDS = [
 FINANCIAL_SUBSET_MODEL_NAMES = [
     'logistic_regression',
     'random_forest',
-    'hist_gradient_boosting',
+    'gradient_boosting',
     'extra_trees',
+    'hist_gradient_boosting',
+    'knn',
 ]
 
 
@@ -976,7 +978,8 @@ def build_model_card(rows, metadata, analysis_summary, strict_label_summary, lea
             'Gradient Boosting',
             'Extra Trees',
             'HistGradientBoosting',
-            'Financial subset Logistic Regression/Random Forest/Extra Trees/HistGradientBoosting',
+            'K-Nearest Neighbors',
+            'Financial subset all six principal classifiers: Logistic Regression/Random Forest/Gradient Boosting/Extra Trees/HistGradientBoosting/K-Nearest Neighbors',
             'Isolation Forest',
             'Local Outlier Factor',
             'KMeans',
@@ -1056,6 +1059,14 @@ def classifier_definitions():
             n_jobs=-1,
         ),
         'hist_gradient_boosting': HistGradientBoostingClassifier(random_state=RANDOM_STATE),
+        'knn': KNeighborsClassifier(
+            n_neighbors=5,
+            weights='uniform',
+            algorithm='brute',
+            metric='minkowski',
+            p=2,
+            n_jobs=1,
+        ),
     }
 
 
